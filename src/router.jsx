@@ -1,41 +1,53 @@
+import { createResource } from "solid-js";
 import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
-import Admin from "./Admin";
-import Professional from "./Professional";
-import Customer from "./Customer";
-import NotFound from "./NotFound";
-import Professionals from "./Professionals";
-import Customers from "./Customers";
-import Appointments from "./Appointments";
-import AppointmentRequests from "./AppointmentRequests";
 
 import Login from "./Login";
-import Button from "./Button";
+
+const Admin = lazy(() => import("./Admin"));
+import Staff from "./Staff";
+import Customer from "./Customer";
+import Professional from "./Professional";
+import AppointmentRequests from "./AppointmentRequests";
+import Appointments from "./Appointments";
+import Customers from "./Customers";
+import Professionals from "./Professionals";
+import NotFound from "./NotFound";
 
 import { s } from "./styles";
+import Button from "./Button";
 import { userStore, logout } from "./userStore";
-import Staff from "./Staff";
+import {
+  fetchAdminData,
+  fetchAdminCountsData,
+  fetchCustomersData,
+  fetchProfessionalsData,
+} from "./fetchFuncs";
+import { lazy } from "solid-js";
 
 export default function Router() {
   const navigate = useNavigate();
 
-  //   const userExists = () => userStore.user_id || userStore.id;
+  function AdminData({ params, location, navigate, data }) {
+    const [adminData] = createResource(fetchAdminCountsData);
+    return adminData;
+  }
+
+  function CustomersData({ params, location, navigate, data }) {
+    console.log({ params, location, navigate, data });
+    const [customersData] = createResource(fetchCustomersData);
+    return customersData;
+  }
+
+  function ProfessionalsData({ params, location, navigate, data }) {
+    console.log({ params, location, navigate, data });
+    const [professionalsData] = createResource(fetchProfessionalsData);
+    return professionalsData;
+  }
 
   const Layout = () => (
     <div>
       <header style={s.header}>
         <div>🌺 Laços</div>
-        {/* {userExists() && (
-          <>
-            <div>{userStore.name}</div>
-            <Button
-              kind="logout"
-              onClick={(e) => {
-                logout();
-                navigate("/login");
-              }}
-            />
-          </>
-        )} */}
       </header>
 
       <Outlet />
@@ -44,14 +56,24 @@ export default function Router() {
 
   return (
     <Routes>
-      <Route path="/" element={<h1>Hello Laços</h1>} />
+      <Route
+        path="/"
+        element={
+          <div>
+            <h1>Hello Laços</h1>
+            <a href="/login" class="nav-link">
+              Login
+            </a>
+          </div>
+        }
+      />
 
       <Route path="/login" component={Login} />
 
       <Route path="/admin" component={Layout}>
-        <Route path="/" component={Admin} />
-        <Route path="/customers" component={Customers} />
-        <Route path="/professionals" component={Professionals} />
+        <Route path="/" component={Admin} data={AdminData} />
+        <Route path="/customers" component={Customers} data={CustomersData} />
+        <Route path="/professionals" component={Professionals} data={ProfessionalsData} />
         <Route path="/appointments" component={Appointments} />
         <Route path="/requests" component={AppointmentRequests} />
         <Route path="/staff" component={Staff} />

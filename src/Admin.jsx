@@ -1,28 +1,18 @@
-import { useNavigate } from "solid-app-router";
+import { useNavigate, useRouteData } from "solid-app-router";
 
 import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "./userStore";
 
 export default function Admin() {
-  //   const navigate = useNavigate();
-  //   onMount(() => {
-  //     if (!userStore.user_id && !userStore.id) {
-  //       setUserStore(
-  //         JSON.parse(localStorage.getItem("user")) &&
-  //           JSON.parse(localStorage.getItem("user")).category === "Admin"
-  //       );
-  //     }
-  //   });
+  const data = useRouteData();
 
-  //   createEffect(() => {
-  //     console.log(userStore);
-  //   });
-
-  //   if (!userStore) navigate("/login");
+  console.log(data());
 
   return (
     <div>
       <h1>Admin</h1>
+      <a href="/admin/customers">Customers</a> | <a href="/admin/professionals">Professionals</a>
+      <pre>{JSON.stringify(data(), null, 2)}</pre>
     </div>
   );
 }
