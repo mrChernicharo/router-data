@@ -4,11 +4,11 @@ import { useRouteData } from "solid-app-router";
 export default function Professionals() {
   const data = useRouteData();
 
-  // if (!data()) return <div>Loading...</div>;
-
   return (
     <div>
       <h1>Professionals</h1>
+
+      {!data()?.professionals && <div>Loading...</div>}
 
       <For each={data()?.professionals}>
         {professional => (

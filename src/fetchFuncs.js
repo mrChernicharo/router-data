@@ -18,10 +18,11 @@ const fetchAdminCountsData = async () => {
   const { count: professionals_count, error: pError } = await supabase
     .from("professionals")
     .select("*", { count: "exact" });
+  const { count: staff_count, error: sError } = await supabase.from("staff").select("*", { count: "exact" });
 
-  if (cError || pError) return console.log({ cError, pError });
+  if (cError || pError || sError) return console.log({ cError, pError, sError });
 
-  return { customers_count, professionals_count };
+  return { customers_count, professionals_count, staff_count };
 };
 
 const fetchCustomersData = async () => {
@@ -40,4 +41,12 @@ const fetchProfessionalsData = async () => {
   return { professionals };
 };
 
-export { fetchAdminData, fetchAdminCountsData, fetchCustomersData, fetchProfessionalsData };
+const fetchStaffData = async () => {
+  const { data: staff, error: pError } = await supabase.from("staff").select("*");
+
+  if (pError) return console.log({ pError });
+
+  return { staff };
+};
+
+export { fetchAdminData, fetchAdminCountsData, fetchCustomersData, fetchProfessionalsData, fetchStaffData };

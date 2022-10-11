@@ -21,6 +21,7 @@ import {
   fetchAdminCountsData,
   fetchCustomersData,
   fetchProfessionalsData,
+  fetchStaffData,
 } from "./fetchFuncs";
 import { lazy } from "solid-js";
 
@@ -42,6 +43,12 @@ export default function Router() {
     console.log({ params, location, navigate, data });
     const [professionalsData] = createResource(fetchProfessionalsData);
     return professionalsData;
+  }
+
+  function StaffData({ params, location, navigate, data }) {
+    console.log({ params, location, navigate, data });
+    const [staffData] = createResource(fetchStaffData);
+    return staffData;
   }
 
   const Layout = () => (
@@ -76,7 +83,7 @@ export default function Router() {
         <Route path="/professionals" component={Professionals} data={ProfessionalsData} />
         <Route path="/appointments" component={Appointments} />
         <Route path="/requests" component={AppointmentRequests} />
-        <Route path="/staff" component={Staff} />
+        <Route path="/staff" component={Staff} data={StaffData} />
       </Route>
 
       <Route path="/customer" component={Layout}>

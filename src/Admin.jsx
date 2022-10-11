@@ -11,7 +11,8 @@ export default function Admin() {
   return (
     <div>
       <h1>Admin</h1>
-      <a href="/admin/customers">Customers</a> | <a href="/admin/professionals">Professionals</a>
+      <a href="/admin/customers">Customers</a> | <a href="/admin/professionals">Professionals</a> |{" "}
+      <a href="/admin/staff">Staff</a>
       <pre>{JSON.stringify(data(), null, 2)}</pre>
     </div>
   );
