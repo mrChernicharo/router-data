@@ -1,4 +1,4 @@
-import { dateToWeekday } from "./helpers";
+import { dateToWeekday } from "../helpers";
 
 export default function ProfessionalAvailability(props) {
   console.log(props.availability);

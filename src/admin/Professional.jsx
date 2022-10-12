@@ -1,9 +1,9 @@
 import { useNavigate, useRouteData } from "solid-app-router";
 
 import { onMount, createEffect } from "solid-js";
-import { userStore, setUserStore } from "./userStore";
+import { userStore, setUserStore } from "../userStore";
 
-import Button from "./Button";
+import Button from "../Button";
 import ProfessionalAvailability from "./ProfessionalAvailability";
 
 export default function Professional() {

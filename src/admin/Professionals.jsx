@@ -1,6 +1,6 @@
 import { For } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
-import { s } from "./styles";
+import { s } from "../styles";
 
 export default function Professionals() {
   const data = useRouteData();

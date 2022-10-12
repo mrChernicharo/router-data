@@ -6,14 +6,17 @@ import { userStore, logout } from "./userStore";
 import Login from "./Login";
 import NotFound from "./NotFound";
 
-const Admin = lazy(() => import("./Admin"));
-const Staff = lazy(() => import("./Staff"));
-const Professionals = lazy(() => import("./Professionals"));
-const Professional = lazy(() => import("./Professional"));
-const Customers = lazy(() => import("./Customers"));
-const Customer = lazy(() => import("./Customer"));
-const AppointmentRequests = lazy(() => import("./AppointmentRequests"));
+const Admin = lazy(() => import("./admin/Admin"));
+const Staff = lazy(() => import("./admin/Staff"));
+const AdminProfessionals = lazy(() => import("./admin/Professionals"));
+const AdminProfessional = lazy(() => import("./admin/Professional"));
+const AdminCustomers = lazy(() => import("./admin/Customers"));
+const AdminCustomer = lazy(() => import("./admin/Customer"));
+const AppointmentRequests = lazy(() => import("./admin/AppointmentRequests"));
 const Appointments = lazy(() => import("./Appointments"));
+
+const Customer = lazy(() => import("./customer/Customer"));
+const Professional = lazy(() => import("./professional/Professional"));
 
 import {
   fetchAdminData,
@@ -72,7 +75,7 @@ export default function Router() {
     <div>
       <header style={s.header}>
         <div>🌺 Laços</div>
-        <a href="/admin">
+        <a href="/login">
           <Button kind="logout" />
         </a>
       </header>
@@ -99,10 +102,10 @@ export default function Router() {
 
       <Route path="/admin" component={Layout}>
         <Route path="/" component={Admin} data={AdminData} />
-        <Route path="/customers" component={Customers} data={CustomersData} />
-        <Route path="/customers/:id" component={Customer} data={CustomerData} />
-        <Route path="/professionals" component={Professionals} data={ProfessionalsData} />
-        <Route path="/professionals/:id" component={Professional} data={ProfessionalData} />
+        <Route path="/customers" component={AdminCustomers} data={CustomersData} />
+        <Route path="/customers/:id" component={AdminCustomer} data={CustomerData} />
+        <Route path="/professionals" component={AdminProfessionals} data={ProfessionalsData} />
+        <Route path="/professionals/:id" component={AdminProfessional} data={ProfessionalData} />
         <Route path="/staff" component={Staff} data={StaffData} />
         <Route path="/requests" component={AppointmentRequests} />
         <Route path="/appointments" component={Appointments} />

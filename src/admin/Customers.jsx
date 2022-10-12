@@ -1,12 +1,18 @@
 import { For, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
-import { s } from "./styles";
+
+import Button from "../Button";
+import { s } from "../styles";
 
 export default function Customers() {
   const data = useRouteData();
 
   return (
     <div>
+      <Link href="/admin">
+        <Button kind="light" type="button" text="👈🏽" />
+      </Link>
+
       <h1>Customers</h1>
 
       {!data()?.customers && <div>Loading...</div>}

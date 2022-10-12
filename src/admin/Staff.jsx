@@ -1,6 +1,6 @@
 import { useRouteData } from "solid-app-router";
 import { createSignal } from "solid-js";
-import { s } from "./styles";
+import { s } from "../styles";
 
 export default function Staff() {
   const [id, setId] = createSignal(null);
