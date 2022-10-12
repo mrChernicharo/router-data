@@ -48,26 +48,27 @@ const fetchCustomerData = async id => {
   return { customer: data[0] };
 };
 
-const fetchProfessionalsData = async () => {
-  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
-
-  if (pError) return console.log({ pError });
-
-  return { professionals };
-};
-
 const fetchStaffData = async () => {
   const { data: staff, error: pError } = await supabase.from("staff").select("*");
-
   if (pError) return console.log({ pError });
 
   return { staff };
 };
 
+const fetchProfessionalsData = async () => {
+  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
+  if (pError) return console.log({ pError });
+
+  return { professionals };
+};
+
 const fetchProfessionalData = async id => {
-  const { data, error } = await supabase.from("professionals").select("*").eq("id", id);
+  const { data, error } = await supabase
+    .from("professionals")
+    .select(`*, availability:professional_availability (*)`)
+    .eq("id", id);
   if (error) return console.log({ error });
-  return { data };
+  return { professional: data[0] };
 };
 const fetchAppointmentsData = async () => {
   const { data, error } = await supabase.from("realtime_appointments").select("*");

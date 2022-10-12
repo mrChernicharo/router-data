@@ -8,12 +8,12 @@ import NotFound from "./NotFound";
 
 const Admin = lazy(() => import("./Admin"));
 const Staff = lazy(() => import("./Staff"));
+const Professionals = lazy(() => import("./Professionals"));
 const Professional = lazy(() => import("./Professional"));
+const Customers = lazy(() => import("./Customers"));
+const Customer = lazy(() => import("./Customer"));
 const AppointmentRequests = lazy(() => import("./AppointmentRequests"));
 const Appointments = lazy(() => import("./Appointments"));
-const Customer = lazy(() => import("./Customer"));
-const Customers = lazy(() => import("./Customers"));
-const Professionals = lazy(() => import("./Professionals"));
 
 import {
   fetchAdminData,
@@ -102,6 +102,7 @@ export default function Router() {
         <Route path="/customers" component={Customers} data={CustomersData} />
         <Route path="/customers/:id" component={Customer} data={CustomerData} />
         <Route path="/professionals" component={Professionals} data={ProfessionalsData} />
+        <Route path="/professionals/:id" component={Professional} data={ProfessionalData} />
         <Route path="/staff" component={Staff} data={StaffData} />
         <Route path="/requests" component={AppointmentRequests} />
         <Route path="/appointments" component={Appointments} />
