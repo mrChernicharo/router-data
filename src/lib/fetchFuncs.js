@@ -57,37 +57,57 @@ const fetchAdminData = async () => {
 const fetchAdminRequestsData = async () => {
   const { data: customers, error: cError } = await supabase
     .from("customers")
-    .select("*, availability:customer_availability(*), offers:appointment_offers(*)");
+    .select(
+      "*, availability:customer_availability(*), offers:appointment_offers(*), appointments:realtime_appointments ( id )"
+    );
 
   const { data: professionals, error: pError } = await supabase
     .from("professionals")
     .select("*, availability:professional_availability(*)");
 
-  const possibilities = {};
-
+  const customerPossibilities = {};
   customers.forEach(customer => {
-    possibilities[customer.id] = {};
+    customerPossibilities[customer.id] = {};
 
     customer.availability.forEach(c_av => {
-      if (!(c_av.day in possibilities[customer.id])) possibilities[customer.id][c_av.day] = [];
+      if (!(c_av.day in customerPossibilities[customer.id]))
+        customerPossibilities[customer.id][c_av.day] = [];
 
-      professionals.forEach(professional => {
-        professional.availability.forEach(p_av => {
-          if (p_av.status === "1" && p_av.time === c_av.time && p_av.time === c_av.time) {
-            // match!
-            possibilities[customer.id][c_av.day].push({
-              ...p_av,
-              professional: professional.name,
-            });
-          }
-        });
-      });
+      customerPossibilities[customer.id][c_av.day].push(c_av);
     });
   });
 
-  console.log({ customers, professionals, possibilities });
+  const possibilities = {}; // by customer / day / professional
+  customers.forEach(customer => {
+    possibilities[customer.id] = [];
+    professionals.forEach(prof => {
+      const commonProfAvailability = prof.availability.filter(
+        p_av =>
+          p_av.status === "1" &&
+          p_av.day in customerPossibilities[customer.id] &&
+          customerPossibilities[customer.id][p_av.day].find(o => o.time === p_av.time)
+      );
+      possibilities[customer.id].push(commonProfAvailability);
+    });
+  });
 
-  return { customers, professionals, possibilities };
+  if (cError || pError) return console.log({ cError, pError });
+  console.log("haaa", { customerPossibilities, possibilities, p: possibilities[customers[0].id] });
+
+  const [unattended_customers, customers_with_offers, customers_with_appointments] = [
+    customers.filter(c => !c.appointments.length && !c.offers.length), // red
+    customers.filter(c => c.offers.length), // yellow
+    customers.filter(c => c.appointments.length), // ok!
+  ];
+
+  return {
+    customers,
+    professionals,
+    possibilities,
+    unattended_customers,
+    customers_with_offers,
+    customers_with_appointments,
+  };
 
   // const {
   //   data: customersIds,
