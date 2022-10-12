@@ -1,37 +1,29 @@
 import { supabase } from "../supabaseClient";
 
-// all customers and all professionals
-// const fetchAdminData = async () => {
-//   const { data: customers, error: cError } = await supabase.from("customers").select("*");
-//   const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
-
-//   if (cError || pError) return console.log({ cError, pError });
-
-//   return { customers, professionals };
-// };
-
 // staff & prof & customers count
 const fetchAdminData = async () => {
   const {
-    data: customerIds,
+    data: customersIds,
     count: customers_count,
-    error: cError,
-  } = await supabase.from("customers").select("id", { count: "exact" });
+    error: cIdError,
+  } = await supabase.from("customers").select("id");
 
-  const { count: professionals_count, error: pError } = await supabase
-    .from("professionals")
-    .select("id", { count: "exact" });
+  const {
+    data: professionals,
+    count: professionals_count,
+    error: pError,
+  } = await supabase.from("professionals").select("id, name", { count: "exact" });
 
   const { count: staff_count, error: sError } = await supabase.from("staff").select("id", { count: "exact" });
 
-  const { data: all_customers, error: csError } = await supabase
+  const { data: all_customers, error: cError } = await supabase
     .from("customers")
     .select(
       `id, name, 
       offers:appointment_offers( * ),
       appointments:realtime_appointments ( id )`
     )
-    .filter("id", "in", `(${customerIds.map(c => c.id)})`);
+    .filter("id", "in", `(${customersIds.map(c => c.id)})`);
 
   console.log(all_customers);
 
@@ -41,7 +33,15 @@ const fetchAdminData = async () => {
     all_customers.filter(c => c.appointments.length), // ok!
   ];
 
-  if (cError || pError || sError || csError) return console.log({ cError, pError, sError, rError });
+  const customers_with_offers_with_profs = customers_with_offers.map(customer => ({
+    ...customer,
+    offers: customer.offers.map(offer => ({
+      ...offer,
+      professional: professionals.find(p => p.id === offer.professional_id).name,
+    })),
+  }));
+
+  if (cIdError | cError || pError || sError) return console.log({ cError, pError, sError });
 
   return {
     customers_count,
@@ -50,7 +50,7 @@ const fetchAdminData = async () => {
     // all_customers,
     unattended_customers,
     customers_with_offers,
-    // customers_with_appointments,
+    customers_with_offers_with_profs,
   };
 };
 
