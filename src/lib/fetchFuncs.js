@@ -36,14 +36,27 @@ const fetchCustomersData = async () => {
 const fetchCustomerData = async id => {
   const { data, error } = await supabase
     .from("customers")
-    .select(`*, availability:customer_availability (*)`)
+    .select(
+      `*, 
+      availability:customer_availability (*), 
+      appointments:realtime_appointments ( id, professional_id, day, time, datetime, status )`
+    )
     .eq("id", id);
 
-  //  availability:customer_availability ( id, day, time, status ),
-  //       appointments:realtime_appointments ( id, professional_id, day, time, datetime, status ),
-  //       appointmentOffers:appointment_offers ( id, day, time, professional_id )`
-
   if (error) return console.log({ error });
+
+  const customer = data[0];
+
+  if (customer.appointments) {
+    const professionalsIds = customer.appointments.map(a => a.professional_id);
+
+    const { professionals } = await fetchProfessionalsId(professionalsIds);
+
+    customer.appointments.forEach((a, i) => {
+      const professional = professionals.find(c => professionalsIds.includes(c.id));
+      customer.appointments[i].professional = professional;
+    });
+  }
 
   return { customer: data[0] };
 };
@@ -93,12 +106,12 @@ const fetchProfessionalData = async id => {
   const professional = data[0];
 
   if (professional.appointments) {
-    const customersIds = professional.appointments.map(a => a.customer_id);
+    const professionalsIds = professional.appointments.map(a => a.customer_id);
 
-    const { customers } = await fetchCustomersId(customersIds);
+    const { customers } = await fetchCustomersId(professionalsIds);
 
     professional.appointments.forEach((a, i) => {
-      const customer = customers.find(c => customersIds.includes(c.id));
+      const customer = customers.find(c => professionalsIds.includes(c.id));
       professional.appointments[i].customer = customer;
     });
   }
@@ -123,6 +136,15 @@ const fetchCustomersId = async ids => {
     .filter("id", "in", `(${ids})`);
   if (error) return console.log({ error });
   return { customers };
+};
+
+const fetchProfessionalsId = async ids => {
+  const { data: professionals, error } = await supabase
+    .from("professionals")
+    .select("*")
+    .filter("id", "in", `(${ids})`);
+  if (error) return console.log({ error });
+  return { professionals };
 };
 
 // const fetchAppointmentsByCustomerIds = async ids => {

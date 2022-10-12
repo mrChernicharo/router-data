@@ -52,6 +52,7 @@ export default function Staff() {
       <h1>Staff</h1>
 
       <div class="container">
+        <h3>Register new Staff</h3>
         <form onSubmit={handleSubmit}>
           <div class="d-grid input-group mb-3">
             <label class="form-label">
@@ -60,7 +61,7 @@ export default function Staff() {
             </label>
           </div>
           <div class="d-grid mb-5">
-            <Button kind="CTA" text="Register Staff" />
+            <Button kind="CTA" text={<h3 style={{ margin: 0 }}>Register</h3>} />
           </div>
         </form>
       </div>

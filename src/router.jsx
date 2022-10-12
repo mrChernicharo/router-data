@@ -3,6 +3,7 @@ import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
 
 // import { userStore, logout } from "./userStore";
 
+import Home from "./Home";
 import Login from "./Login";
 import NotFound from "./NotFound";
 
@@ -49,17 +50,7 @@ export default function Router() {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <div>
-            <h1>Hello Laços</h1>
-            <a href="/login" class="nav-link">
-              Login
-            </a>
-          </div>
-        }
-      />
+      <Route path="/" component={Home} />
 
       <Route path="/login" component={Login} />
 
