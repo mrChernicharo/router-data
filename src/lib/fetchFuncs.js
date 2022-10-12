@@ -54,6 +54,93 @@ const fetchAdminData = async () => {
   };
 };
 
+const fetchAdminRequestsData = async () => {
+  const { data: customers, error: cError } = await supabase
+    .from("customers")
+    .select("*, availability:customer_availability(*), offers:appointment_offers(*)");
+
+  const { data: professionals, error: pError } = await supabase
+    .from("professionals")
+    .select("*, availability:professional_availability(*)");
+
+  const possibilities = {};
+
+  customers.forEach(customer => {
+    possibilities[customer.id] = {};
+
+    customer.availability.forEach(c_av => {
+      if (!(c_av.day in possibilities[customer.id])) possibilities[customer.id][c_av.day] = [];
+
+      professionals.forEach(professional => {
+        professional.availability.forEach(p_av => {
+          if (p_av.status === "1" && p_av.time === c_av.time && p_av.time === c_av.time) {
+            // match!
+            possibilities[customer.id][c_av.day].push({
+              ...p_av,
+              professional: professional.name,
+            });
+          }
+        });
+      });
+    });
+  });
+
+  console.log({ customers, professionals, possibilities });
+
+  return { customers, professionals, possibilities };
+
+  // const {
+  //   data: customersIds,
+  //   count: customers_count,
+  //   error: cIdError,
+  // } = await supabase.from("customers").select("id");
+
+  // const {
+  //   data: professionals,
+  //   count: professionals_count,
+  //   error: pError,
+  // } = await supabase.from("professionals").select("id, name", { count: "exact" });
+
+  // const { count: staff_count, error: sError } = await supabase.from("staff").select("id", { count: "exact" });
+
+  // const { data: all_customers, error: cError } = await supabase
+  //   .from("customers")
+  //   .select(
+  //     `id, name,
+  //     offers:appointment_offers( * ),
+  //     appointments:realtime_appointments ( id )`
+  //   )
+  //   .filter("id", "in", `(${customersIds.map(c => c.id)})`);
+
+  // console.log(all_customers);
+
+  // const [unattended_customers, customers_with_offers, customers_with_appointments] = [
+  //   all_customers.filter(c => !c.appointments.length && !c.offers.length), // red
+  //   all_customers.filter(c => c.offers.length), // yellow
+  //   all_customers.filter(c => c.appointments.length), // ok!
+  // ];
+
+  // const customers_with_offers_with_profs = customers_with_offers.map(customer => ({
+  //   ...customer,
+  //   offers: customer.offers.map(offer => ({
+  //     ...offer,
+  //     professional: professionals.find(p => p.id === offer.professional_id).name,
+  //   })),
+  // }));
+
+  // if (cIdError | cError || pError || sError) return console.log({ cError, pError, sError });
+
+  // return {
+  //   customers_count,
+  //   professionals_count,
+  //   staff_count,
+  //   // all_customers,
+  //   unattended_customers,
+  //   customers_with_offers,
+  //   customers_with_offers_with_profs,
+  // };
+};
+
 const fetchCustomersData = async () => {
   const { data, error: cError } = await supabase.from("customers").select("*");
 
@@ -128,7 +215,7 @@ const fetchProfessionalData = async id => {
     .from("professionals")
     .select(
       `*, 
-      availability:professional_availability (*),
+      availability:appointment_offers (*),
       appointments:realtime_appointments ( id, customer_id, day, time, datetime, status )`
     )
     .eq("id", id);
@@ -217,6 +304,7 @@ const fetchAppointmentOffers = async () => {
 
 export {
   fetchAdminData,
+  fetchAdminRequestsData,
   fetchCustomerData,
   fetchCustomersData,
   fetchProfessionalsData,

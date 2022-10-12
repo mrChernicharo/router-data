@@ -13,7 +13,7 @@ const AdminProfessionals = lazy(() => import("./admin/Professionals"));
 const AdminProfessional = lazy(() => import("./admin/Professional"));
 const AdminCustomers = lazy(() => import("./admin/Customers"));
 const AdminCustomer = lazy(() => import("./admin/Customer"));
-// const AppointmentRequests = lazy(() => import("./admin/AppointmentRequests"));
+const AppointmentRequests = lazy(() => import("./admin/AppointmentRequests"));
 // const Appointments = lazy(() => import("./Appointments"));
 
 const Customer = lazy(() => import("./customer/Customer"));
@@ -21,6 +21,7 @@ const Professional = lazy(() => import("./professional/Professional"));
 
 import {
   AdminData,
+  AdminRequestsData,
   CustomersData,
   ProfessionalsData,
   StaffData,
@@ -61,6 +62,7 @@ export default function Router() {
         <Route path="/professionals" component={AdminProfessionals} data={ProfessionalsData} />
         <Route path="/professionals/:id" component={AdminProfessional} data={ProfessionalData} />
         <Route path="/staff" component={Staff} data={StaffData} />
+        <Route path="/requests" component={AppointmentRequests} data={AdminRequestsData} />
         {/* <Route path="/appointments" component={Appointments} /> */}
       </Route>
 

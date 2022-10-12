@@ -4,9 +4,11 @@ import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../userStore";
 
 import CollapseBox from "../shared/CollapseBox";
+import AppointmentRequests from "./AppointmentRequests";
+import AppointmentPossibilities from "./AppointmentPossibilities";
 import Button from "../shared/Button";
-import AppointmentRequest from "./AppointmentRequest";
 import Badge from "../shared/Badge";
+import Icon from "../shared/Icon";
 
 export default function Admin() {
   const data = useRouteData();
@@ -33,25 +35,33 @@ export default function Admin() {
       {/* Requests Title + Badge */}
       <h3 class="mt-4">
         <Badge danger={data()?.unattended_customers.length} />
-        <div>Appointment Requests</div>
+        <Link class="d-flex nav-link align-items-center" href="/admin/requests">
+          <div>Appointment Requests</div>
+          <Icon chevronRight />
+          {/* <Button kind="light" text={} type="button" /> */}
+        </Link>
       </h3>
 
+      {LoadingIndicator(data.loading)}
+
       {/* requests list */}
-      <CollapseBox>
-        {LoadingIndicator(data.loading)}
+      {/* <CollapseBox>
 
         <h4>unattended</h4>
+        <CollapseBox>
         <For each={data()?.unattended_customers}>
-          {customer => <AppointmentRequest customer={customer} offers={customer.appointmentOffers} />}
+          {customer => <AppointmentRequests customer={customer} offers={customer.appointmentOffers} />}
         </For>
+        </CollapseBox>
 
         <h4>attended</h4>
+        <CollapseBox>
         <For each={data()?.customers_with_offers_with_profs}>
-          {customer => <AppointmentRequest customer={customer} offers={customer.appointmentOffers} />}
+          {customer => <AppointmentRequests customer={customer} offers={customer.appointmentOffers} />}
         </For>
-      </CollapseBox>
-
-      {/* <pre>{JSON.stringify(data(), null, 2)}</pre> */}
+        </CollapseBox>
+        <pre>{JSON.stringify(data(), null, 2)}</pre>
+      </CollapseBox> */}
     </div>
   );
 }

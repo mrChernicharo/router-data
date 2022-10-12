@@ -2,6 +2,7 @@ import { createResource } from "solid-js";
 
 import {
   fetchAdminData,
+  fetchAdminRequestsData,
   fetchAppointmentData,
   fetchAppointmentOffers,
   fetchAppointmentsData,
@@ -18,6 +19,11 @@ import {
 function AdminData({ params, location, navigate, data }) {
   const [adminData] = createResource(fetchAdminData);
   return adminData;
+}
+
+function AdminRequestsData() {
+  const [requestsData] = createResource(fetchAdminRequestsData);
+  return requestsData;
 }
 
 function CustomersData({ params, location, navigate, data }) {
@@ -53,6 +59,7 @@ function AppointmentData({ params, location, navigate, data }) {
 
 export {
   AdminData,
+  AdminRequestsData,
   CustomersData,
   ProfessionalsData,
   StaffData,
