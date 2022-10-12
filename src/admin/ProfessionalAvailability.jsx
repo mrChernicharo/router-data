@@ -4,7 +4,8 @@ export default function ProfessionalAvailability(props) {
   console.log(props.availability);
   return (
     <div>
-      <h3>Availability</h3>
+      <h4 class="mt-2">Availability</h4>
+
       <ul class="list-group">
         <For each={props.availability}>
           {block => (

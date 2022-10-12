@@ -13,7 +13,7 @@ export default function Professionals() {
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
 
-      {!data()?.professionals && <div>Loading...</div>}
+      {data.loading && <div>Loading...</div>}
 
       <ul class="list-group">
         <For each={data()?.professionals}>

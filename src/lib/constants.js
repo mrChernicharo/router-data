@@ -1,5 +1,3 @@
-import { timeMinutesToStr, timeStrToMinutes } from "./helpers";
-
 export const INITIAL_STORE = {
   professionals: [],
   customers: [],

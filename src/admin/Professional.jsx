@@ -5,25 +5,36 @@ import { userStore, setUserStore } from "../userStore";
 
 import Button from "../shared/Button";
 import ProfessionalAvailability from "./ProfessionalAvailability";
+import ProfessionalAppointments from "./ProfessionalAppointments";
+
+import { Link } from "solid-app-router";
 
 export default function Professional() {
-  const navigate = useNavigate();
   const data = useRouteData();
 
   return (
     <div>
-      <Button kind="light" type="button" text="👈🏽" onClick={() => navigate("/admin/professionals")} />
+      <Link href="/admin/professionals">
+        <Button kind="light" type="button" text="👈🏽" />
+      </Link>
+
       <h1>professional</h1>
 
       <div>
         <Show when={data()?.professional}>
-          <div>{data().professional.id}</div>
-          <div>{data().professional.name}</div>
-          <div>{data().professional.email}</div>
+          {/* <div>{data().professional.id}</div> */}
+          <h3>{data().professional.name}</h3>
+          <h5>{data().professional.email}</h5>
 
-          <ProfessionalAvailability availability={data().professional.availability} />
+          <Show when={data()?.professional.appointments}>
+            <ProfessionalAppointments appointments={data().professional.appointments} />
+          </Show>
+
+          <ProfessionalAvailability availability={data()?.professional.availability} />
         </Show>
       </div>
+
+      {/* <pre>{JSON.stringify(data(), null, 2)}</pre> */}
     </div>
   );
 }
