@@ -1,28 +1,57 @@
 import { supabase } from "../supabaseClient";
 
 // all customers and all professionals
+// const fetchAdminData = async () => {
+//   const { data: customers, error: cError } = await supabase.from("customers").select("*");
+//   const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
+
+//   if (cError || pError) return console.log({ cError, pError });
+
+//   return { customers, professionals };
+// };
+
+// staff & prof & customers count
 const fetchAdminData = async () => {
-  const { data: customers, error: cError } = await supabase.from("customers").select("*");
-  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
+  const {
+    data: customerIds,
+    count: customers_count,
+    error: cError,
+  } = await supabase.from("customers").select("id", { count: "exact" });
 
-  if (cError || pError) return console.log({ cError, pError });
-
-  return { customers, professionals };
-};
-
-// prof & customers count
-const fetchAdminCountsData = async () => {
-  const { count: customers_count, error: cError } = await supabase
-    .from("customers")
-    .select("*", { count: "exact" });
   const { count: professionals_count, error: pError } = await supabase
     .from("professionals")
-    .select("*", { count: "exact" });
-  const { count: staff_count, error: sError } = await supabase.from("staff").select("*", { count: "exact" });
+    .select("id", { count: "exact" });
 
-  if (cError || pError || sError) return console.log({ cError, pError, sError });
+  const { count: staff_count, error: sError } = await supabase.from("staff").select("id", { count: "exact" });
 
-  return { customers_count, professionals_count, staff_count };
+  const { data: all_customers, error: csError } = await supabase
+    .from("customers")
+    .select(
+      `id, name, 
+      offers:appointment_offers( * ),
+      appointments:realtime_appointments ( id )`
+    )
+    .filter("id", "in", `(${customerIds.map(c => c.id)})`);
+
+  console.log(all_customers);
+
+  const [unattended_customers, customers_with_offers, customers_with_appointments] = [
+    all_customers.filter(c => !c.appointments.length && !c.offers.length), // red
+    all_customers.filter(c => c.offers.length), // yellow
+    all_customers.filter(c => c.appointments.length), // ok!
+  ];
+
+  if (cError || pError || sError || csError) return console.log({ cError, pError, sError, rError });
+
+  return {
+    customers_count,
+    professionals_count,
+    staff_count,
+    // all_customers,
+    unattended_customers,
+    customers_with_offers,
+    // customers_with_appointments,
+  };
 };
 
 const fetchCustomersData = async () => {
@@ -38,7 +67,8 @@ const fetchCustomerData = async id => {
     .from("customers")
     .select(
       `*, 
-      availability:customer_availability (*), 
+      availability:customer_availability (*),
+      offers:appointment_offers(*),
       appointments:realtime_appointments ( id, professional_id, day, time, datetime, status )`
     )
     .eq("id", id);
@@ -187,7 +217,6 @@ const fetchAppointmentOffers = async () => {
 
 export {
   fetchAdminData,
-  fetchAdminCountsData,
   fetchCustomerData,
   fetchCustomersData,
   fetchProfessionalsData,

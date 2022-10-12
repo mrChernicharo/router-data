@@ -1,7 +1,6 @@
 import { createResource } from "solid-js";
 
 import {
-  fetchAdminCountsData,
   fetchAdminData,
   fetchAppointmentData,
   fetchAppointmentOffers,
@@ -17,7 +16,7 @@ import {
 } from "./fetchFuncs";
 
 function AdminData({ params, location, navigate, data }) {
-  const [adminData] = createResource(fetchAdminCountsData);
+  const [adminData] = createResource(fetchAdminData);
   return adminData;
 }
 
