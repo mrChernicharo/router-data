@@ -1,7 +1,7 @@
 import { For, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 
-import Button from "../Button";
+import Button from "../shared/Button";
 import { s } from "../styles";
 
 export default function Customers() {

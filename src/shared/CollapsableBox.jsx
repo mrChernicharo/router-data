@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import { createSignal } from "solid-js";
-import Button from "./Button";
+import Button from "./shared/Button";
 
 export default function CollapseBox(props) {
   const [isOpen, setIsOpen] = createSignal(false);

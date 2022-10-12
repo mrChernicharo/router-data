@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { supabase } from "../supabaseClient";
 
 // all customers and all professionals
 const fetchAdminData = async () => {

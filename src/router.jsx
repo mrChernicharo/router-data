@@ -1,7 +1,7 @@
 import { lazy, createResource } from "solid-js";
 import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
 
-import { userStore, logout } from "./userStore";
+// import { userStore, logout } from "./userStore";
 
 import Login from "./Login";
 import NotFound from "./NotFound";
@@ -28,10 +28,10 @@ import {
   fetchAppointmentsData,
   fetchAppointmentData,
   fetchStaffData,
-} from "./fetchFuncs";
+} from "./lib/fetchFuncs";
 
 import { s } from "./styles";
-import Button from "./Button";
+import Button from "./shared/Button";
 
 export default function Router() {
   const navigate = useNavigate();

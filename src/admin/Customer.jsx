@@ -3,8 +3,8 @@ import { useNavigate, useRouteData, Link } from "solid-app-router";
 import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../userStore";
 
-import Button from "../Button";
-import CustomerAvailability from "../CustomerAvailability";
+import Button from "../shared/Button";
+import CustomerAvailability from "./CustomerAvailability";
 
 export default function Customer() {
   const navigate = useNavigate();

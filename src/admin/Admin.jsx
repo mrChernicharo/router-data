@@ -3,7 +3,7 @@ import { useNavigate, useRouteData, Link } from "solid-app-router";
 import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../userStore";
 
-import Button from "../Button";
+import Button from "../shared/Button";
 
 export default function Admin() {
   const data = useRouteData();

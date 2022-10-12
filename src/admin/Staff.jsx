@@ -1,6 +1,7 @@
-import { useRouteData } from "solid-app-router";
+import { useRouteData, Link } from "solid-app-router";
 import { createSignal } from "solid-js";
 import { s } from "../styles";
+import Button from "../shared/Button";
 
 export default function Staff() {
   const [id, setId] = createSignal(null);
@@ -8,6 +9,10 @@ export default function Staff() {
 
   return (
     <div>
+      <Link href="/admin">
+        <Button kind="light" type="button" text="👈🏽" />
+      </Link>
+
       <h1>Staff</h1>
 
       {!data()?.staff && <div>Loading...</div>}
