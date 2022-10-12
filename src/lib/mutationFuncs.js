@@ -121,4 +121,43 @@ const removeCustomer = async person => {
   console.log("removeCustomer", person);
 };
 
-export { insertStaff, removeStaff, insertProfessional, removeProfessional, insertCustomer, removeCustomer };
+const createAppointmentOffers = async (customerId, offers) => {
+  if (!offers.length) {
+    return console.log("createAppointmentOffers with no offers! Abort it", { offers, customerId });
+  }
+  console.log("createAppointmentOffers", { offers, customerId });
+
+  // // patch/remove previous offers
+  const { data: deletedData, error: deleteError } = await supabase
+    .from("appointment_offers")
+    .delete()
+    .eq("customer_id", customerId)
+    .select();
+
+  const { data, insertError } = await supabase.from("appointment_offers").insert(offers).select();
+
+  if (deleteError || insertError) return console.log({ deleteError, insertError });
+
+  console.log("appointment offer created", { data, deletedData });
+
+  // // channel.send({
+  // //   type: "broadcast",
+  // //   event: "appointment_offer_created",
+  // //   customerId,
+  // //   entries: data,
+  // // });
+
+  // console.log({ data, deletedData });
+
+  // return data
+};
+
+export {
+  insertStaff,
+  removeStaff,
+  insertProfessional,
+  removeProfessional,
+  insertCustomer,
+  removeCustomer,
+  createAppointmentOffers,
+};

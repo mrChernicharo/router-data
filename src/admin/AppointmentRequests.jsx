@@ -4,21 +4,30 @@ import Button from "../shared/Button";
 import Icon from "../shared/Icon";
 import { For } from "solid-js";
 import { dateToWeekday } from "../lib/helpers";
+import { createAppointmentOffers } from "../lib/mutationFuncs";
 import AppointmentPossibilities from "./AppointmentPossibilities";
+import CollapseBox from "../shared/CollapseBox";
 import { createEffect } from "solid-js";
 
 export default function AppointmentRequests(props) {
   const data = useRouteData();
 
-  // const getProfessionalSlotId = (block, profId) =>
-  //   getProfessionalById(profId, store.professionals).availability.find((av) => av.id === block.id)
-  //     .id;
-
-  const isChecked = (block, customerOffers) => {
-    return customerOffers?.find(o => o.professional_availability_slot_id === block.id);
-  };
+  const getProfessional = (profs, matches) => profs.find(p => p.id === matches[0].professional_id);
 
   const LoadingIndicator = isLoading => (isLoading ? <div>Loading...</div> : <></>);
+
+  async function handleSubmit(e, customerId) {
+    e.preventDefault();
+
+    const selectedCheckboxes = [...e.currentTarget].filter(d => d.checked);
+    const selectedTimeBlocks = selectedCheckboxes.map(d => ({
+      ...d.dataset,
+      customer_id: customerId,
+    }));
+    console.log(e, selectedTimeBlocks, selectedCheckboxes);
+
+    await createAppointmentOffers(customerId, selectedTimeBlocks);
+  }
 
   createEffect(() => {
     console.log(data());
@@ -29,7 +38,7 @@ export default function AppointmentRequests(props) {
       <Link href="/admin">
         <Button kind="light" text="👈🏽" type="button" />
       </Link>
-      {/* <p>{props.customer.name}</p> */}
+
       {LoadingIndicator(data.loading)}
 
       <ul class="list-group">
@@ -40,28 +49,31 @@ export default function AppointmentRequests(props) {
                 <h2>{customer.name}</h2>
                 <p>{customer.id}</p>
 
-                {/* <pre>{JSON.stringify(data()?.possibilities[customer.id], null, 2)}</pre> */}
+                <form onSubmit={e => handleSubmit(e, customer.id)}>
+                  <CollapseBox>
+                    <For each={data()?.possibilities[customer.id]}>
+                      {profMatches => {
+                        const professional = getProfessional(data()?.professionals, profMatches);
+                        console.log({ professional });
 
-                <For each={data()?.possibilities[customer.id]}>
-                  {profMatches => (
-                    <div>
-                      <div class="fw-bold">
-                        {data()?.professionals.find(p => p.id === profMatches[0].professional_id).name}
-                      </div>
-
-                      <For each={profMatches}>
-                        {match => (
+                        return (
                           <div>
-                            <div>
-                              {dateToWeekday(match.day)} {match.time}
-                              <input type="checkbox" checked={isChecked(match, customer.offers)} />
-                            </div>
+                            <div class="fw-bold">{professional.name}</div>
+
+                            <AppointmentPossibilities
+                              profMatches={profMatches}
+                              offers={customer.offers}
+                              profAvailability={professional.availability}
+                            />
                           </div>
-                        )}
-                      </For>
+                        );
+                      }}
+                    </For>
+                    <div class="d-flex justify-content-end">
+                      <Button style={{ width: "160px" }} text={<Icon check />} kind="CTA" />
                     </div>
-                  )}
-                </For>
+                  </CollapseBox>
+                </form>
               </div>
             </li>
           )}
@@ -70,12 +82,4 @@ export default function AppointmentRequests(props) {
       {/* <pre>{JSON.stringify(data(), null, 2)}</pre> */}
     </div>
   );
-}
-{
-  /* {offer => (
-            <div>
-              {dateToWeekday(offer.day)} {offer.time}
-              <h5> {offer.professional}</h5>
-            </div>
-          )} */
 }
