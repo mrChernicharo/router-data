@@ -22,8 +22,9 @@ function AdminData({ params, location, navigate, data }) {
 }
 
 function AdminRequestsData() {
-  const [requestsData] = createResource(fetchAdminRequestsData);
-  return requestsData;
+  const [requestsData, { mutate: mutateRequests, refetch: refetchRequests }] =
+    createResource(fetchAdminRequestsData);
+  return [requestsData, { mutateRequests, refetchRequests }];
 }
 
 function CustomersData({ params, location, navigate, data }) {

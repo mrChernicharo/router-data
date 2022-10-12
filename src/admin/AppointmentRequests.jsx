@@ -10,7 +10,7 @@ import CollapseBox from "../shared/CollapseBox";
 import { createEffect } from "solid-js";
 
 export default function AppointmentRequests(props) {
-  const data = useRouteData();
+  const [data, { mutateRequests, refetchRequests }] = useRouteData();
 
   const getProfessional = (profs, matches) => profs.find(p => p.id === matches[0].professional_id);
 
@@ -27,6 +27,8 @@ export default function AppointmentRequests(props) {
     console.log(e, selectedTimeBlocks, selectedCheckboxes);
 
     await createAppointmentOffers(customerId, selectedTimeBlocks);
+
+    refetchRequests();
   }
 
   createEffect(() => {
@@ -45,6 +47,7 @@ export default function AppointmentRequests(props) {
         <For each={data()?.customers_with_offers.concat(data()?.unattended_customers)}>
           {customer => (
             <li class="list-group-item">
+              <Badge danger={!customer.offers.length} />
               <div>
                 <h2>{customer.name}</h2>
                 <p>{customer.id}</p>
@@ -54,7 +57,6 @@ export default function AppointmentRequests(props) {
                     <For each={data()?.possibilities[customer.id]}>
                       {profMatches => {
                         const professional = getProfessional(data()?.professionals, profMatches);
-                        console.log({ professional });
 
                         return (
                           <div>
