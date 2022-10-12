@@ -20,4 +20,9 @@ export const s = {
     "justify-content": "space-between",
     "align-items": "center",
   },
+  listHighlight: {
+    width: "10px",
+    "margin-right": "10px",
+    background: "green",
+  },
 };

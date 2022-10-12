@@ -49,8 +49,26 @@ const fetchCustomerData = async id => {
 };
 
 const fetchStaffData = async () => {
-  const { data: staff, error: pError } = await supabase.from("staff").select("*");
-  if (pError) return console.log({ pError });
+  const { data, error: sError } = await supabase.from("staff").select("*");
+
+  const staffEmails = {};
+  data.forEach(d => (staffEmails[d.email] = d.email));
+
+  const { data: professionals, error: pError } = await supabase
+    .from("professionals")
+    .select("*")
+    .filter("email", "in", `(${Object.keys(staffEmails)})`);
+
+  if (sError || pError) return console.log({ pError, sError });
+
+  const professionalsObj = {};
+  professionals.forEach(p => (professionalsObj[p.email] = p));
+
+  const staff = data.map(s =>
+    professionalsObj[s.email]
+      ? { ...s, isRegistered: true, professional: professionalsObj[s.email] }
+      : { ...s, isRegistered: false, professional: null }
+  );
 
   return { staff };
 };

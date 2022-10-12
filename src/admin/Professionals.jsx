@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { s } from "../styles";
+import Button from "../shared/Button";
 
 export default function Professionals() {
   const data = useRouteData();
@@ -8,6 +9,9 @@ export default function Professionals() {
   return (
     <div>
       <h1>Professionals</h1>
+      <Link href="/admin">
+        <Button kind="light" type="button" text="👈🏽" />
+      </Link>
 
       {!data()?.professionals && <div>Loading...</div>}
 

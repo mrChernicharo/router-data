@@ -19,16 +19,14 @@ const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
 import {
-  fetchAdminData,
-  fetchAdminCountsData,
-  fetchCustomersData,
-  fetchCustomerData,
-  fetchProfessionalsData,
-  fetchProfessionalData,
-  fetchAppointmentsData,
-  fetchAppointmentData,
-  fetchStaffData,
-} from "./lib/fetchFuncs";
+  AdminData,
+  CustomersData,
+  ProfessionalsData,
+  StaffData,
+  CustomerData,
+  ProfessionalData,
+  AppointmentData,
+} from "./lib/resources";
 
 import { s } from "./styles";
 import Button from "./shared/Button";
@@ -36,45 +34,10 @@ import Button from "./shared/Button";
 export default function Router() {
   const navigate = useNavigate();
 
-  function AdminData({ params, location, navigate, data }) {
-    const [adminData] = createResource(fetchAdminCountsData);
-    return adminData;
-  }
-
-  function CustomersData({ params, location, navigate, data }) {
-    const [customersData] = createResource(fetchCustomersData);
-    return customersData;
-  }
-
-  function ProfessionalsData({ params, location, navigate, data }) {
-    const [professionalsData] = createResource(fetchProfessionalsData);
-    return professionalsData;
-  }
-
-  function StaffData({ params, location, navigate, data }) {
-    const [staffData] = createResource(fetchStaffData);
-    return staffData;
-  }
-
-  function CustomerData({ params, location, navigate, data }) {
-    const [customerData] = createResource(() => fetchCustomerData(params.id));
-    return customerData;
-  }
-
-  function ProfessionalData({ params, location, navigate, data }) {
-    const [professionalData] = createResource(() => fetchProfessionalData(params.id));
-    return professionalData;
-  }
-
-  function AppointmentData({ params, location, navigate, data }) {
-    const [appointmentData] = createResource(() => fetchAppointmentData(params.id));
-    return appointmentData;
-  }
-
   const Layout = () => (
     <div>
       <header style={s.header}>
-        <div>🌺 Laços</div>
+        <div>🌺</div>
         <a href="/login">
           <Button kind="logout" />
         </a>
