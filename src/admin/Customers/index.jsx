@@ -59,9 +59,9 @@ export default function Customers() {
       <div>{query.isLoading && <Loading />}</div>
 
       <ul class="list-group">
-        {/* <For each={data()?.customers}>
+        <For each={query.data?.customers}>
           {person => (
-            <Link href={`/admin/customers/${person.id}`}>
+            <Link class="text-decoration-none" href={`/admin/customers/${person.id}`}>
               <li className="list-group-item">
                 <div>{person.id}</div>
                 <div>{person.name}</div>
@@ -69,9 +69,9 @@ export default function Customers() {
               </li>
             </Link>
           )}
-        </For> */}
+        </For>
       </ul>
-      <pre>{JSON.stringify(query, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
 }

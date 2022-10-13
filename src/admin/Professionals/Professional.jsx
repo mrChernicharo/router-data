@@ -14,7 +14,7 @@ import { createQuery } from "@tanstack/solid-query";
 export default function Professional() {
   const params = useParams();
   const query = createQuery(
-    () => ["professional"],
+    () => ["professional", params.id],
     () => fetchProfessionalData(params.id)
   );
 

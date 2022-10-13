@@ -20,7 +20,7 @@ export default function Professionals() {
       <ul class="list-group">
         <For each={query.data?.professionals}>
           {person => (
-            <Link href={`/admin/professionals/${person.id}`}>
+            <Link class="text-decoration-none" href={`/admin/professionals/${person.id}`}>
               <li className="list-group-item">
                 <div>{person.id}</div>
                 <div>{person.name}</div>
