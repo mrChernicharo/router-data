@@ -4,9 +4,10 @@ import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
 // import { userStore, logout } from "./userStore";
 
 import Home from "./Home";
-import Login from "./Login";
+// import Login from "./Login";
 import NotFound from "./NotFound";
 
+const Login = lazy(() => import("./Login"));
 const Admin = lazy(() => import("./admin/Admin"));
 const Staff = lazy(() => import("./admin/Staff"));
 const AdminProfessionals = lazy(() => import("./admin/Professionals"));
@@ -21,6 +22,7 @@ const Professional = lazy(() => import("./professional/Professional"));
 
 import {
   AdminData,
+  LoginFakeData,
   AdminRequestsData,
   CustomersData,
   ProfessionalsData,
@@ -53,7 +55,7 @@ export default function Router() {
     <Routes>
       <Route path="/" component={Home} />
 
-      <Route path="/login" component={Login} />
+      <Route path="/login" component={Login} data={LoginFakeData} />
 
       <Route path="/admin" component={Layout}>
         <Route path="/" component={Admin} data={AdminData} />
@@ -67,11 +69,11 @@ export default function Router() {
       </Route>
 
       <Route path="/customer" component={Layout}>
-        <Route path="/" component={Customer} />
+        <Route path="/:id" component={Customer} data={CustomerData} />
       </Route>
 
       <Route path="/professional" component={Layout}>
-        <Route path="/" component={Professional} />
+        <Route path="/:id" component={Professional} data={ProfessionalData} />
       </Route>
 
       <Route path="/**" component={NotFound} />

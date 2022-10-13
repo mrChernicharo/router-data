@@ -1,5 +1,17 @@
 import { supabase } from "../supabaseClient";
 
+const fetchLoginFakeData = async () => {
+  const { data: customers, error: cError } = await supabase.from("customers").select("id, name");
+
+  const { data: professionals, error: pError } = await supabase.from("professionals").select("id, name");
+
+  if (cError || pError) return console.log({ cError, pError });
+
+  console.log({ customers, professionals });
+
+  return { customers, professionals };
+};
+
 // staff & prof & customers count
 const fetchAdminData = async () => {
   const {
@@ -323,6 +335,7 @@ const fetchAppointmentOffers = async () => {
 };
 
 export {
+  fetchLoginFakeData,
   fetchAdminData,
   fetchAdminRequestsData,
   fetchCustomerData,
