@@ -1,12 +1,19 @@
 import { createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
+import { createQuery } from "@tanstack/solid-query";
+import { fetchLoginFakeData } from "./lib/fetchFuncs";
 
 import Button from "./shared/Button";
 
 export default function Login() {
   const [cId, setCId] = createSignal("");
   const [pId, setPId] = createSignal("");
-  const data = useRouteData();
+  // const data = useRouteData();
+  const query = createQuery(() => ["admin"], fetchLoginFakeData, {
+    staleTime: 100_000_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   return (
     <div>
@@ -34,17 +41,19 @@ export default function Login() {
       <div>
         <Suspense fallback={<div>Loading...</div>}>
           <select onChange={e => setCId(e.currentTarget.value)}>
-            <For each={data()?.customers}>
+            <For each={query.data?.customers}>
               {customer => <option value={customer.id}>{customer.name}</option>}
             </For>
           </select>
           <select onChange={e => setPId(e.currentTarget.value)}>
-            <For each={data()?.professionals}>
+            <For each={query.data?.professionals}>
               {professional => <option value={professional.id}>{professional.name}</option>}
             </For>
           </select>
         </Suspense>
       </div>
+
+      <pre>{JSON.stringify(query, null, 2)}</pre>
     </div>
   );
 }

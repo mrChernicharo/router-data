@@ -1,4 +1,5 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
+import { createQuery } from "@tanstack/solid-query";
 
 import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../lib/userStore";
@@ -14,6 +15,8 @@ import { fetchAdminData } from "../lib/fetchFuncs";
 
 export default function Admin() {
   const data = useRouteData();
+
+  const query = createQuery(() => ["admin"], fetchAdminData);
 
   return (
     <div>
@@ -40,7 +43,7 @@ export default function Admin() {
         </h3>
       </Suspense>
 
-      <pre>{JSON.stringify(data(), null, 1)}</pre>
+      <pre>{JSON.stringify(query, null, 1)}</pre>
     </div>
   );
 }

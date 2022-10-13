@@ -1,6 +1,10 @@
+import { createEffect, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
-import { createSignal } from "solid-js";
+import { createQuery } from "@tanstack/solid-query";
+
+import { fetchStaffData } from "../lib/fetchFuncs";
 import { insertStaff, insertProfessional, removeStaff } from "../lib/mutationFuncs";
+
 import { s } from "../lib/styles";
 import Button from "../shared/Button";
 import Icon from "../shared/Icon";
@@ -9,40 +13,48 @@ export default function Staff() {
   let inputRef;
   const [isSubmitting, setIsSubmitting] = createSignal(false);
 
-  const [data, { mutateStaff, refetchStaff }] = useRouteData();
+  const query = createQuery(() => ["staff"], fetchStaffData);
 
-  const handleSubmit = async e => {
-    if (!inputRef.validity.valid) {
-      console.log("invalid email!");
-      return;
-    }
-    setIsSubmitting(true);
+  // const [data, { mutateStaff, refetchStaff }] = useRouteData();
 
-    const newStaff = {
-      name: inputRef.value.split("@")[0],
-      email: inputRef.value,
-    };
+  // const handleSubmit = async e => {
+  //   e.preventDefault();
+  //   if (!inputRef.validity.valid) {
+  //     console.log("invalid email!");
+  //     return;
+  //   }
+  //   setIsSubmitting(true);
 
-    const entry = await insertStaff(newStaff);
-    // mutateStaff(entry);
+  //   const newStaff = {
+  //     name: inputRef.value.split("@")[0],
+  //     email: inputRef.value,
+  //   };
 
-    await refetchStaff();
-    setIsSubmitting(false);
+  //   const entry = await insertStaff(newStaff);
+  //   // mutateStaff(entry);
 
-    return { entry };
-  };
+  //   await refetchStaff();
 
-  const handleRegisterProfessional = async person => {
-    const result = await insertProfessional(person);
-    await refetchStaff();
-    console.log("handleRegisterProfessional", { person, result });
-  };
+  //   setIsSubmitting(false);
 
-  const handleRemoveStaff = async person => {
-    const result = await removeStaff(person);
-    await refetchStaff();
-    console.log("handleRemoveStaff", { person, result });
-  };
+  //   return { entry };
+  // };
+
+  // const handleRegisterProfessional = async person => {
+  //   const result = await insertProfessional(person);
+  //   await refetchStaff();
+  //   console.log("handleRegisterProfessional", { person, result });
+  // };
+
+  // const handleRemoveStaff = async person => {
+  //   const result = await removeStaff(person);
+  //   await refetchStaff();
+  //   console.log("handleRemoveStaff", { person, result });
+  // };
+
+  createEffect(() => {
+    console.log(query);
+  });
 
   return (
     <div>
@@ -53,7 +65,9 @@ export default function Staff() {
 
       <div class="container">
         <h3>Register new Staff</h3>
-        <form onSubmit={handleSubmit}>
+        <form
+        /**onSubmit={handleSubmit}*/
+        >
           <div class="d-grid input-group mb-3">
             <label class="form-label">
               Email
@@ -66,10 +80,10 @@ export default function Staff() {
         </form>
       </div>
 
-      <div>{(data.loading || isSubmitting()) && <h1>Loading...</h1>}</div>
+      <div>{(query.isLoading || isSubmitting()) && <h1>Loading...</h1>}</div>
 
       <ul class="list-group">
-        <For each={data()?.staff}>
+        <For each={query.data?.staff}>
           {person => (
             <div>
               <li class="list-group-item d-flex justify-content-between">
@@ -90,17 +104,22 @@ export default function Staff() {
                       kind="light"
                       type="button"
                       text={<Icon plus />}
-                      onClick={e => handleRegisterProfessional(person)}
+                      // onClick={e => handleRegisterProfessional(person)}
                     />
                   </Show>
-                  <Button kind="delete" type="button" onClick={e => handleRemoveStaff(person)} />
+                  <Button
+                    kind="delete"
+                    type="button" /**
+                    onClick={e => handleRemoveStaff(person)}
+                  */
+                  />
                 </div>
               </li>
             </div>
           )}
         </For>
       </ul>
-      {/* <pre>{JSON.stringify(data(), null, 2)}</pre> */}
+      <pre>{JSON.stringify(query.data, null, 2)}</pre>
       {/* <pre>{JSON.stringify(id(), null, 2)}</pre>
        */}
     </div>

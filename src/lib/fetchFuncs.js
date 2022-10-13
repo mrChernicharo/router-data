@@ -21,6 +21,35 @@ const fetchAdminData = async () => {
   return data;
 };
 
+const fetchStaffData = async () => {
+  const { data, error: sError } = await supabase.from("vw_staff_page").select("*");
+  if (sError) return console.log({ sError });
+
+  const staff = [];
+  for (const d of data) {
+    const { professional_email, professional_id, professional_name, staff_email, staff_id, staff_name } = d;
+
+    const professional = professional_id
+      ? {
+          id: professional_id,
+          name: professional_name,
+          email: professional_email,
+        }
+      : null;
+
+    staff.push({
+      id: staff_id,
+      name: staff_name,
+      email: staff_email,
+      isRegistered: !!professional,
+      professional,
+    });
+  }
+
+  console.log("fetchStaffData", { staff });
+  return { staff };
+};
+
 const fetchAdminRequestsData = async () => {
   const { data: customers, error: cError } = await supabase
     .from("customers")
@@ -172,34 +201,6 @@ const fetchCustomerData = async id => {
   }
 
   return { customer: data[0] };
-};
-
-const fetchStaffData = async () => {
-  const { data, error: sError } = await supabase.from("vw_staff_page").select("*");
-  if (sError) return console.log({ sError });
-
-  const staff = [];
-  for (const d of data) {
-    const { professional_email, professional_id, professional_name, staff_email, staff_id, staff_name } = d;
-
-    const professional = professional_id
-      ? {
-          id: professional_id,
-          name: professional_name,
-          email: professional_email,
-        }
-      : null;
-
-    staff.push({
-      id: staff_id,
-      name: staff_name,
-      email: staff_email,
-      isRegistered: !!professional,
-      professional,
-    });
-  }
-
-  return { staff };
 };
 
 const fetchProfessionalsData = async () => {
