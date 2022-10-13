@@ -175,28 +175,29 @@ const fetchCustomerData = async id => {
 };
 
 const fetchStaffData = async () => {
-  const { data, error: sError } = await supabase.from("staff").select("*");
+  const { data, error: sError } = await supabase.from("vw_staff_page").select("*");
+  if (sError) return console.log({ sError });
 
-  const staffEmails = {};
-  data.forEach(d => (staffEmails[d.email] = d.email));
+  const staff = [];
+  for (const d of data) {
+    const { professional_email, professional_id, professional_name, staff_email, staff_id, staff_name } = d;
 
-  const { data: professionals, error: pError } = await supabase
-    .from("professionals")
-    .select("*")
-    .filter("email", "in", `(${Object.keys(staffEmails)})`);
+    const professional = professional_id
+      ? {
+          id: professional_id,
+          name: professional_name,
+          email: professional_email,
+        }
+      : null;
 
-  if (sError || pError) return console.log({ pError, sError });
-
-  const professionalsObj = {};
-  professionals.forEach(p => (professionalsObj[p.email] = p));
-
-  const staff = data.map(s =>
-    professionalsObj[s.email]
-      ? { ...s, isRegistered: true, professional: professionalsObj[s.email] }
-      : { ...s, isRegistered: false, professional: null }
-  );
-
-  console.log({ staff });
+    staff.push({
+      id: staff_id,
+      name: staff_name,
+      email: staff_email,
+      isRegistered: !!professional,
+      professional,
+    });
+  }
 
   return { staff };
 };
