@@ -50,6 +50,13 @@ const fetchStaffData = async () => {
   return { staff };
 };
 
+const fetchProfessionalsData = async () => {
+  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
+  if (pError) return console.log({ pError });
+
+  return { professionals };
+};
+
 const fetchAdminRequestsData = async () => {
   const { data: customers, error: cError } = await supabase
     .from("customers")
@@ -203,13 +210,6 @@ const fetchCustomerData = async id => {
   return { customer: data[0] };
 };
 
-const fetchProfessionalsData = async () => {
-  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
-  if (pError) return console.log({ pError });
-
-  return { professionals };
-};
-
 const fetchProfessionalData = async id => {
   const { data, error } = await supabase
     .from("professionals")
@@ -235,7 +235,7 @@ const fetchProfessionalData = async id => {
 
   if (error) return console.log({ error });
 
-  console.log({ data });
+  console.log("fetchProfessionalData", { data });
 
   return { professional };
 };

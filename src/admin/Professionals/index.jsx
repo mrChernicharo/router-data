@@ -1,10 +1,12 @@
 import { For } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
-import { s } from "../lib/styles";
-import Button from "../shared/Button";
+import { s } from "../../lib/styles";
+import Button from "../../shared/Button";
+import { createQuery } from "@tanstack/solid-query";
+import { fetchProfessionalsData } from "../../lib/fetchFuncs";
 
 export default function Professionals() {
-  const data = useRouteData();
+  const query = createQuery(() => ["professionals"], fetchProfessionalsData);
 
   return (
     <div>
@@ -13,10 +15,10 @@ export default function Professionals() {
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
 
-      {data.loading && <div>Loading...</div>}
+      {/* {data.loading && <div>Loading...</div>} */}
 
       <ul class="list-group">
-        <For each={data()?.professionals}>
+        <For each={query.data?.professionals}>
           {person => (
             <Link href={`/admin/professionals/${person.id}`}>
               <li className="list-group-item">
@@ -28,7 +30,7 @@ export default function Professionals() {
           )}
         </For>
       </ul>
-      {/* <pre>{JSON.stringify(data(), null, 2)}</pre> */}
+      <pre>{JSON.stringify(query, null, 2)}</pre>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { supabase } from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY } from "./constants";
 
 const insertStaff = async ({ name, email }) => {
+  console.log("insertStaff", { name, email });
   const { data, error } = await supabase.from("staff").insert([{ name, email }]).select();
   if (error) return console.log(error);
 

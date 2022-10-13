@@ -14,6 +14,7 @@ export default function Customers() {
       </Link>
 
       <h1>Customers</h1>
+      <hr />
 
       {!data()?.customers && <div>Loading...</div>}
 
