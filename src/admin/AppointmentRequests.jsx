@@ -28,11 +28,13 @@ export default function AppointmentRequests(props) {
                 <h2>{customer.name}</h2>
                 <p>{customer.id}</p>
 
-                <CustomerRequest
+                <CustomerRequest />
+
+                {/* <CustomerRequest
                   customer={customer}
                   possibilities={data()?.possibilities[customer.id]}
                   professionals={data()?.professionals}
-                />
+                /> */}
               </li>
             )}
           </For>
