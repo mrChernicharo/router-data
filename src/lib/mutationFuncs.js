@@ -116,10 +116,97 @@ const removeProfessional = async id => {
 
 const insertCustomer = async person => {
   console.log("insertCustomer", person);
+
+  // const { data, error } = await supabase.from("customers").insert([{ name, email }]).select();
+  // if (error) return console.log(error);
+
+  // const customerAvailability = DEFAULT_CUSTOMER_AVAILABILITY.map((o) => ({
+  //   ...o,
+  //   customer_id: data[0].id,
+  //   status: "1",
+  // }));
+
+  // const { data: availability, error: err2 } = await supabase
+  //   .from("customer_availability")
+  //   .insert(customerAvailability)
+  //   .select();
+  // if (err2) return console.log(err2);
+
+  // const entry = { ...data[0], availability, appointments: [], appointmentOffers: [] };
+
+  // console.log("addCustomer", { entry });
+  // setStore("customers", (prev) => [...prev, entry]);
+
+  // channel.send({
+  //   type: "broadcast",
+  //   event: "customer_added",
+  //   entry,
+  // });
+
+  // return entry;
 };
 
 const removeCustomer = async person => {
   console.log("removeCustomer", person);
+
+  //  // 1. remove customer availability
+  // const { data: removedAvailability, err } = await supabase
+  //   .from("customer_availability")
+  //   .delete()
+  //   .match({ customer_id: id })
+  //   .select();
+  // if (err) return console.log(err);
+
+  // // 2. remove customer appointments
+  // const { data: removedAppointments, error: err1 } = await supabase
+  //   .from("realtime_appointments")
+  //   .delete()
+  //   .match({ customer_id: id })
+  //   .select();
+  // if (err1) return console.log(err1);
+
+  // // 3. patch status of affected professional_availabilities
+  // const availsToPatch = [];
+  // removedAppointments.forEach(appointment => {
+  //   const { professional_id, day, time } = appointment;
+  //   availsToPatch.push({ professional_id, day, time });
+  // });
+  // const [professionalIds, days, times] = [
+  //   availsToPatch.map(o => o.professional_id),
+  //   availsToPatch.map(o => o.day),
+  //   availsToPatch.map(o => o.time),
+  // ];
+
+  // let updatedProfessionalAvails = null;
+  // if (store.professionals.length && professionalIds.length && days.length && times.length) {
+  //   const { data: avaliData, error: err3 } = await supabase
+  //     .from("professional_availability")
+  //     .update({ status: "1" })
+  //     .filter("professional_id", "in", `(${professionalIds})`)
+  //     .filter("day", "in", `(${days})`)
+  //     .filter("time", "in", `(${times})`)
+  //     .select();
+
+  //   if (err3) return console.log({ err3 });
+  //   updatedProfessionalAvails = avaliData;
+  // }
+
+  // // 4. delete the damn customer!
+  // const { data: deletedCustomer, error } = await supabase.from("customers").delete().match({ id }).select();
+  // if (error) return console.log(error);
+
+  // console.log("removeCustomer", {
+  //   deletedCustomer,
+  //   removedAppointments,
+  //   removedAvailability,
+  //   updatedProfessionalAvails,
+  //   availsToPatch,
+  //   days,
+  //   professionalIds,
+  //   times,
+  // });
+
+  // return deletedCustomer[0];
 };
 
 const createAppointmentOffers = async (customerId, offers) => {

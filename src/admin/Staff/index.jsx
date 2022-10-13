@@ -8,6 +8,7 @@ import { insertStaff, insertProfessional, removeStaff } from "../../lib/mutation
 import { s } from "../../lib/styles";
 import Button from "../../shared/Button";
 import Icon from "../../shared/Icon";
+import Loading from "../../shared/Loading";
 
 export default function Staff() {
   let inputRef;
@@ -51,10 +52,6 @@ export default function Staff() {
     });
   };
 
-  createEffect(() => {
-    console.log(query);
-  });
-
   return (
     <div>
       <Link href="/admin">
@@ -76,11 +73,9 @@ export default function Staff() {
             <Button kind="CTA" text={<h3 style={{ margin: 0 }}>Register</h3>} />
           </div>
         </form>
-
-        {/*  */}
       </div>
 
-      <div>{query.isLoading && <h1>Loading...</h1>}</div>
+      <div>{query.isLoading && <Loading />}</div>
 
       <ul class="list-group">
         <For each={query.data?.staff}>

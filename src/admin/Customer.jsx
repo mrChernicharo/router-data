@@ -1,4 +1,4 @@
-import { useNavigate, useRouteData, Link } from "solid-app-router";
+import { useNavigate, useRouteData, Link, useParams } from "solid-app-router";
 
 import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../lib/userStore";
@@ -6,10 +6,11 @@ import { userStore, setUserStore } from "../lib/userStore";
 import Button from "../shared/Button";
 import CustomerAvailability from "./CustomerAvailability";
 import CustomerAppointments from "./CustomerAppointments";
+import { createQuery } from "@tanstack/solid-query";
 
 export default function Customer() {
-  const navigate = useNavigate();
-  const data = useRouteData();
+  const params = useParams();
+  // const query = createQuery(['customer'], () => )
 
   return (
     <div>
@@ -19,10 +20,9 @@ export default function Customer() {
 
       <div>Customer</div>
 
-      {/* <pre>{JSON.stringify(data(), null, 2)}</pre> */}
+      <pre>{JSON.stringify(params, null, 2)}</pre>
       <div>
-        <Show when={data()?.customer}>
-          {/* <div>{data().customer.id}</div> */}
+        {/* <Show when={data()?.customer}>
           <h1>{data().customer.name}</h1>
           <div>{data().customer.email}</div>
 
@@ -30,8 +30,8 @@ export default function Customer() {
             <CustomerAppointments appointments={data().customer.appointments} />
           </Show>
 
-          <CustomerAvailability availability={data().customer.availability} />
-        </Show>
+          <CustomerAvailability availability={data().customer.availability} /> 
+        </Show>*/}
       </div>
     </div>
   );
