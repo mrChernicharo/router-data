@@ -1,4 +1,4 @@
-import { supabase } from "../supabaseClient";
+import { supabase } from "./supabaseClient";
 
 const fetchLoginFakeData = async () => {
   const { data: customers, error: cError } = await supabase.from("customers").select("id, name");
@@ -12,65 +12,11 @@ const fetchLoginFakeData = async () => {
   return { customers, professionals };
 };
 
-// staff & prof & customers count
 const fetchAdminData = async () => {
-  const {
-    data: customersIds,
-    count: customers_count,
-    error: cIdError,
-  } = await supabase.from("customers").select("id, name ", { count: "exact" });
-
-  const {
-    data: professionals,
-    count: professionals_count,
-    error: pError,
-  } = await supabase.from("professionals").select("id, name", { count: "exact" });
-
-  const { count: staff_count, error: sError } = await supabase.from("staff").select("id", { count: "exact" });
-
-  const { data: all_customers, error: cError } = await supabase
-    .from("customers")
-    .select(
-      `id, name, 
-      offers:appointment_offers( * ),
-      appointments:realtime_appointments ( id )`
-    )
-    .filter("id", "in", `(${customersIds.map(c => c.id)})`);
-
-  console.log(all_customers);
-
-  const [unattended_customers, customers_with_offers, customers_with_appointments] = [
-    all_customers.filter(c => !c.appointments.length && !c.offers.length), // red
-    all_customers.filter(c => c.offers.length), // yellow
-    all_customers.filter(c => c.appointments.length), // ok!
-  ];
-
-  const customers_with_offers_with_profs = customers_with_offers.map(customer => ({
-    ...customer,
-    offers: customer.offers.map(offer => ({
-      ...offer,
-      professional: professionals.find(p => p.id === offer.professional_id).name,
-    })),
-  }));
-
-  if (cIdError | cError || pError || sError) return console.log({ cError, pError, sError });
-
-  return {
-    customers_count,
-    professionals_count,
-    staff_count,
-    // all_customers,
-    unattended_customers,
-    customers_with_offers,
-    customers_with_offers_with_profs,
-  };
-};
-
-const fetchAdminData2 = async () => {
   const { data: adminData, error } = await supabase.from("vw_admin_page").select("*");
   if (error) return console.log({ error });
   const data = adminData[0];
-  console.log("fetchAdminData2", { data });
+  console.log("fetchAdminData", { data });
 
   return data;
 };
@@ -250,6 +196,8 @@ const fetchStaffData = async () => {
       : { ...s, isRegistered: false, professional: null }
   );
 
+  console.log({ staff });
+
   return { staff };
 };
 
@@ -355,7 +303,6 @@ const fetchAppointmentOffers = async () => {
 export {
   fetchLoginFakeData,
   fetchAdminData,
-  fetchAdminData2,
   fetchAdminRequestsData,
   fetchCustomerData,
   fetchCustomersData,

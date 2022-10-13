@@ -3,6 +3,7 @@ import { createResource } from "solid-js";
 import {
   fetchLoginFakeData,
   fetchAdminData,
+  fetchStaffData,
   fetchAdminRequestsData,
   fetchAppointmentData,
   fetchAppointmentOffers,
@@ -14,18 +15,17 @@ import {
   fetchProfessionalData,
   fetchProfessionalsData,
   fetchRealtimeAppointments,
-  fetchStaffData,
-  fetchAdminData2,
 } from "./fetchFuncs";
 
-// function AdminData({ params, location, navigate, data }) {
-//   const [adminData] = createResource(fetchAdminData);
-//   return adminData;
-// }
-
 function AdminData({ params, location, navigate, data }) {
-  const [adminData] = createResource(fetchAdminData2);
+  const [adminData] = createResource(fetchAdminData);
   return adminData;
+}
+
+function StaffData({ params, location, navigate, data }) {
+  const [staffData, { mutate: mutateStaff, refetch: refetchStaff }] = createResource(fetchStaffData);
+  console.log(staffData());
+  return [staffData, { mutateStaff, refetchStaff }];
 }
 
 function LoginFakeData({ params, location, navigate, data }) {
@@ -57,12 +57,6 @@ function ProfessionalsData({ params, location, navigate, data }) {
 function ProfessionalData({ params, location, navigate, data }) {
   const [professionalData] = createResource(() => fetchProfessionalData(params.id));
   return professionalData;
-}
-
-function StaffData({ params, location, navigate, data }) {
-  const [staffData, { mutate: mutateStaff, refetch: refetchStaff }] = createResource(fetchStaffData);
-  console.log(staffData());
-  return [staffData, { mutateStaff, refetchStaff }];
 }
 
 function AppointmentData({ params, location, navigate, data }) {

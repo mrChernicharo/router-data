@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { s } from "../styles";
+import { s } from "../lib/styles";
 
 export default function Badge(props) {
   return (

@@ -32,7 +32,7 @@ import {
   AppointmentData,
 } from "./lib/resources";
 
-import { s } from "./styles";
+import { s } from "./lib/styles";
 import Button from "./shared/Button";
 
 export default function Router() {

@@ -1,7 +1,7 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
 
 import { onMount, createEffect } from "solid-js";
-import { userStore, setUserStore } from "../userStore";
+import { userStore, setUserStore } from "../lib/userStore";
 
 import CollapseBox from "../shared/CollapseBox";
 import AppointmentRequests from "./AppointmentRequests";
@@ -10,7 +10,7 @@ import Button from "../shared/Button";
 import Badge from "../shared/Badge";
 import Icon from "../shared/Icon";
 import Loading from "../shared/Loading";
-import { fetchAdminData2 } from "../lib/fetchFuncs";
+import { fetchAdminData } from "../lib/fetchFuncs";
 
 export default function Admin() {
   const data = useRouteData();

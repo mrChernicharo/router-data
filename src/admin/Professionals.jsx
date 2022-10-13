@@ -1,6 +1,6 @@
 import { For } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
-import { s } from "../styles";
+import { s } from "../lib/styles";
 import Button from "../shared/Button";
 
 export default function Professionals() {

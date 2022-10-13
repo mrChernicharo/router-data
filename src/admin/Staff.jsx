@@ -1,7 +1,7 @@
 import { useRouteData, Link } from "solid-app-router";
 import { createSignal } from "solid-js";
 import { insertStaff, insertProfessional, removeStaff } from "../lib/mutationFuncs";
-import { s } from "../styles";
+import { s } from "../lib/styles";
 import Button from "../shared/Button";
 import Icon from "../shared/Icon";
 

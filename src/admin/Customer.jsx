@@ -1,7 +1,7 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
 
 import { onMount, createEffect } from "solid-js";
-import { userStore, setUserStore } from "../userStore";
+import { userStore, setUserStore } from "../lib/userStore";
 
 import Button from "../shared/Button";
 import CustomerAvailability from "./CustomerAvailability";

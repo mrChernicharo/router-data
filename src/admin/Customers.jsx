@@ -2,7 +2,7 @@ import { For, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 
 import Button from "../shared/Button";
-import { s } from "../styles";
+import { s } from "../lib/styles";
 
 export default function Customers() {
   const data = useRouteData();

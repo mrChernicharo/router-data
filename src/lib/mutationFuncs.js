@@ -1,4 +1,4 @@
-import { supabase } from "../supabaseClient";
+import { supabase } from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY } from "./constants";
 
 const insertStaff = async ({ name, email }) => {
