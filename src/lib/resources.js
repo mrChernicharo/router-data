@@ -15,10 +15,16 @@ import {
   fetchProfessionalsData,
   fetchRealtimeAppointments,
   fetchStaffData,
+  fetchAdminData2,
 } from "./fetchFuncs";
 
+// function AdminData({ params, location, navigate, data }) {
+//   const [adminData] = createResource(fetchAdminData);
+//   return adminData;
+// }
+
 function AdminData({ params, location, navigate, data }) {
-  const [adminData] = createResource(fetchAdminData);
+  const [adminData] = createResource(fetchAdminData2);
   return adminData;
 }
 

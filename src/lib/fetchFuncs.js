@@ -18,7 +18,7 @@ const fetchAdminData = async () => {
     data: customersIds,
     count: customers_count,
     error: cIdError,
-  } = await supabase.from("customers").select("id");
+  } = await supabase.from("customers").select("id, name ", { count: "exact" });
 
   const {
     data: professionals,
@@ -66,6 +66,15 @@ const fetchAdminData = async () => {
   };
 };
 
+const fetchAdminData2 = async () => {
+  const { data: adminData, error } = await supabase.from("vw_admin_page").select("*");
+  if (error) return console.log({ error });
+  const data = adminData[0];
+  console.log("fetchAdminData2", { data });
+
+  return data;
+};
+
 const fetchAdminRequestsData = async () => {
   const { data: customers, error: cError } = await supabase
     .from("customers")
@@ -104,13 +113,22 @@ const fetchAdminRequestsData = async () => {
   });
 
   if (cError || pError) return console.log({ cError, pError });
-  console.log("haaa", { customerPossibilities, possibilities, p: possibilities[customers[0].id] });
+  // console.log({ customerPossibilities, possibilities });
 
   const [unattended_customers, customers_with_offers, customers_with_appointments] = [
     customers.filter(c => !c.appointments.length && !c.offers.length), // red
     customers.filter(c => c.offers.length), // yellow
     customers.filter(c => c.appointments.length), // ok!
   ];
+
+  console.log({
+    customers,
+    professionals,
+    possibilities,
+    unattended_customers,
+    customers_with_offers,
+    customers_with_appointments,
+  });
 
   return {
     customers,
@@ -337,6 +355,7 @@ const fetchAppointmentOffers = async () => {
 export {
   fetchLoginFakeData,
   fetchAdminData,
+  fetchAdminData2,
   fetchAdminRequestsData,
   fetchCustomerData,
   fetchCustomersData,

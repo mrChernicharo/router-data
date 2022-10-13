@@ -9,12 +9,11 @@ import AppointmentPossibilities from "./AppointmentPossibilities";
 import Button from "../shared/Button";
 import Badge from "../shared/Badge";
 import Icon from "../shared/Icon";
+import Loading from "../shared/Loading";
+import { fetchAdminData2 } from "../lib/fetchFuncs";
 
 export default function Admin() {
   const data = useRouteData();
-
-  const LoadingIndicator = isLoading => (isLoading ? <div>Loading...</div> : <></>);
-  // console.log(data());
 
   return (
     <div>
@@ -22,7 +21,6 @@ export default function Admin() {
         <Button kind="light" text="👈🏽" type="button" />
       </Link>
 
-      {/* Page Title + Nav */}
       <div>
         <h1>Admin</h1>
 
@@ -32,36 +30,17 @@ export default function Admin() {
         </nav>
       </div>
 
-      {/* Requests Title + Badge */}
-      <h3 class="mt-4">
-        <Badge danger={data()?.unattended_customers.length} />
-        <Link class="d-flex nav-link align-items-center" href="/admin/requests">
-          <div>Appointment Requests</div>
-          <Icon chevronRight />
-          {/* <Button kind="light" text={} type="button" /> */}
-        </Link>
-      </h3>
+      <Suspense fallback={<Loading />}>
+        <h3 class="mt-4">
+          <Badge danger={data()?.unattended_count > 0} />
+          <Link class="d-flex nav-link align-items-center" href="/admin/requests">
+            <div>Appointment Requests</div>
+            <Icon chevronRight />
+          </Link>
+        </h3>
+      </Suspense>
 
-      {LoadingIndicator(data.loading)}
-
-      {/* requests list */}
-      {/* <CollapseBox>
-
-        <h4>unattended</h4>
-        <CollapseBox>
-        <For each={data()?.unattended_customers}>
-          {customer => <AppointmentRequests customer={customer} offers={customer.appointmentOffers} />}
-        </For>
-        </CollapseBox>
-
-        <h4>attended</h4>
-        <CollapseBox>
-        <For each={data()?.customers_with_offers_with_profs}>
-          {customer => <AppointmentRequests customer={customer} offers={customer.appointmentOffers} />}
-        </For>
-        </CollapseBox>
-        <pre>{JSON.stringify(data(), null, 2)}</pre>
-      </CollapseBox> */}
+      <pre>{JSON.stringify(data(), null, 1)}</pre>
     </div>
   );
 }
