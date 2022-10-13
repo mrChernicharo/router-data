@@ -247,7 +247,7 @@ const fetchProfessionalData = async id => {
     .from("professionals")
     .select(
       `*, 
-      availability:appointment_offers (*),
+      availability:professional_availability (*),
       appointments:realtime_appointments ( id, customer_id, day, time, datetime, status )`
     )
     .eq("id", id);
