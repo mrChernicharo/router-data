@@ -14,8 +14,6 @@ import Loading from "../shared/Loading";
 import { fetchAdminData } from "../lib/fetchFuncs";
 
 export default function Admin() {
-  const data = useRouteData();
-
   const query = createQuery(() => ["admin"], fetchAdminData);
 
   return (
@@ -35,7 +33,7 @@ export default function Admin() {
 
       <Suspense fallback={<Loading />}>
         <h3 class="mt-4">
-          <Badge danger={data()?.unattended_count > 0} />
+          <Badge danger={query.data?.unattended_count > 0} />
           <Link class="d-flex nav-link align-items-center" href="/admin/requests">
             <div>Appointment Requests</div>
             <Icon chevronRight />
