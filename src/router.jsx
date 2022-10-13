@@ -1,10 +1,25 @@
 import { lazy, createResource } from "solid-js";
 import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
 
+import {
+  AdminData,
+  LoginFakeData,
+  AdminRequestsData,
+  CustomersData,
+  ProfessionalsData,
+  StaffData,
+  CustomerData,
+  ProfessionalData,
+  AppointmentData,
+} from "./lib/resources";
+
+import { s } from "./lib/styles";
+import Button from "./shared/Button";
+import Header from "./shared/Header";
+
 // import { userStore, logout } from "./userStore";
 
 import Home from "./Home";
-// import Login from "./Login";
 import NotFound from "./NotFound";
 
 const Login = lazy(() => import("./Login"));
@@ -20,32 +35,12 @@ const AppointmentRequests = lazy(() => import("./admin/AppointmentRequests"));
 const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
-import {
-  AdminData,
-  LoginFakeData,
-  AdminRequestsData,
-  CustomersData,
-  ProfessionalsData,
-  StaffData,
-  CustomerData,
-  ProfessionalData,
-  AppointmentData,
-} from "./lib/resources";
-
-import { s } from "./lib/styles";
-import Button from "./shared/Button";
-
 export default function Router() {
   const navigate = useNavigate();
 
   const Layout = () => (
     <div>
-      <header style={s.header}>
-        <div>🌺</div>
-        <a href="/login">
-          <Button kind="logout" />
-        </a>
-      </header>
+      <Header />
 
       <Outlet />
     </div>
