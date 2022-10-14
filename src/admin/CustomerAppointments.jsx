@@ -9,13 +9,12 @@ export default function CustomerAppointments(props) {
         <For each={props.appointments}>
           {appointment => (
             <li class="list-group-item">
-              <div>{dateToWeekday(appointment.day)}</div>
-              <div>{new Date(appointment.datetime).toLocaleDateString("pt-BR")}</div>
-              <div>{appointment.time}</div>
               <h3>{appointment.professional.name}</h3>
-              <div>{appointment.professional.email}</div>
-              {/* <div>{new Date(appointment.datetime).toLocaleTimeString("pt-BR")}</div> */}
-              {/* <div>{appointment.status}</div> */}
+              {/* <div>{appointment.professional.email}</div> */}
+              <div>
+                {new Date(appointment.datetime).toLocaleDateString("pt-BR")}, {dateToWeekday(appointment.day)}{" "}
+                {appointment.time}h
+              </div>
             </li>
           )}
         </For>

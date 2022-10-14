@@ -26,7 +26,6 @@ export default function Customer() {
 
       <hr />
 
-      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
       <div>
         <Show when={query.data?.customer}>
           <h1>{query.data.customer.name}</h1>
@@ -41,6 +40,8 @@ export default function Customer() {
           <CustomerAvailability availability={query.data.customer.availability} />
         </Show>
       </div>
+
+      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
 }

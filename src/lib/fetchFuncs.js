@@ -1,5 +1,27 @@
 import { supabase } from "./supabaseClient";
 
+// ************ HELPERS ************
+
+const fetchCustomersId = async ids => {
+  const { data: customers, error } = await supabase
+    .from("customers")
+    .select("*")
+    .filter("id", "in", `(${ids})`);
+  if (error) return console.log({ error });
+  return { customers };
+};
+
+const fetchProfessionalsId = async ids => {
+  const { data: professionals, error } = await supabase
+    .from("professionals")
+    .select("*")
+    .filter("id", "in", `(${ids})`);
+  if (error) return console.log({ error });
+  return { professionals };
+};
+
+// ************ PAGE FETCHERS ************
+
 const fetchLoginFakeData = async () => {
   const { data: customers, error: cError } = await supabase.from("customers").select("id, name");
 
@@ -63,69 +85,6 @@ const fetchAdminRequestsData = async () => {
   if (error) return console.log({ error });
 
   return { customers };
-
-  // const { data: customers, error: cError } = await supabase
-  //   .from("customers")
-  //   .select(
-  //     "*, availability:customer_availability(*), offers:appointment_offers(*), appointments:realtime_appointments ( id )"
-  //   );
-
-  // const { data: professionals, error: pError } = await supabase
-  //   .from("professionals")
-  //   .select("*, availability:professional_availability(*)");
-
-  // const customerPossibilities = {};
-  // customers.forEach(customer => {
-  //   customerPossibilities[customer.id] = {};
-
-  //   customer.availability.forEach(c_av => {
-  //     if (!(c_av.day in customerPossibilities[customer.id]))
-  //       customerPossibilities[customer.id][c_av.day] = [];
-
-  //     customerPossibilities[customer.id][c_av.day].push(c_av);
-  //   });
-  // });
-
-  // const possibilities = {}; // by customer / day / professional
-  // customers.forEach(customer => {
-  //   possibilities[customer.id] = [];
-  //   professionals.forEach(prof => {
-  //     const commonProfAvailability = prof.availability.filter(
-  //       p_av =>
-  //         p_av.status === "1" &&
-  //         p_av.day in customerPossibilities[customer.id] &&
-  //         customerPossibilities[customer.id][p_av.day].find(o => o.time === p_av.time)
-  //     );
-  //     possibilities[customer.id].push(commonProfAvailability);
-  //   });
-  // });
-
-  // if (cError || pError) return console.log({ cError, pError });
-  // // console.log({ customerPossibilities, possibilities });
-
-  // const [unattended_customers, customers_with_offers, customers_with_appointments] = [
-  //   customers.filter(c => !c.appointments.length && !c.offers.length), // red
-  //   customers.filter(c => c.offers.length), // yellow
-  //   customers.filter(c => c.appointments.length), // ok!
-  // ];
-
-  // console.log({
-  //   customers,
-  //   professionals,
-  //   possibilities,
-  //   unattended_customers,
-  //   customers_with_offers,
-  //   customers_with_appointments,
-  // });
-
-  // return {
-  //   customers,
-  //   professionals,
-  //   possibilities,
-  //   unattended_customers,
-  //   customers_with_offers,
-  //   customers_with_appointments,
-  // };
 };
 
 const fetchCustomerRequestAvailability = async id => {
@@ -153,7 +112,7 @@ const fetchCustomerData = async id => {
   const { data, error } = await supabase
     .from("customers")
     .select(
-      `*, 
+      `*,
       availability:customer_availability (*),
       offers:appointment_offers(*),
       appointments:realtime_appointments ( id, professional_id, day, time, datetime, status )`
@@ -163,19 +122,21 @@ const fetchCustomerData = async id => {
   if (error) return console.log({ error });
 
   const customer = data[0];
-
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);
-
     const { professionals } = await fetchProfessionalsId(professionalsIds);
 
     customer.appointments.forEach((a, i) => {
       const professional = professionals.find(c => professionalsIds.includes(c.id));
+
+      delete customer.appointments[i].professional_id;
       customer.appointments[i].professional = professional;
     });
   }
 
-  return { customer: data[0] };
+  console.log("fetchCustomerData", { customer });
+
+  return { customer };
 };
 
 const fetchProfessionalData = async id => {
@@ -188,6 +149,8 @@ const fetchProfessionalData = async id => {
     )
     .eq("id", id);
 
+  if (error) return console.log({ error });
+
   const professional = data[0];
 
   if (professional.appointments) {
@@ -197,13 +160,13 @@ const fetchProfessionalData = async id => {
 
     professional.appointments.forEach((a, i) => {
       const customer = customers.find(c => professionalsIds.includes(c.id));
+
+      delete professional.appointments[i].customer_id;
       professional.appointments[i].customer = customer;
     });
   }
 
-  if (error) return console.log({ error });
-
-  console.log("fetchProfessionalData", { data });
+  console.log("fetchProfessionalData", { professional });
 
   return { professional };
 };
