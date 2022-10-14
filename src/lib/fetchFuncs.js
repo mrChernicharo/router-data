@@ -128,6 +128,15 @@ const fetchAdminRequestsData = async () => {
   // };
 };
 
+const fetchCustomerRequestAvailability = async id => {
+  // const { data, error } = await supabase.from("").select("*");
+  const { data: matches, error } = await supabase.rpc("get_appointment_possibilities", { id });
+  if (error) return console.log(error);
+  console.log({ id, matches });
+
+  return { matches };
+};
+
 const fetchCustomersData = async () => {
   const { data, error: cError } = await supabase.from("customers").select("*");
 
@@ -234,6 +243,7 @@ export {
   fetchLoginFakeData,
   fetchAdminData,
   fetchAdminRequestsData,
+  fetchCustomerRequestAvailability,
   fetchCustomerData,
   fetchCustomersData,
   fetchProfessionalsData,
