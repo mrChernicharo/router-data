@@ -14,9 +14,13 @@ export default function CustomerRequest(props) {
       <h2>{props.customer.name}</h2>
       <div>{props.customer.email}</div>
 
-      <CollapseBox>
-        <CustomerRequestAvailability customerId={props.customer.id} />
-      </CollapseBox>
+      <Show when={!props.customer.has_appointment} fallback={<div style={{ height: "36px" }}></div>}>
+        <CollapseBox>
+          {/* <pre>{JSON.stringify(props.customer.has_appointment, null, 3)}</pre> */}
+
+          <CustomerRequestAvailability customerId={props.customer.id} />
+        </CollapseBox>
+      </Show>
     </div>
   );
 }
