@@ -1,7 +1,8 @@
 import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams } from "solid-app-router";
 import ProfessionalAppointments from "./ProfessionalAppointments";
-import ProfessionalAvailability from "./ProfessionalAvailability";
+// import ProfessionalAvailability from "./ProfessionalAvailability";
+import AvailabilityTable from "../shared/AvailabilityTable";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
@@ -13,9 +14,12 @@ export default function Professional() {
     () => fetchProfessionalData(params.id)
   );
 
+  console.log({ ...params });
+
   return (
     <div>
-      <Link href="/login">
+      {/* id !isAdmin && <Link href="/login"> */}
+      <Link href="/admin/professionals">
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
       <div> Professional</div>
@@ -25,10 +29,17 @@ export default function Professional() {
         <div class="mb-5">{query.data.professional.email}</div>
 
         <div class="mb-5">
-          <ProfessionalAppointments appointments={query.data.professional.appointments} />
+          <ProfessionalAppointments
+            professional={query.data.professional}
+            appointments={query.data.professional.appointments}
+          />
         </div>
 
-        <ProfessionalAvailability availability={query.data.professional.availability} />
+        <AvailabilityTable
+          role="professional"
+          person={query.data.professional}
+          availability={query.data.professional.availability}
+        />
         {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
       </Show>
     </div>

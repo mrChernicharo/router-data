@@ -1,35 +1,17 @@
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { STR_NUM_WEEKDAYS } from "../lib/constants";
 import { WORKING_HOURS, dateToWeekday } from "../lib/helpers";
-import { updateCustomerAvailability } from "../lib/mutationFuncs";
+import { updatePersonAvailability } from "../lib/mutationFuncs";
 import Button from "../shared/Button";
 import CollapseBox from "../shared/CollapseBox";
 import { s } from "../lib/styles";
 
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// NEXT STEP: MAKE THIS A SHARED COMPONENT
-// personId
-// availability
-//personId
-//personId
-
 export default function AvailabilityTable(props) {
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
-  // const personId = () => props.availability[0][`${props.role}_id`].id;
-  // const isProfessional = () => props.role === "professional";
 
   const queryClient = useQueryClient();
-  const updateMutation = createMutation(["customer", props.personId], availability =>
-    updatePersonAvailability(props.personId, props.role, availability)
+  const updateMutation = createMutation(["customer", props.person.id], availability =>
+    updatePersonAvailability(props.person, props.role, availability)
   );
 
   function handleAvailabilityUpdate(e) {
@@ -39,14 +21,14 @@ export default function AvailabilityTable(props) {
 
     const selectedTimeBlocks = selectedCheckboxes.map(d => ({
       ...d.dataset,
-      [`${props.role}_id`]: props.personId,
+      [`${props.role}_id`]: props.person.id,
     }));
 
     console.log("handleAvailabilityUpdate", { e, props, selectedCheckboxes, selectedTimeBlocks });
 
     updateMutation.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries([props.role, props.personId]);
+        queryClient.invalidateQueries([props.role, props.person.id]);
         // query.refetch();
       },
     });

@@ -93,7 +93,7 @@ const fetchCustomerRequestAvailability = async id => {
     .select("*")
     .eq("customer_id", id);
 
-  const { data: matches, error: mErr } = await supabase.rpc("get_appointment_possibilities", { id });
+  const { data: matches, error: mErr } = await supabase.rpc("fn_get_appointment_possibilities", { id });
 
   if (mErr || oErr) return console.log(mErr || oErr);
 

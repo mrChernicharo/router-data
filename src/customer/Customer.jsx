@@ -30,7 +30,12 @@ export default function Customers() {
           </div>
         </Show>
 
-        <CustomerAvailability availability={query.data.customer.availability} />
+        <AvailabilityTable
+          role="customer"
+          person={query.data.customer}
+          availability={query.data.customer.availability}
+        />
+
         {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
       </Show>
     </div>
