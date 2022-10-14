@@ -49,69 +49,69 @@ const insertProfessional = async ({ name, email }) => {
 };
 
 const removeProfessional = async id => {
-  console.log("remove", { id });
-  // 1. remove professional availability slots
-  const { data: removedProfessionalAvailability, error: err } = await supabase
-    .from("professional_availability")
-    .delete()
-    .match({ professional_id: id })
-    .select();
-  if (err) return console.log(err);
+  console.log("removeProfessional", { id });
+  // // 1. remove professional availability slots
+  // const { data: removedProfessionalAvailability, error: err } = await supabase
+  //   .from("professional_availability")
+  //   .delete()
+  //   .match({ professional_id: id })
+  //   .select();
+  // if (err) return console.log(err);
 
-  // 2. remove professional appointments
-  const { data: removedAppointments, error: err1 } = await supabase
-    .from("realtime_appointments")
-    .delete()
-    .match({ professional_id: id })
-    .select();
-  if (err1) return console.log(err1);
+  // // 2. remove professional appointments
+  // const { data: removedAppointments, error: err1 } = await supabase
+  //   .from("realtime_appointments")
+  //   .delete()
+  //   .match({ professional_id: id })
+  //   .select();
+  // if (err1) return console.log(err1);
 
-  // 3. patch status of affected customer_availabilities
-  const availsToPatch = [];
-  removedAppointments.forEach(appointment => {
-    const { customer_id, day, time } = appointment;
-    availsToPatch.push({ customer_id, day, time });
-  });
-  const [customerIds, days, times] = [
-    availsToPatch.map(o => o.customer_id),
-    availsToPatch.map(o => o.day),
-    availsToPatch.map(o => o.time),
-  ];
+  // // 3. patch status of affected customer_availabilities
+  // const availsToPatch = [];
+  // removedAppointments.forEach(appointment => {
+  //   const { customer_id, day, time } = appointment;
+  //   availsToPatch.push({ customer_id, day, time });
+  // });
+  // const [customerIds, days, times] = [
+  //   availsToPatch.map(o => o.customer_id),
+  //   availsToPatch.map(o => o.day),
+  //   availsToPatch.map(o => o.time),
+  // ];
 
-  let updatedCustomerAvails = null;
-  if (customerIds.length && days.length && times.length) {
-    const { data, error: err3 } = await supabase
-      .from("customer_availability")
-      .update({ status: "1" })
-      .filter("customer_id", "in", `(${customerIds})`)
-      .filter("day", "in", `(${days})`)
-      .filter("time", "in", `(${times})`)
-      .select();
+  // let updatedCustomerAvails = null;
+  // if (customerIds.length && days.length && times.length) {
+  //   const { data, error: err3 } = await supabase
+  //     .from("customer_availability")
+  //     .update({ status: "1" })
+  //     .filter("customer_id", "in", `(${customerIds})`)
+  //     .filter("day", "in", `(${days})`)
+  //     .filter("time", "in", `(${times})`)
+  //     .select();
 
-    if (err3) return console.log({ err3 });
-    updatedCustomerAvails = data;
-  }
+  //   if (err3) return console.log({ err3 });
+  //   updatedCustomerAvails = data;
+  // }
 
-  // 4. delete professional!
-  const { data: deletedProfessional, error } = await supabase
-    .from("professionals")
-    .delete()
-    .match({ id })
-    .select();
-  if (error) return console.log(error);
+  // // 4. delete professional!
+  // const { data: deletedProfessional, error } = await supabase
+  //   .from("professionals")
+  //   .delete()
+  //   .match({ id })
+  //   .select();
+  // if (error) return console.log(error);
 
-  console.log({
-    deletedProfessional,
-    removedAppointments,
-    removedProfessionalAvailability,
-    updatedCustomerAvails,
-    availsToPatch,
-    customerIds,
-    days,
-    times,
-  });
+  // console.log({
+  //   deletedProfessional,
+  //   removedAppointments,
+  //   removedProfessionalAvailability,
+  //   updatedCustomerAvails,
+  //   availsToPatch,
+  //   customerIds,
+  //   days,
+  //   times,
+  // });
 
-  return deletedProfessional[0];
+  // return deletedProfessional[0];
 };
 
 const insertCustomer = async person => {
@@ -144,8 +144,8 @@ const insertCustomer = async person => {
   // return entry;
 };
 
-const removeCustomer = async person => {
-  console.log("removeCustomer", person);
+const removeCustomer = async id => {
+  console.log("removeCustomer", id);
 
   //  // 1. remove customer availability
   // const { data: removedAvailability, err } = await supabase

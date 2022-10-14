@@ -5,7 +5,7 @@ import Button from "./Button";
 export default function PersonList(props) {
   return (
     <ul class="list-group">
-      <For each={props.persons}>
+      <For each={props.personList}>
         {person => (
           <li class="list-group-item">
             <div class="d-flex">
@@ -19,7 +19,7 @@ export default function PersonList(props) {
                 <div>{person.email}</div>
               </Link>
               <div class="d-flex align-items-center">
-                <Button kind="delete" />
+                <Button kind="delete" onClick={e => props.onDelete(person.id)} />
               </div>
             </div>
           </li>

@@ -13,7 +13,7 @@ export default function Customers() {
   let inputRef;
   const query = createQuery(() => ["customers"], fetchCustomersData);
   const insertMutation = createMutation(["customers"], newCustomer => insertCustomer(newCustomer));
-  const removeMutation = createMutation(["customers"], person => removeCustomer(person));
+  const removeMutation = createMutation(["customers"], id => removeCustomer(id));
 
   function handleInsert(e) {
     e.preventDefault();
@@ -32,6 +32,12 @@ export default function Customers() {
         query.refetch();
       },
     });
+  }
+
+  function handleRemove(id) {
+    console.log("handleRemove", id);
+
+    removeMutation;
   }
 
   return (
@@ -60,7 +66,7 @@ export default function Customers() {
 
       <div>{query.isLoading && <Loading />}</div>
 
-      <PersonList persons={query.data?.customers} url={`/admin/customers`} />
+      <PersonList personList={query.data?.customers} url={`/admin/customers`} onDelete={handleRemove} />
 
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
