@@ -1,4 +1,4 @@
-import { dateToWeekday } from "../lib/helpers";
+import { dateToWeekday } from "../../lib/helpers";
 
 export default function ProfessionalAppointments(props) {
   return (
@@ -9,13 +9,12 @@ export default function ProfessionalAppointments(props) {
         <For each={props.appointments}>
           {appointment => (
             <li class="list-group-item">
-              <div>{dateToWeekday(appointment.day)}</div>
-              <div>{new Date(appointment.datetime).toLocaleDateString("pt-BR")}</div>
-              <div>{appointment.time}</div>
               <h3>{appointment.customer.name}</h3>
-              <div>{appointment.customer.email}</div>
-              {/* <div>{new Date(appointment.datetime).toLocaleTimeString("pt-BR")}</div> */}
-              {/* <div>{appointment.status}</div> */}
+              {/* <div>{appointment.customer.email}</div> */}
+              <div>
+                {new Date(appointment.datetime).toLocaleDateString("pt-BR")}, {dateToWeekday(appointment.day)}{" "}
+                {appointment.time}h
+              </div>
             </li>
           )}
         </For>

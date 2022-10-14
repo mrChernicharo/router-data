@@ -4,10 +4,11 @@ import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../../lib/userStore";
 
 import Button from "../../shared/Button";
-import CustomerAvailability from "../CustomerAvailability";
-import CustomerAppointments from "../CustomerAppointments";
+import CustomerAvailability from "./CustomerAvailability";
+import CustomerAppointments from "./CustomerAppointments";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchCustomerData } from "../../lib/fetchFuncs";
+import Loading from "../../shared/Loading";
 
 export default function Customer() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function Customer() {
       <hr />
 
       <div>
-        <Show when={query.data?.customer}>
+        <Show when={query.data?.customer} fallback={<Loading />}>
           <h1>{query.data.customer.name}</h1>
           <div class="mb-5">{query.data.customer.email}</div>
 

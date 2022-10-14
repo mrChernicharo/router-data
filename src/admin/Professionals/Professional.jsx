@@ -4,12 +4,13 @@ import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../../lib/userStore";
 
 import Button from "../../shared/Button";
-import ProfessionalAvailability from "../ProfessionalAvailability";
-import ProfessionalAppointments from "../ProfessionalAppointments";
+import ProfessionalAvailability from "./ProfessionalAvailability";
+import ProfessionalAppointments from "./ProfessionalAppointments";
 
 import { Link } from "solid-app-router";
 import { fetchProfessionalData } from "../../lib/fetchFuncs";
 import { createQuery } from "@tanstack/solid-query";
+import Loading from "../../shared/Loading";
 
 export default function Professional() {
   const params = useParams();
@@ -29,12 +30,14 @@ export default function Professional() {
       <hr />
 
       <div>
-        <Show when={query.data?.professional}>
-          <h3>{query.data.professional.name}</h3>
-          <h5>{query.data.professional.email}</h5>
+        <Show when={query.data?.professional} fallback={<Loading />}>
+          <h1>{query.data.professional.name}</h1>
+          <div class="mb-5">{query.data.professional.email}</div>
 
           <Show when={query.data?.professional.appointments}>
-            <ProfessionalAppointments appointments={query.data.professional.appointments} />
+            <div class="mb-5">
+              <ProfessionalAppointments appointments={query.data.professional.appointments} />
+            </div>
           </Show>
 
           <ProfessionalAvailability availability={query.data?.professional.availability} />

@@ -1,5 +1,5 @@
 import { useRouteData, Link } from "solid-app-router";
-import CustomerAppointments from "../admin/CustomerAppointments";
+import CustomerAppointments from "../admin/Customers/CustomerAppointments";
 import CustomerAvailability from "../admin/CustomerAvailability";
 import Button from "../shared/Button";
 
