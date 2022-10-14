@@ -32,7 +32,7 @@ export default function Customer() {
           <h1>{query.data.customer.name}</h1>
           <div class="mb-5">{query.data.customer.email}</div>
 
-          <Show when={query.data?.customer.appointments}>
+          <Show when={query.data?.customer.appointments.length}>
             <div class="mb-5">
               <CustomerAppointments appointments={query.data.customer.appointments} />
             </div>

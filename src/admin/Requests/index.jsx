@@ -12,7 +12,9 @@ import CustomerRequest from "./CustomerRequest";
 import { fetchAdminRequestsData } from "../../lib/fetchFuncs";
 
 export default function AppointmentRequests(props) {
-  const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData);
+  const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
+    refetchOnMount: true,
+  });
 
   return (
     <div>

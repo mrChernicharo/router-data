@@ -11,8 +11,8 @@ export default function Login() {
   // const data = useRouteData();
   const query = createQuery(() => ["admin"], fetchLoginFakeData, {
     staleTime: 100_000_000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 
   return (
@@ -53,7 +53,7 @@ export default function Login() {
         </Suspense>
       </div>
 
-      <pre>{JSON.stringify(query, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
 }

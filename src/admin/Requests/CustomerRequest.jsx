@@ -1,7 +1,4 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
-import { dateToWeekday } from "../../lib/helpers";
-import { createAppointmentOffers } from "../../lib/mutationFuncs";
-import AppointmentPossibilities from "../AppointmentPossibilities";
 import CollapseBox from "../../shared/CollapseBox";
 import Button from "../../shared/Button";
 import Badge from "../../shared/Badge";

@@ -6,7 +6,6 @@ import { userStore, setUserStore } from "../lib/userStore";
 
 import CollapseBox from "../shared/CollapseBox";
 import AppointmentRequests from "./Requests";
-import AppointmentPossibilities from "./AppointmentPossibilities";
 import Button from "../shared/Button";
 import Badge from "../shared/Badge";
 import Icon from "../shared/Icon";
@@ -14,7 +13,10 @@ import Loading from "../shared/Loading";
 import { fetchAdminData } from "../lib/fetchFuncs";
 
 export default function Admin() {
-  const query = createQuery(() => ["admin"], fetchAdminData);
+  const query = createQuery(() => ["admin"], fetchAdminData, {
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
 
   return (
     <div>

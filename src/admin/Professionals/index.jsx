@@ -30,7 +30,7 @@ export default function Professionals() {
           )}
         </For>
       </ul>
-      <pre>{JSON.stringify(query, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
 }
