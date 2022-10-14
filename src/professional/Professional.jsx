@@ -1,7 +1,7 @@
 import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams } from "solid-app-router";
-import ProfessionalAppointments from "../admin/Professionals/ProfessionalAppointments";
-import ProfessionalAvailability from "../admin/Professionals/ProfessionalAvailability";
+import ProfessionalAppointments from "./ProfessionalAppointments";
+import ProfessionalAvailability from "./ProfessionalAvailability";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
