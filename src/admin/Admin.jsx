@@ -21,7 +21,7 @@ export default function Admin() {
   });
 
   return (
-    <div>
+    <div data-component="Admin">
       <Link href="/login">
         <Button kind="light" text="👈🏽" type="button" />
       </Link>

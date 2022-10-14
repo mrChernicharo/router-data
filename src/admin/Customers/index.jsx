@@ -2,6 +2,7 @@ import { For, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery, createMutation } from "@tanstack/solid-query";
 
+import PersonList from "../../shared/PersonList";
 import Button from "../../shared/Button";
 import Loading from "../../shared/Loading";
 import { s } from "../../lib/styles";
@@ -34,7 +35,7 @@ export default function Customers() {
   }
 
   return (
-    <div>
+    <div data-component="Customers">
       <Link href="/admin">
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
@@ -59,19 +60,8 @@ export default function Customers() {
 
       <div>{query.isLoading && <Loading />}</div>
 
-      <ul class="list-group">
-        <For each={query.data?.customers}>
-          {person => (
-            <Link class="text-decoration-none" href={`/admin/customers/${person.id}`}>
-              <li className="list-group-item">
-                <div>{person.id}</div>
-                <div>{person.name}</div>
-                <div>{person.email}</div>
-              </li>
-            </Link>
-          )}
-        </For>
-      </ul>
+      <PersonList persons={query.data?.customers} url={`/admin/customers`} />
+
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );

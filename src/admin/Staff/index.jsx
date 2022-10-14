@@ -53,7 +53,7 @@ export default function Staff() {
   };
 
   return (
-    <div>
+    <div data-component="Staff">
       <Link href="/admin">
         <Button kind="light" type="button" text="👈🏽" />
       </Link>

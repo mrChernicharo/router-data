@@ -14,8 +14,9 @@ export default function Customer() {
   );
 
   return (
-    <div>
-      <Link href="/login">
+    <div data-component="Customer">
+      {/* <Link href="/login">  IF NOT ADMIN */}
+      <Link href="/admin/customers">
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
       <div>Customer</div>
@@ -26,7 +27,7 @@ export default function Customer() {
 
         <Show when={query.data.customer.appointments.length}>
           <div class="mb-5">
-            <CustomerAppointments appointments={query.data.customer.appointments} />
+            <CustomerAppointments role="customer" appointments={query.data.customer.appointments} />
           </div>
         </Show>
 

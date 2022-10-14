@@ -17,8 +17,8 @@ export default function Professional() {
   console.log({ ...params });
 
   return (
-    <div>
-      {/* id !isAdmin && <Link href="/login"> */}
+    <div data-component="Professional">
+      {/* <Link href="/login"> IF NOT ADMIN */}
       <Link href="/admin/professionals">
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
@@ -30,6 +30,7 @@ export default function Professional() {
 
         <div class="mb-5">
           <ProfessionalAppointments
+            role="professional"
             professional={query.data.professional}
             appointments={query.data.professional.appointments}
           />

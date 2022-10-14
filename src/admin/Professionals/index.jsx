@@ -5,11 +5,13 @@ import Button from "../../shared/Button";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchProfessionalsData } from "../../lib/fetchFuncs";
 
+import PersonList from "../../shared/PersonList";
+
 export default function Professionals() {
   const query = createQuery(() => ["professionals"], fetchProfessionalsData);
 
   return (
-    <div>
+    <div data-component="Professionals">
       <h1>Professionals</h1>
       <Link href="/admin">
         <Button kind="light" type="button" text="👈🏽" />
@@ -17,19 +19,7 @@ export default function Professionals() {
 
       {/* {data.loading && <div>Loading...</div>} */}
 
-      <ul class="list-group">
-        <For each={query.data?.professionals}>
-          {person => (
-            <Link class="text-decoration-none" href={`/admin/professionals/${person.id}`}>
-              <li className="list-group-item">
-                <div>{person.id}</div>
-                <div>{person.name}</div>
-                <div>{person.email}</div>
-              </li>
-            </Link>
-          )}
-        </For>
-      </ul>
+      <PersonList persons={query.data?.professionals} url={`/admin/professionals`} />
 
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>

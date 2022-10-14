@@ -7,7 +7,7 @@ import CustomerRequestAvailability from "./CustomerRequestAvailability";
 
 export default function CustomerRequest(props) {
   return (
-    <div>
+    <div data-component="CustomerRequest">
       <h2>{props.customer.name}</h2>
       <div>{props.customer.email}</div>
 
