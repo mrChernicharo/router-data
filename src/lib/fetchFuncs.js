@@ -134,6 +134,18 @@ const fetchCustomerData = async id => {
     });
   }
 
+  if (customer.offers) {
+    const professionalsIds = customer.offers.map(a => a.professional_id);
+    const { professionals } = await fetchProfessionalsId(professionalsIds);
+
+    customer.offers.forEach((a, i) => {
+      const professional = professionals.find(c => professionalsIds.includes(c.id));
+
+      delete customer.offers[i].professional_id;
+      customer.offers[i].professional = professional;
+    });
+  }
+
   console.log("fetchCustomerData", { customer });
 
   return { customer };

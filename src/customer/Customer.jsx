@@ -2,6 +2,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams } from "solid-app-router";
 import CustomerAppointments from "./CustomerAppointments";
 import { fetchCustomerData } from "../lib/fetchFuncs";
+import AppointmentOffers from "../shared/AppointmentOffers";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
@@ -38,6 +39,12 @@ export default function Customer() {
         />
 
         {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
+
+        {/* <Show when={IF NOT ADMIN}> */}
+
+        <AppointmentOffers customer={query.data?.customer} offers={query.data?.customer.offers} />
+
+        {/* </Show> */}
       </Show>
     </div>
   );

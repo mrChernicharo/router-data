@@ -31,3 +31,26 @@ export const getWorkingHours = ({ min, max }) => {
 };
 
 export const WORKING_HOURS = getWorkingHours({ min: "08:00", max: "20:00" });
+
+export const getClosestDate = day => {
+  const getDiffFromNextSameWeekday = weekday => {
+    const futureWeekday = Number(weekday);
+    const todayWeekday = new Date().getDay();
+    let dayDiff;
+    // same week
+    if (futureWeekday > todayWeekday) dayDiff = futureWeekday - todayWeekday;
+    // next week
+    else dayDiff = futureWeekday + 7 - todayWeekday;
+    return dayDiff;
+  };
+
+  const diff = getDiffFromNextSameWeekday(day);
+  const daysFromFirstAppointment = diff < 2 ? diff + 7 : diff;
+  const today = new Date().setHours(0, 0, 0);
+  const closestPossibleDateTimestamp = today + daysFromFirstAppointment * 24 * 60 * 60 * 1000;
+  // const closestPossibleDates = Array(4)
+  //   .fill("")
+  //   // 1005 gambiarra javascript enquanto não escolhemos uma lib para datas
+  //   .map((_, i) => new Date(closestPossibleDateTimestamp + (i + 1) * 7 * 24 * 60 * 60 * 1005));
+  return closestPossibleDateTimestamp;
+};
