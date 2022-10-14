@@ -213,9 +213,8 @@ const createAppointmentOffers = async (customerId, offers) => {
   // if (!offers.length) {
   //   return console.log("createAppointmentOffers with no offers! Abort it", { offers, customerId });
   // }
-  console.log("createAppointmentOffers", { customerId, offers });
 
-  // // patch/remove previous offers
+  // remove previous offers made to customer
   const { data: deletedData, error: deleteError } = await supabase
     .from("appointment_offers")
     .delete()
@@ -234,10 +233,6 @@ const createAppointmentOffers = async (customerId, offers) => {
   // //   customerId,
   // //   entries: data,
   // // });
-
-  // console.log({ data, deletedData });
-
-  // return data
 };
 
 export {

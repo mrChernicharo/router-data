@@ -1,5 +1,5 @@
 import { createMemo, createSignal, For } from "solid-js";
-import { createMutation, createQuery } from "@tanstack/solid-query";
+import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { fetchCustomerRequestAvailability } from "../../lib/fetchFuncs";
 import { createAppointmentOffers } from "../../lib/mutationFuncs";
 
@@ -8,30 +8,30 @@ import { dateToWeekday } from "../../lib/helpers";
 import Button from "../../shared/Button";
 import Icon from "../../shared/Icon";
 
-const weekdays = ["0", "1", "2", "3", "4", "5", "6"];
+const WEEKDAYS = ["0", "1", "2", "3", "4", "5", "6"];
 
 export default function CustomerRequestAvailability(props) {
+  const queryClient = useQueryClient();
   const query = createQuery(
     () => ["customer_request_availability", props.customerId],
     () => fetchCustomerRequestAvailability(props.customerId)
   );
-
   const sendOffers = createMutation(["customer_request_availability", props.customerId], offers =>
     createAppointmentOffers(props.customerId, offers)
   );
 
   const [filter, setFilter] = createSignal("day"); /* day | professional */
 
-  const filteredMatches = createMemo(() => {
+  const matchesObj = createMemo(() => {
     if (!query.data?.matches) return [];
 
-    const matchesObj = {};
-
-    query.data?.matches.forEach(m => {
-      if (!(m[filter()] in matchesObj)) matchesObj[m[filter()]] = [];
-      matchesObj[m[filter()]].push(m);
+    const mObj = {};
+    query.data?.matches.forEach(match => {
+      if (!(match[filter()] in mObj)) mObj[match[filter()]] = [];
+      mObj[match[filter()]].push(match);
     });
-    return matchesObj;
+
+    return mObj;
   });
 
   function handleSubmitOffers(e) {
@@ -45,17 +45,11 @@ export default function CustomerRequestAvailability(props) {
       customer_id: props.customerId,
     }));
 
-    // TIME TO SUBMIT THIS SH*T!
-    console.log({ selectedTimeBlocks, selectedCheckboxes });
-
     sendOffers.mutate(selectedTimeBlocks, {
-      onMutate: variables => {
-        console.log("mutating...", { variables });
-
-        return { test: "hello" };
-      },
       onSuccess: (data, variables, context) => {
-        console.log("onSuccess", { data, variables, context });
+        // invalidate parent page query so we can fetch fresh data
+        // about what customers have/haven't offers/appointments now
+        queryClient.invalidateQueries(["appointment_requests"]);
         query.refetch();
       },
     });
@@ -70,13 +64,13 @@ export default function CustomerRequestAvailability(props) {
           <Button type="button" kind="light" text="professional" onClick={e => setFilter("professional")} />
         </div>
       </div>
-      <For each={Object.keys(filteredMatches())}>
+      <For each={Object.keys(matchesObj())}>
         {k => (
           <div>
-            <div class="fw-bold">{weekdays.includes(k) ? dateToWeekday(k) : k}</div>
+            <div class="fw-bold">{WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
 
             <ul class="list-group">
-              <For each={filteredMatches()[k]}>
+              <For each={matchesObj()[k]}>
                 {match => <AvailabilityMatch match={match} offers={query.data.offers} />}
               </For>
             </ul>
@@ -89,7 +83,7 @@ export default function CustomerRequestAvailability(props) {
       </div>
 
       <pre>{JSON.stringify(query, null, 1)}</pre>
-      {/* <pre>{JSON.stringify(filteredMatches(), null, 1)}</pre> */}
+      {/* <pre>{JSON.stringify(matchesObj(), null, 1)}</pre> */}
     </form>
   );
 }

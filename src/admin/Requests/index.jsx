@@ -1,22 +1,18 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
 import Badge from "../../shared/Badge";
 import Button from "../../shared/Button";
-import Icon from "../../shared/Icon";
 import { For } from "solid-js";
 import { createQuery } from "@tanstack/solid-query";
 
 import { createEffect } from "solid-js";
 import { Suspense } from "solid-js";
-import CustomerRequest from "./CustomerRequest";
 import Loading from "../../shared/Loading";
+import Icon from "../../shared/Icon";
+import CustomerRequest from "./CustomerRequest";
 import { fetchAdminRequestsData } from "../../lib/fetchFuncs";
 
 export default function AppointmentRequests(props) {
-  // const [data, { mutateRequests, refetchRequests }] = useRouteData();
-
   const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData);
-
-  // const LoadingIndicator = isLoading => (isLoading ? <div>Loading...</div> : <></>);
 
   return (
     <div>
@@ -24,14 +20,16 @@ export default function AppointmentRequests(props) {
         <Button kind="light" text="👈🏽" type="button" />
       </Link>
 
+      <h1>Appointment Requests</h1>
+
       <ul class="list-group">
-        <For each={query.data?.customers}>
+        <For each={query.data?.customers.filter(c => !c.has_appointment)}>
           {customer => (
             <li class="list-group-item">
               <Badge
                 danger={customer.is_unattended}
                 warn={customer.has_offer}
-                success={customer.has_appointment}
+                // success={customer.has_appointment}
               />
               <CustomerRequest customer={customer} />
             </li>
@@ -41,13 +39,4 @@ export default function AppointmentRequests(props) {
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
-}
-
-{
-  /* 
-  <CustomerRequest
-    customer={customer}
-    possibilities={data()?.possibilities[customer.id]}
-    professionals={data()?.professionals}
-  /> */
 }
