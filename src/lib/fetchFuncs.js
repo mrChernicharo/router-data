@@ -129,12 +129,16 @@ const fetchAdminRequestsData = async () => {
 };
 
 const fetchCustomerRequestAvailability = async id => {
-  // const { data, error } = await supabase.from("").select("*");
-  const { data: matches, error } = await supabase.rpc("get_appointment_possibilities", { id });
-  if (error) return console.log(error);
-  console.log({ id, matches });
+  const { data: offers, error: oErr } = await supabase
+    .from("appointment_offers")
+    .select("*")
+    .eq("customer_id", id);
 
-  return { matches };
+  const { data: matches, error: mErr } = await supabase.rpc("get_appointment_possibilities", { id });
+
+  if (mErr || oErr) return console.log(mErr || oErr);
+
+  return { matches, offers };
 };
 
 const fetchCustomersData = async () => {

@@ -24,24 +24,21 @@ export default function AppointmentRequests(props) {
         <Button kind="light" text="👈🏽" type="button" />
       </Link>
 
-      <Suspense fallback={<Loading />}>
-        <ul class="list-group">
-          <For each={query.data?.customers}>
-            {customer => (
-              <li class="list-group-item">
-                <Badge
-                  danger={customer.is_unattended}
-                  warn={customer.has_offer}
-                  success={customer.has_appointment}
-                />
-
-                <CustomerRequest customer={customer} />
-              </li>
-            )}
-          </For>
-        </ul>
-      </Suspense>
-      <pre>{JSON.stringify(query, null, 2)}</pre>
+      <ul class="list-group">
+        <For each={query.data?.customers}>
+          {customer => (
+            <li class="list-group-item">
+              <Badge
+                danger={customer.is_unattended}
+                warn={customer.has_offer}
+                success={customer.has_appointment}
+              />
+              <CustomerRequest customer={customer} />
+            </li>
+          )}
+        </For>
+      </ul>
+      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
 }

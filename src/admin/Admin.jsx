@@ -5,7 +5,7 @@ import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../lib/userStore";
 
 import CollapseBox from "../shared/CollapseBox";
-import AppointmentRequests from "./Requests/AppointmentRequests";
+import AppointmentRequests from "./Requests";
 import AppointmentPossibilities from "./AppointmentPossibilities";
 import Button from "../shared/Button";
 import Badge from "../shared/Badge";
@@ -41,7 +41,7 @@ export default function Admin() {
         </h3>
       </Suspense>
 
-      <pre>{JSON.stringify(query, null, 1)}</pre>
+      {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
     </div>
   );
 }
