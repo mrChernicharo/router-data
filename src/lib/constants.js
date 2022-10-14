@@ -13,10 +13,11 @@ export const DEFAULT_CUSTOMER_AVAILABILITY = [
   { customer_id: "", day: 1, time: "10:00" },
   { customer_id: "", day: 1, time: "15:00" },
   { customer_id: "", day: 2, time: "10:30" },
+  { customer_id: "", day: 2, time: "11:00" },
+  { customer_id: "", day: 2, time: "11:30" },
   { customer_id: "", day: 3, time: "14:30" },
   { customer_id: "", day: 3, time: "15:00" },
   { customer_id: "", day: 4, time: "15:30" },
-
   { customer_id: "", day: 5, time: "09:30" },
 ];
 

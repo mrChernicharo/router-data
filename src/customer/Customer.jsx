@@ -1,12 +1,12 @@
 import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams } from "solid-app-router";
 import CustomerAppointments from "./CustomerAppointments";
-import CustomerAvailability from "./CustomerAvailability";
 import { fetchCustomerData } from "../lib/fetchFuncs";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
+import AvailabilityTable from "../shared/AvailabilityTable";
 
-export default function Customers() {
+export default function Customer() {
   const params = useParams();
   const query = createQuery(
     () => ["customer", params.id],

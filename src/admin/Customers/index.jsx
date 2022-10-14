@@ -27,6 +27,7 @@ export default function Customers() {
 
     insertMutation.mutate(customer, {
       onSuccess: (data, variables, context) => {
+        console.log("inserted customer!", { data, variables, context });
         query.refetch();
       },
     });

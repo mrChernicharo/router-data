@@ -1,5 +1,5 @@
 import { supabase } from "./supabaseClient";
-import { DEFAULT_PROFESSIONAL_AVAILABILITY } from "./constants";
+import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY } from "./constants";
 
 const insertStaff = async ({ name, email }) => {
   console.log("insertStaff", { name, email });
@@ -115,26 +115,24 @@ const removeProfessional = async id => {
 };
 
 const insertCustomer = async person => {
-  console.log("insertCustomer", person);
+  const { data, error } = await supabase.from("customers").insert([person]).select();
+  if (error) return console.log(error);
 
-  // const { data, error } = await supabase.from("customers").insert([{ name, email }]).select();
-  // if (error) return console.log(error);
+  const customer = data[0];
+  const customerAvailability = DEFAULT_CUSTOMER_AVAILABILITY.map(o => ({
+    ...o,
+    customer_id: customer.id,
+    status: "1",
+  }));
 
-  // const customerAvailability = DEFAULT_CUSTOMER_AVAILABILITY.map((o) => ({
-  //   ...o,
-  //   customer_id: data[0].id,
-  //   status: "1",
-  // }));
+  const { data: availability, error: err2 } = await supabase
+    .from("customer_availability")
+    .insert(customerAvailability)
+    .select();
+  if (err2) return console.log(err2);
 
-  // const { data: availability, error: err2 } = await supabase
-  //   .from("customer_availability")
-  //   .insert(customerAvailability)
-  //   .select();
-  // if (err2) return console.log(err2);
+  console.log("addCustomer", { customer, availability });
 
-  // const entry = { ...data[0], availability, appointments: [], appointmentOffers: [] };
-
-  // console.log("addCustomer", { entry });
   // setStore("customers", (prev) => [...prev, entry]);
 
   // channel.send({
