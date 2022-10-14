@@ -9,8 +9,13 @@ export default function AvailabilityMatch(props) {
   return (
     <li class="list-group-item">
       <label>
-        <div>{props.match.professional}</div>
-        {dateToWeekday(props.match.day)} {props.match.time}
+        <div>
+          <span>
+            {props.filter === "professional" ? dateToWeekday(props.match.day) : props.match.professional}{" "}
+            {props.match.time}
+          </span>
+        </div>
+
         <input
           id={`${props.match.professional}:d${props.match.day}:${props.match.time}`}
           class="ms-2"

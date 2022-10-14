@@ -10,7 +10,6 @@ export default function ProfessionalAppointments(props) {
           {appointment => (
             <li class="list-group-item">
               <h3>{appointment.customer.name}</h3>
-              {/* <div>{appointment.customer.email}</div> */}
               <div>
                 {new Date(appointment.datetime).toLocaleDateString("pt-BR")}, {dateToWeekday(appointment.day)}{" "}
                 {appointment.time}h

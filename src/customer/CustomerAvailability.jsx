@@ -4,6 +4,21 @@ import { WORKING_HOURS, dateToWeekday } from "../lib/helpers";
 import { updateCustomerAvailability } from "../lib/mutationFuncs";
 import Button from "../shared/Button";
 import CollapseBox from "../shared/CollapseBox";
+import { s } from "../lib/styles";
+
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
+// NEXT STEP: MAKE THIS A SHARED COMPONENT
 
 export default function CustomerAvailability(props) {
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
@@ -43,12 +58,7 @@ export default function CustomerAvailability(props) {
       <CollapseBox>
         <form onSubmit={handleAvailabilityUpdate}>
           <table class="table table-striped-columns">
-            <thead
-              style={{
-                position: "sticky",
-                top: "0",
-              }}
-            >
+            <thead style={{ position: "sticky", top: "0" }}>
               <tr style={{ "text-align": "center" }}>
                 <For each={["", ...STR_NUM_WEEKDAYS]}>
                   {day => <th scope="col">{day ? dateToWeekday(day) : ""}</th>}
@@ -63,14 +73,7 @@ export default function CustomerAvailability(props) {
                     <For each={STR_NUM_WEEKDAYS}>
                       {weekday => (
                         <td style={{ padding: 0 }}>
-                          <label
-                            style={{
-                              width: "100%",
-                              "min-height": "30px",
-                              "line-height": "40px",
-                              "text-align": "center",
-                            }}
-                          >
+                          <label style={s.tdLabel}>
                             <input
                               type="checkbox"
                               checked={isChecked(weekday, time)}

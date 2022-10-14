@@ -71,7 +71,7 @@ export default function CustomerRequestAvailability(props) {
 
             <ul class="list-group">
               <For each={matchesObj()[k]}>
-                {match => <AvailabilityMatch match={match} offers={query.data.offers} />}
+                {match => <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />}
               </For>
             </ul>
           </div>

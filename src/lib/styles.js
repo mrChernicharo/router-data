@@ -25,4 +25,10 @@ export const s = {
     "margin-right": "10px",
     background: "green",
   },
+  tdLabel: {
+    width: "100%",
+    "min-height": "30px",
+    "line-height": "40px",
+    "text-align": "center",
+  },
 };
