@@ -37,7 +37,11 @@ export default function Customers() {
   function handleRemove(id) {
     console.log("handleRemove", id);
 
-    removeMutation;
+    removeMutation.mutate(id, {
+      onSuccess: (data, variables, context) => {
+        query.refetch();
+      },
+    });
   }
 
   return (
