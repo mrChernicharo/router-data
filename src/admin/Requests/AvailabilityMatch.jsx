@@ -17,10 +17,13 @@ export default function AvailabilityMatch(props) {
         <div>{props.match.professional}</div>
         {dateToWeekday(props.match.day)} {props.match.time}
         <input
-          id={`${props.match.professional}:${props.match.day}:${props.match.time}`}
+          id={`${props.match.professional}:d${props.match.day}:${props.match.time}`}
           class="ms-2"
           type="checkbox"
           checked={isChecked(props.match, props.offers)}
+          data-day={props.match.day}
+          data-time={props.match.time}
+          data-professional_id={props.match.professional_id}
         />
       </label>
     </li>

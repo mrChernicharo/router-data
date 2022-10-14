@@ -13,28 +13,19 @@ export default function CustomerRequestAvailability(props) {
   const query = createQuery(
     () => ["customer_request_availability", props.customerId],
     () => fetchCustomerRequestAvailability(props.customerId)
-    // we need customer's offers here, they'll determine isChecked
   );
 
-  const [filter, setFilter] = createSignal("day");
+  const [filter, setFilter] = createSignal("day"); /* day | professional */
 
   const filteredMatches = createMemo(() => {
     if (!query.data?.matches) return [];
 
     const matchesObj = {};
 
-    if (filter() === "day") {
-      query.data?.matches.forEach(m => {
-        if (!(m.day in matchesObj)) matchesObj[m.day] = [];
-        matchesObj[m.day].push(m);
-      });
-    }
-    if (filter() === "professional") {
-      query.data?.matches.forEach(m => {
-        if (!(m.professional in matchesObj)) matchesObj[m.professional] = [];
-        matchesObj[m.professional].push(m);
-      });
-    }
+    query.data?.matches.forEach(m => {
+      if (!(m[filter()] in matchesObj)) matchesObj[m[filter()]] = [];
+      matchesObj[m[filter()]].push(m);
+    });
     return matchesObj;
   });
 
@@ -49,6 +40,8 @@ export default function CustomerRequestAvailability(props) {
     }));
 
     console.log({ selectedTimeBlocks, selectedCheckboxes });
+
+    // TIME TO SUBMIT THIS SH*T!
 
     // const staff = {
     //   name: inputRef.value.split("@")[0],
