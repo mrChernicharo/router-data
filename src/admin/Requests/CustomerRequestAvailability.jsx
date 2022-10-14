@@ -1,6 +1,7 @@
 import { createMemo, createSignal, For } from "solid-js";
-import { createQuery } from "@tanstack/solid-query";
+import { createMutation, createQuery } from "@tanstack/solid-query";
 import { fetchCustomerRequestAvailability } from "../../lib/fetchFuncs";
+import { createAppointmentOffers } from "../../lib/mutationFuncs";
 
 import AvailabilityMatch from "./AvailabilityMatch";
 import { dateToWeekday } from "../../lib/helpers";
@@ -13,6 +14,10 @@ export default function CustomerRequestAvailability(props) {
   const query = createQuery(
     () => ["customer_request_availability", props.customerId],
     () => fetchCustomerRequestAvailability(props.customerId)
+  );
+
+  const sendOffers = createMutation(["customer_request_availability", props.customerId], offers =>
+    createAppointmentOffers(props.customerId, offers)
   );
 
   const [filter, setFilter] = createSignal("day"); /* day | professional */
@@ -37,22 +42,23 @@ export default function CustomerRequestAvailability(props) {
 
     const selectedTimeBlocks = selectedCheckboxes.map(d => ({
       ...d.dataset,
+      customer_id: props.customerId,
     }));
 
+    // TIME TO SUBMIT THIS SH*T!
     console.log({ selectedTimeBlocks, selectedCheckboxes });
 
-    // TIME TO SUBMIT THIS SH*T!
+    sendOffers.mutate(selectedTimeBlocks, {
+      onMutate: variables => {
+        console.log("mutating...", { variables });
 
-    // const staff = {
-    //   name: inputRef.value.split("@")[0],
-    //   email: inputRef.value,
-    // };
-
-    // insertMutation.mutate(staff, {
-    //   onSuccess: (data, variables, context) => {
-    //     query.refetch();
-    //   },
-    // });
+        return { test: "hello" };
+      },
+      onSuccess: (data, variables, context) => {
+        console.log("onSuccess", { data, variables, context });
+        query.refetch();
+      },
+    });
   }
 
   return (

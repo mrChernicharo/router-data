@@ -213,7 +213,7 @@ const createAppointmentOffers = async (customerId, offers) => {
   // if (!offers.length) {
   //   return console.log("createAppointmentOffers with no offers! Abort it", { offers, customerId });
   // }
-  console.log("createAppointmentOffers", { offers, customerId });
+  console.log("createAppointmentOffers", { customerId, offers });
 
   // // patch/remove previous offers
   const { data: deletedData, error: deleteError } = await supabase
