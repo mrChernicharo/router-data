@@ -235,6 +235,66 @@ const createAppointmentOffers = async (customerId, offers) => {
   // // });
 };
 
+const updateProfessionalAvailability = async (professionalId, availabilities) => {
+  console.log("updateProfessionalAvailability", { professionalId, availabilities });
+
+  // const dbReadyAvailabilities = availabilities.map((d) => ({
+  //   ...d,
+  //   professional_id: professionalId,
+  // }));
+  // console.log("updateProfessionalAvailability", { dbReadyAvailabilities });
+  // const { data: oldAvailability, error: deleteError } = await supabase
+  //   .from("professional_availability")
+  //   .delete()
+  //   .match({ professional_id: professionalId })
+  //   .select();
+  // if (deleteError) {
+  //   console.log({ deleteError });
+  //   return;
+  // }
+  // const { data: newAvailability, error: insertError } = await supabase
+  //   .from("professional_availability")
+  //   .insert(dbReadyAvailabilities)
+  //   .select();
+  // if (insertError) {
+  //   console.log({ insertError });
+  //   return;
+  // }
+  // channel.send({
+  //   type: "broadcast",
+  //   event: "professional_availability_updated",
+  //   entries: newAvailability,
+  //   professionalId,
+  // });
+  // console.log({ oldAvailability, newAvailability });
+  // fetchServer();
+};
+
+const updateCustomerAvailability = async (customerId, availability) => {
+  console.log("updateCustomerAvailability", { customerId, availability });
+
+  const { data: oldAvailability, error: deleteError } = await supabase
+    .from("customer_availability")
+    .delete()
+    .match({ customer_id: customerId })
+    .select();
+  if (deleteError) {
+    console.log({ deleteError });
+    return;
+  }
+  const { data: newAvailability, error: insertError } = await supabase
+    .from("customer_availability")
+    .insert(availability)
+    .select();
+  if (insertError) {
+    console.log({ insertError });
+    return;
+  }
+  console.log({ oldAvailability, newAvailability });
+
+  return { newAvailability };
+};
+
 export {
   insertStaff,
   removeStaff,
@@ -243,4 +303,6 @@ export {
   insertCustomer,
   removeCustomer,
   createAppointmentOffers,
+  updateProfessionalAvailability,
+  updateCustomerAvailability,
 };

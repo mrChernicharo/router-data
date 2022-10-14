@@ -1,14 +1,14 @@
 import { createMemo, createSignal, For } from "solid-js";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
+
 import { fetchCustomerRequestAvailability } from "../../lib/fetchFuncs";
 import { createAppointmentOffers } from "../../lib/mutationFuncs";
+import { STR_NUM_WEEKDAYS } from "../../lib/constants";
+import { dateToWeekday } from "../../lib/helpers";
 
 import AvailabilityMatch from "./AvailabilityMatch";
-import { dateToWeekday } from "../../lib/helpers";
 import Button from "../../shared/Button";
 import Icon from "../../shared/Icon";
-
-const WEEKDAYS = ["0", "1", "2", "3", "4", "5", "6"];
 
 export default function CustomerRequestAvailability(props) {
   const queryClient = useQueryClient();
@@ -67,7 +67,7 @@ export default function CustomerRequestAvailability(props) {
       <For each={Object.keys(matchesObj())}>
         {k => (
           <div>
-            <div class="fw-bold">{WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
+            <div class="fw-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
 
             <ul class="list-group">
               <For each={matchesObj()[k]}>

@@ -3,6 +3,11 @@ export const INITIAL_STORE = {
   customers: [],
   staff: [],
 };
+
+
+
+export const STR_NUM_WEEKDAYS = ["0", "1", "2", "3", "4", "5", "6"];
+
 export const DEFAULT_CUSTOMER_AVAILABILITY = [
   { customer_id: "", day: 1, time: "09:30" },
   { customer_id: "", day: 1, time: "10:00" },
