@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
@@ -10,9 +10,10 @@ export default function Login() {
   const [pId, setPId] = createSignal("");
   // const data = useRouteData();
   const query = createQuery(() => ["admin"], fetchLoginFakeData, {
-    staleTime: 100_000_000,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
+    cacheTime: 0,
+    staleTime: 0,
   });
 
   return (

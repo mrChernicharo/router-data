@@ -1,4 +1,4 @@
-import { lazy, createResource } from "solid-js";
+import { lazy, createResource, createEffect } from "solid-js";
 import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
 
 import { s } from "./lib/styles";
@@ -9,6 +9,7 @@ import Header from "./shared/Header";
 
 import Home from "./Home";
 import NotFound from "./NotFound";
+import { useQueryClient } from "@tanstack/solid-query";
 
 const Login = lazy(() => import("./Login"));
 const Admin = lazy(() => import("./admin/Admin"));
@@ -24,7 +25,7 @@ const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
 export default function Router() {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const Layout = () => (
     <div>
@@ -33,6 +34,11 @@ export default function Router() {
       <Outlet />
     </div>
   );
+
+  createEffect(() => {
+    console.log({ ...queryClient });
+    console.log({ cache: queryClient.getQueryCache(), map: queryClient.getQueryCache().findAll() });
+  });
 
   return (
     <Routes>
@@ -62,21 +68,4 @@ export default function Router() {
       <Route path="/**" component={NotFound} />
     </Routes>
   );
-}
-
-//This won't work the way you'd expect
-{
-  /* <Route path="/users" component={Users}>
-  <Route path="/:id" component={User} />
-</Route>
-
-//This works
-<Route path="/users" component={Users} />
-<Route path="/users/:id" component={User} />
-
-//This also works
-<Route path="/users">
-  <Route path="/" component={Users} />
-  <Route path="/:id" component={User} />
-</Route> */
 }
