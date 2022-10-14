@@ -17,7 +17,7 @@ const AdminProfessionals = lazy(() => import("./admin/Professionals"));
 const AdminProfessional = lazy(() => import("./admin/Professionals/Professional"));
 const AdminCustomers = lazy(() => import("./admin/Customers"));
 const AdminCustomer = lazy(() => import("./admin/Customers/Customer"));
-const AppointmentRequests = lazy(() => import("./admin/AppointmentRequests"));
+const AppointmentRequests = lazy(() => import("./admin/Requests/AppointmentRequests"));
 // const Appointments = lazy(() => import("./Appointments"));
 
 const Customer = lazy(() => import("./customer/Customer"));

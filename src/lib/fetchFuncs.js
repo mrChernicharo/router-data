@@ -58,118 +58,73 @@ const fetchProfessionalsData = async () => {
 };
 
 const fetchAdminRequestsData = async () => {
-  const { data: customers, error: cError } = await supabase
-    .from("customers")
-    .select(
-      "*, availability:customer_availability(*), offers:appointment_offers(*), appointments:realtime_appointments ( id )"
-    );
+  const { data: customers, error } = await supabase.from("vw_appointment_request_page").select("*");
 
-  const { data: professionals, error: pError } = await supabase
-    .from("professionals")
-    .select("*, availability:professional_availability(*)");
+  if (error) return console.log({ error });
 
-  const customerPossibilities = {};
-  customers.forEach(customer => {
-    customerPossibilities[customer.id] = {};
+  return { customers };
 
-    customer.availability.forEach(c_av => {
-      if (!(c_av.day in customerPossibilities[customer.id]))
-        customerPossibilities[customer.id][c_av.day] = [];
-
-      customerPossibilities[customer.id][c_av.day].push(c_av);
-    });
-  });
-
-  const possibilities = {}; // by customer / day / professional
-  customers.forEach(customer => {
-    possibilities[customer.id] = [];
-    professionals.forEach(prof => {
-      const commonProfAvailability = prof.availability.filter(
-        p_av =>
-          p_av.status === "1" &&
-          p_av.day in customerPossibilities[customer.id] &&
-          customerPossibilities[customer.id][p_av.day].find(o => o.time === p_av.time)
-      );
-      possibilities[customer.id].push(commonProfAvailability);
-    });
-  });
-
-  if (cError || pError) return console.log({ cError, pError });
-  // console.log({ customerPossibilities, possibilities });
-
-  const [unattended_customers, customers_with_offers, customers_with_appointments] = [
-    customers.filter(c => !c.appointments.length && !c.offers.length), // red
-    customers.filter(c => c.offers.length), // yellow
-    customers.filter(c => c.appointments.length), // ok!
-  ];
-
-  console.log({
-    customers,
-    professionals,
-    possibilities,
-    unattended_customers,
-    customers_with_offers,
-    customers_with_appointments,
-  });
-
-  return {
-    customers,
-    professionals,
-    possibilities,
-    unattended_customers,
-    customers_with_offers,
-    customers_with_appointments,
-  };
-
-  // const {
-  //   data: customersIds,
-  //   count: customers_count,
-  //   error: cIdError,
-  // } = await supabase.from("customers").select("id");
-
-  // const {
-  //   data: professionals,
-  //   count: professionals_count,
-  //   error: pError,
-  // } = await supabase.from("professionals").select("id, name", { count: "exact" });
-
-  // const { count: staff_count, error: sError } = await supabase.from("staff").select("id", { count: "exact" });
-
-  // const { data: all_customers, error: cError } = await supabase
+  // const { data: customers, error: cError } = await supabase
   //   .from("customers")
   //   .select(
-  //     `id, name,
-  //     offers:appointment_offers( * ),
-  //     appointments:realtime_appointments ( id )`
-  //   )
-  //   .filter("id", "in", `(${customersIds.map(c => c.id)})`);
+  //     "*, availability:customer_availability(*), offers:appointment_offers(*), appointments:realtime_appointments ( id )"
+  //   );
 
-  // console.log(all_customers);
+  // const { data: professionals, error: pError } = await supabase
+  //   .from("professionals")
+  //   .select("*, availability:professional_availability(*)");
+
+  // const customerPossibilities = {};
+  // customers.forEach(customer => {
+  //   customerPossibilities[customer.id] = {};
+
+  //   customer.availability.forEach(c_av => {
+  //     if (!(c_av.day in customerPossibilities[customer.id]))
+  //       customerPossibilities[customer.id][c_av.day] = [];
+
+  //     customerPossibilities[customer.id][c_av.day].push(c_av);
+  //   });
+  // });
+
+  // const possibilities = {}; // by customer / day / professional
+  // customers.forEach(customer => {
+  //   possibilities[customer.id] = [];
+  //   professionals.forEach(prof => {
+  //     const commonProfAvailability = prof.availability.filter(
+  //       p_av =>
+  //         p_av.status === "1" &&
+  //         p_av.day in customerPossibilities[customer.id] &&
+  //         customerPossibilities[customer.id][p_av.day].find(o => o.time === p_av.time)
+  //     );
+  //     possibilities[customer.id].push(commonProfAvailability);
+  //   });
+  // });
+
+  // if (cError || pError) return console.log({ cError, pError });
+  // // console.log({ customerPossibilities, possibilities });
 
   // const [unattended_customers, customers_with_offers, customers_with_appointments] = [
-  //   all_customers.filter(c => !c.appointments.length && !c.offers.length), // red
-  //   all_customers.filter(c => c.offers.length), // yellow
-  //   all_customers.filter(c => c.appointments.length), // ok!
+  //   customers.filter(c => !c.appointments.length && !c.offers.length), // red
+  //   customers.filter(c => c.offers.length), // yellow
+  //   customers.filter(c => c.appointments.length), // ok!
   // ];
 
-  // const customers_with_offers_with_profs = customers_with_offers.map(customer => ({
-  //   ...customer,
-  //   offers: customer.offers.map(offer => ({
-  //     ...offer,
-  //     professional: professionals.find(p => p.id === offer.professional_id).name,
-  //   })),
-  // }));
-
-  // if (cIdError | cError || pError || sError) return console.log({ cError, pError, sError });
-
-  // return {
-  //   customers_count,
-  //   professionals_count,
-  //   staff_count,
-  //   // all_customers,
+  // console.log({
+  //   customers,
+  //   professionals,
+  //   possibilities,
   //   unattended_customers,
   //   customers_with_offers,
-  //   customers_with_offers_with_profs,
+  //   customers_with_appointments,
+  // });
+
+  // return {
+  //   customers,
+  //   professionals,
+  //   possibilities,
+  //   unattended_customers,
+  //   customers_with_offers,
+  //   customers_with_appointments,
   // };
 };
 
@@ -245,33 +200,6 @@ const fetchAppointmentsData = async () => {
   if (error) return console.log({ error });
   return { data };
 };
-
-const fetchCustomersId = async ids => {
-  const { data: customers, error } = await supabase
-    .from("customers")
-    .select("*")
-    .filter("id", "in", `(${ids})`);
-  if (error) return console.log({ error });
-  return { customers };
-};
-
-const fetchProfessionalsId = async ids => {
-  const { data: professionals, error } = await supabase
-    .from("professionals")
-    .select("*")
-    .filter("id", "in", `(${ids})`);
-  if (error) return console.log({ error });
-  return { professionals };
-};
-
-// const fetchAppointmentsByCustomerIds = async ids => {
-//   const { data: appointments, error } = await supabase
-//     .from("realtime_appointments")
-//     .select("*")
-//     .filter("customer_id", "in", `(${ids})`);
-//   if (error) return console.log({ error });
-//   return { appointments };
-// };
 
 const fetchAppointmentData = async id => {
   const { data, error } = await supabase.from("realtime_appointments").select("*").eq("id", id);

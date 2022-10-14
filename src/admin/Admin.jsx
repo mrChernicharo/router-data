@@ -5,7 +5,7 @@ import { onMount, createEffect } from "solid-js";
 import { userStore, setUserStore } from "../lib/userStore";
 
 import CollapseBox from "../shared/CollapseBox";
-import AppointmentRequests from "./AppointmentRequests";
+import AppointmentRequests from "./Requests/AppointmentRequests";
 import AppointmentPossibilities from "./AppointmentPossibilities";
 import Button from "../shared/Button";
 import Badge from "../shared/Badge";
