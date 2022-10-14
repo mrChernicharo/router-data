@@ -30,6 +30,8 @@ export default function Professionals() {
           )}
         </For>
       </ul>
+
+      <AvailabilityTable />
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );

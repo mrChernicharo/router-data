@@ -14,12 +14,9 @@ import { useQueryClient } from "@tanstack/solid-query";
 const Login = lazy(() => import("./Login"));
 const Admin = lazy(() => import("./admin/Admin"));
 const Staff = lazy(() => import("./admin/Staff"));
-const AdminProfessionals = lazy(() => import("./admin/Professionals"));
-const AdminProfessional = lazy(() => import("./admin/Professionals/Professional"));
-const AdminCustomers = lazy(() => import("./admin/Customers"));
-const AdminCustomer = lazy(() => import("./admin/Customers/Customer"));
+const Professionals = lazy(() => import("./admin/Professionals"));
+const Customers = lazy(() => import("./admin/Customers"));
 const AppointmentRequests = lazy(() => import("./admin/Requests"));
-// const Appointments = lazy(() => import("./Appointments"));
 
 const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
@@ -48,10 +45,10 @@ export default function Router() {
 
       <Route path="/admin" component={Layout}>
         <Route path="/" component={Admin} />
-        <Route path="/customers" component={AdminCustomers} />
-        <Route path="/customers/:id" component={AdminCustomer} />
-        <Route path="/professionals" component={AdminProfessionals} />
-        <Route path="/professionals/:id" component={AdminProfessional} />
+        <Route path="/customers" component={Customers} />
+        <Route path="/customers/:id" component={Customer} />
+        <Route path="/professionals" component={Professionals} />
+        <Route path="/professionals/:id" component={Professional} />
         <Route path="/staff" component={Staff} />
         <Route path="/requests" component={AppointmentRequests} />
         {/* <Route path="/appointments" component={Appointments} /> */}
