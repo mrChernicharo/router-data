@@ -5,6 +5,7 @@ import Button from "./Button";
 export default function PersonList(props) {
   return (
     <ul class="list-group">
+      {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
       <For each={props.personList}>
         {person => (
           <li class="list-group-item">

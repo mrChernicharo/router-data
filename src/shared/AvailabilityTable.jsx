@@ -22,6 +22,7 @@ export default function AvailabilityTable(props) {
     const selectedTimeBlocks = selectedCheckboxes.map(d => ({
       ...d.dataset,
       [`${props.role}_id`]: props.person.id,
+      status: "1",
     }));
 
     console.log("handleAvailabilityUpdate", { e, props, selectedCheckboxes, selectedTimeBlocks });
