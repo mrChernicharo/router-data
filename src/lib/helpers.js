@@ -54,3 +54,13 @@ export const getClosestDate = day => {
   //   .map((_, i) => new Date(closestPossibleDateTimestamp + (i + 1) * 7 * 24 * 60 * 60 * 1005));
   return closestPossibleDateTimestamp;
 };
+
+
+
+export const ISODateStrFromDateAndTime = (dateStr, time) => {
+  return new Date(
+    new Date(dateStr).getTime() +
+      timeStrToMinutes(time) * 60 * 1000 -
+      new Date(dateStr).getTimezoneOffset() * 60 * 1000
+  ).toISOString();
+};

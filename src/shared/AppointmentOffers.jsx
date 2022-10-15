@@ -1,19 +1,36 @@
-import { dateToWeekday, getClosestDate } from "../lib/helpers";
+import { createSignal, Match, Switch } from "solid-js";
+import { createMutation } from "@tanstack/solid-query";
+
+import { confirmOffer } from "../lib/mutationFuncs";
+import { dateToWeekday, getClosestDate, ISODateStrFromDateAndTime } from "../lib/helpers";
+
 import PersonList from "./PersonList";
 import CollapseBox from "./CollapseBox";
 import Button from "./Button";
-import { createSignal } from "solid-js";
 import { s } from "../lib/styles";
 
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
 
+  const insertMutation = createMutation(["appointment_created"], (customerId, offer) =>
+    confirmOffer(customerId, offer)
+  );
+
   function handleConfirmAppointment(e) {
-    console.log({ e, offerId: offerId() });
+    // console.log({
+    //   offerId: offerId(),
+    //   offers: props.offers,
+    //   selectedOffer: props.offers.find(o => o.id === offerId()),
+    // });
+
+    const offer = props.offers.find(o => o.id === offerId());
+    const datetime = getClosestDate(offer.day);
+    offer.ISODate = ISODateStrFromDateAndTime(datetime, offer.time);
+
+    insertMutation.mutate(props.customer.id, offer);
   }
 
   const bg = id => (offerId() === id ? "#efe" : "");
-
   return (
     <div>
       <h3>AppointmentOffers</h3>
@@ -21,7 +38,14 @@ export default function AppointmentOffers(props) {
       {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
 
       <CollapseBox open>
-        <p>Escolha o horário ideal pra você</p>
+        <Switch>
+          <Match when={props.offers.length}>
+            <p>Escolha o horário ideal pra você</p>
+          </Match>
+          <Match when={!props.offers.length}>
+            <p>Aguardando oferta</p>
+          </Match>
+        </Switch>
 
         <ul class="list-group">
           <For each={props.offers}>

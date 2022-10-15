@@ -1,12 +1,13 @@
 import { For } from "solid-js";
+import { createQuery, createMutation } from "@tanstack/solid-query";
 import { useRouteData, Link } from "solid-app-router";
-import { s } from "../../lib/styles";
-import Button from "../../shared/Button";
-import { createQuery } from "@tanstack/solid-query";
+
 import { fetchProfessionalsData } from "../../lib/fetchFuncs";
+import { removeProfessional } from "../../lib/mutationFuncs";
+import { s } from "../../lib/styles";
 
 import PersonList from "../../shared/PersonList";
-import { removeProfessional } from "../../lib/mutationFuncs";
+import Button from "../../shared/Button";
 
 export default function Professionals() {
   const query = createQuery(() => ["professionals"], fetchProfessionalsData);

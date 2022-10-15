@@ -6,6 +6,7 @@ import AppointmentOffers from "../shared/AppointmentOffers";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
+import { createEffect } from "solid-js";
 
 export default function Customer() {
   const params = useParams();
@@ -13,6 +14,10 @@ export default function Customer() {
     () => ["customer", params.id],
     () => fetchCustomerData(params.id)
   );
+
+  createEffect(() => {
+    console.log(query.data);
+  });
 
   return (
     <div data-component="Customer">

@@ -41,6 +41,7 @@ export default function AvailabilityTable(props) {
       {/* <CollapseBox open> */}
       <CollapseBox>
         <p>Ajuste sua disponibilidade</p>
+
         <form onSubmit={handleAvailabilityUpdate}>
           <table class="table table-striped-columns">
             <thead style={{ position: "sticky", top: "0" }}>
