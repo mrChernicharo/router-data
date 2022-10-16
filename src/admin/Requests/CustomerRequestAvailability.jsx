@@ -43,6 +43,8 @@ export default function CustomerRequestAvailability(props) {
     const selectedTimeBlocks = selectedCheckboxes.map(d => ({
       ...d.dataset,
       customer_id: props.customerId,
+      // professional_availability_slot_id
+      // customer_availability_slot_id
     }));
 
     sendOffers.mutate(selectedTimeBlocks, {

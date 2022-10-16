@@ -75,7 +75,7 @@ const fetchStaffData = async () => {
 const fetchProfessionalsData = async () => {
   const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
   if (pError) return console.log({ pError });
-
+  console.log({ professionals });
   return { professionals };
 };
 
@@ -83,19 +83,45 @@ const fetchAdminRequestsData = async () => {
   const { data: customers, error } = await supabase.from("vw_appointment_request_page").select("*");
 
   if (error) return console.log({ error });
-
+  console.log("fetchAdminRequestsData", { customers });
   return { customers };
 };
 
 const fetchCustomerRequestAvailability = async id => {
   const { data: offers, error: oErr } = await supabase
     .from("appointment_offers")
+    // .select("*, prof_slot:professional_availability ( id ), customer_slot:customer_availability ( id )")
     .select("*")
     .eq("customer_id", id);
 
-  const { data: matches, error: mErr } = await supabase.rpc("fn_get_appointment_possibilities", { id });
+
+
+  const { data: slots, error: mErr } = await supabase
+    .rpc("fn_get_appointment_possibilities", { id })
+    .select("*, prof_slots:professional_availability ( id, day, time ), customer_slots:customer_availability ( id, day, time )");
 
   if (mErr || oErr) return console.log(mErr || oErr);
+
+
+  const matches = []
+  for (let item of slots) {
+    const { time, day } = item
+
+    const professional_availability_slot = item.prof_slots.find(s => s.time === time && s.day === day)
+    const customer_availability_slot = item.customer_slots.find(s => s.time === time && s.day === day)
+
+    if (professional_availability_slot) { // this feels wonky: our DB function should not return slots that have no matching prof_av...but this check here does the trick
+      delete item.prof_slots;
+      delete item.customer_slots;
+      matches.push({
+        ...item,
+        customer_availability_slot_id: customer_availability_slot.id,
+        professional_availability_slot_id: professional_availability_slot.id
+      })
+    }
+  }
+
+  console.log("fetchCustomerRequestAvailability", {  slots, matches, offers });
 
   return { matches, offers };
 };
