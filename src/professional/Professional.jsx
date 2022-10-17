@@ -6,6 +6,7 @@ import AvailabilityTable from "../shared/AvailabilityTable";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
+import { createEffect } from "solid-js";
 
 export default function Professional() {
   const params = useParams();
@@ -14,7 +15,11 @@ export default function Professional() {
     () => fetchProfessionalData(params.id)
   );
 
-  console.log({ ...params });
+  // console.log({ ...params });
+
+  createEffect(() => {
+    console.log(query.data);
+  });
 
   return (
     <div data-component="Professional">

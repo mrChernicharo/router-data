@@ -81,7 +81,14 @@ export default function CustomerRequestAvailability(props) {
         </For>
 
         <div class="mt-3">
-          <Button kind="CTA" text={<Icon plus />} />
+          <Button
+            kind="CTA"
+            text={
+              <span>
+                <Icon send /> Send Offers
+              </span>
+            }
+          />
         </div>
       </Show>
 

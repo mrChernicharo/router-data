@@ -94,34 +94,34 @@ const fetchCustomerRequestAvailability = async id => {
     .select("*")
     .eq("customer_id", id);
 
-
-
   const { data: slots, error: mErr } = await supabase
     .rpc("fn_get_appointment_possibilities", { id })
-    .select("*, prof_slots:professional_availability ( id, day, time ), customer_slots:customer_availability ( id, day, time )");
+    .select(
+      "*, prof_slots:professional_availability ( id, day, time ), customer_slots:customer_availability ( id, day, time )"
+    );
 
   if (mErr || oErr) return console.log(mErr || oErr);
 
-
-  const matches = []
+  const matches = [];
   for (let item of slots) {
-    const { time, day } = item
+    const { time, day } = item;
 
-    const professional_availability_slot = item.prof_slots.find(s => s.time === time && s.day === day)
-    const customer_availability_slot = item.customer_slots.find(s => s.time === time && s.day === day)
+    const professional_availability_slot = item.prof_slots.find(s => s.time === time && s.day === day);
+    const customer_availability_slot = item.customer_slots.find(s => s.time === time && s.day === day);
 
-    if (professional_availability_slot) { // this feels wonky: our DB function should not return slots that have no matching prof_av...but this check here does the trick
+    if (professional_availability_slot) {
+      // this feels wonky: our DB function should not return slots that have no matching prof_av...but this check here does the trick
       delete item.prof_slots;
       delete item.customer_slots;
       matches.push({
         ...item,
         customer_availability_slot_id: customer_availability_slot.id,
-        professional_availability_slot_id: professional_availability_slot.id
-      })
+        professional_availability_slot_id: professional_availability_slot.id,
+      });
     }
   }
 
-  console.log("fetchCustomerRequestAvailability", {  slots, matches, offers });
+  console.log("fetchCustomerRequestAvailability", { slots, matches, offers });
 
   return { matches, offers };
 };
@@ -192,16 +192,15 @@ const fetchProfessionalData = async id => {
   const professional = data[0];
 
   if (professional.appointments) {
-    const professionalsIds = professional.appointments.map(a => a.customer_id);
-
-    const { customers } = await fetchCustomersId(professionalsIds);
-
-    professional.appointments.forEach((a, i) => {
-      const customer = customers.find(c => professionalsIds.includes(c.id));
+    for (let [i, appointment] of professional.appointments.entries()) {
+      const { data: customer } = await supabase
+        .from("customers")
+        .select("*")
+        .eq("id", appointment.customer_id);
 
       delete professional.appointments[i].customer_id;
-      professional.appointments[i].customer = customer;
-    });
+      professional.appointments[i].customer = customer[0];
+    }
   }
 
   console.log("fetchProfessionalData", { professional });
