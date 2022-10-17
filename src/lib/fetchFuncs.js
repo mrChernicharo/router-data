@@ -2,14 +2,14 @@ import { supabase } from "./supabaseClient";
 
 // ************ HELPERS ************
 
-const fetchCustomersId = async ids => {
-  const { data: customers, error } = await supabase
-    .from("customers")
-    .select("*")
-    .filter("id", "in", `(${ids})`);
-  if (error) return console.log({ error });
-  return { customers };
-};
+// const fetchCustomersId = async ids => {
+//   const { data: customers, error } = await supabase
+//     .from("customers")
+//     .select("*")
+//     .filter("id", "in", `(${ids})`);
+//   if (error) return console.log({ error });
+//   return { customers };
+// };
 
 const fetchProfessionalsId = async ids => {
   const { data: professionals, error } = await supabase
@@ -72,12 +72,6 @@ const fetchStaffData = async () => {
   return { staff };
 };
 
-const fetchProfessionalsData = async () => {
-  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
-  if (pError) return console.log({ pError });
-  console.log({ professionals });
-  return { professionals };
-};
 
 const fetchAdminRequestsData = async () => {
   const { data: customers, error } = await supabase.from("vw_appointment_request_page").select("*");
@@ -148,6 +142,7 @@ const fetchCustomerData = async id => {
   if (error) return console.log({ error });
 
   const customer = data[0];
+  
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);
     const { professionals } = await fetchProfessionalsId(professionalsIds);
@@ -177,6 +172,14 @@ const fetchCustomerData = async id => {
   return { customer };
 };
 
+const fetchProfessionalsData = async () => {
+  const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
+  if (pError) return console.log({ pError });
+  console.log({ professionals });
+  return { professionals };
+};
+
+
 const fetchProfessionalData = async id => {
   const { data, error } = await supabase
     .from("professionals")
@@ -191,17 +194,22 @@ const fetchProfessionalData = async id => {
 
   const professional = data[0];
 
-  if (professional.appointments) {
-    for (let [i, appointment] of professional.appointments.entries()) {
-      const { data: customer } = await supabase
-        .from("customers")
-        .select("*")
-        .eq("id", appointment.customer_id);
-
-      delete professional.appointments[i].customer_id;
-      professional.appointments[i].customer = customer[0];
-    }
+  if (!professional.appointments?.length)  return { professional };
+  
+  const customersProms = [];
+  for (let appointment of professional.appointments) {
+    customersProms.push(supabase.from("customers").select("*").eq("id", appointment.customer_id));
   }
+
+  const results = await Promise.all(customersProms);
+
+  for (let [i, res] of results.entries()) {
+    const customer = res.data[0];
+
+    delete professional.appointments[i].customer_id;
+    professional.appointments[i].customer = customer;
+  }
+  
 
   console.log("fetchProfessionalData", { professional });
 
