@@ -24,6 +24,8 @@ export default function AvailabilityMatch(props) {
           data-day={props.match.day}
           data-time={props.match.time}
           data-professional_id={props.match.professional_id}
+          data-customer_availability_slot_id={props.match.customer_availability_slot_id}
+          data-professional_availability_slot_id={props.match.professional_availability_slot_id}
         />
       </label>
     </li>

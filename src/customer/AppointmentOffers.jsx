@@ -12,20 +12,23 @@ import { s } from "../lib/styles";
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
 
-  const insertMutation = createMutation(["appointment_created"], (customerId, offer) =>
-    confirmOffer(customerId, offer)
-  );
+  const insertMutation = createMutation(["appointment_created"], offer => confirmOffer(offer));
 
   function handleConfirmAppointment(e) {
-    // console.log({
-    //   offerId: offerId(),
-    //   offers: props.offers,
-    //   selectedOffer: props.offers.find(o => o.id === offerId()),
-    // });
-    // const offer = props.offers.find(o => o.id === offerId());
-    // const datetime = getClosestDate(offer.day);
-    // offer.ISODate = ISODateStrFromDateAndTime(datetime, offer.time);
-    // insertMutation.mutate(props.customer.id, offer);
+    const offer = props.offers.find(o => o.id === offerId());
+    const datetime = getClosestDate(offer.day);
+    offer.ISODate = ISODateStrFromDateAndTime(datetime, offer.time);
+
+    offer.professional_id = offer.professional.id;
+    // delete offer.professional;
+
+    console.log({
+      //   offerId: offerId(),
+      //   offers: props.offers,
+      offer,
+    });
+
+    insertMutation.mutate(offer);
   }
 
   const bg = id => (offerId() === id ? "#efe" : "");
