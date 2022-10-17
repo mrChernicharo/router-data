@@ -16,6 +16,12 @@ export default function Professionals() {
 
   function handleRemove(id) {
     console.log("handleRemove", id);
+
+    removeMutation.mutate(id, {
+      onSuccess: (data, variables, context) => {
+        query.refetch();
+      },
+    });
   }
 
   return (
