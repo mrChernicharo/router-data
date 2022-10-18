@@ -9,19 +9,29 @@ import AvailabilityTable from "../shared/AvailabilityTable";
 import { createEffect } from "solid-js";
 import AppointmentHistory from "../shared/AppointmentHistory";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
+import { channel } from "../lib/supabaseClient";
 
 export default function Customer() {
+  const location = useLocation();
   const params = useParams();
   const query = createQuery(
     () => ["customer", params.id],
     () => fetchCustomerData(params.id)
   );
 
-  const location = useLocation();
   const isAdmin = () => location.pathname.split("/").filter(Boolean)[0] === "admin";
+  const userId = () => location.pathname.split("/")[2];
 
   createEffect(() => {
-    console.log({ data: query.data, isAdmin: isAdmin() }, location.pathname.split("/").filter(Boolean)[0]);
+    console.log(
+      { data: query.data, isAdmin: isAdmin(), userId: userId() },
+      location.pathname.split("/").filter(Boolean)[0]
+    );
+  });
+
+  channel.on("broadcast", { event: `${userId()}::appointment_offers_updated` }, () => {
+    console.log({ event: `${userId()}::appointment_offers_updated` });
+    query.refetch();
   });
 
   return (

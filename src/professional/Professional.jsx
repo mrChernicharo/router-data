@@ -11,18 +11,24 @@ import { createEffect } from "solid-js";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 
 export default function Professional() {
+  const location = useLocation();
   const params = useParams();
   const query = createQuery(
     () => ["professional", params.id],
     () => fetchProfessionalData(params.id)
   );
 
-  const location = useLocation();
   const isAdmin = () => location.pathname.split("/").filter(Boolean)[0] === "admin";
+  const userId = () => location.pathname.split("/")[2];
 
   createEffect(() => {
     console.log(query.data);
   });
+
+  // channel.on("broadcast", { event: `${userId()}::appointments` }, () => {
+  //   console.log({ event: `${userId()}::appointments` });
+  //   query.refetch();
+  // });
 
   return (
     <div data-component="Professional">
