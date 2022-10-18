@@ -345,21 +345,14 @@ const updatePersonAvailability = async (person, role, availability) => {
     event: `${person.id}::${role}_availability_updated`,
   });
 
+  // looks like we need the timeout, otherwise, event doesn't get sent
+  setTimeout(() => {
+    channel.send({
+      type: "broadcast",
+      event: "person_availability_updated",
+    });
+  }, 500);
 
-  channel.send({
-    type: "broadcast",
-    event: "person_availability_updated",
-  });
-
-  channel.send({
-    type: "broadcast",
-    event: `${role}s_availability_updated`,
-  });
-
-  channel.send({
-    type: "broadcast",
-    event: `${person.id}::person_availability_updated`,
-  });
 
 
   console.log(

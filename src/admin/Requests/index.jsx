@@ -10,10 +10,25 @@ import Loading from "../../shared/Loading";
 import Icon from "../../shared/Icon";
 import CustomerRequest from "./CustomerRequest";
 import { fetchAdminRequestsData } from "../../lib/fetchFuncs";
+import { channel } from "../../lib/supabaseClient";
 
 export default function AppointmentRequests(props) {
   const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
     refetchOnMount: true,
+  });
+
+  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "person_availability_updated, pião");
+  // });
+  // channel.on("broadcast", { event: `customers_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "customers_availability_updated");
+  // });
+  // channel.on("broadcast", { event: `professionals_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "professionals_availability_updated");
+  // });
+
+  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+    console.log("[AppointmentRequests]", "professionals_availability_updated");
   });
 
   return (

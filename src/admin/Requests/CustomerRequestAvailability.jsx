@@ -55,20 +55,20 @@ export default function CustomerRequestAvailability(props) {
     });
   }
 
-  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-    console.log("person_availability_updated, pião");
-  });
-
-  // we want to update our match list whenever (customer | all professionals) had a change on their availability
   channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
-    console.log(`${props.customerId}::customer_availability_updated`);
+    console.log("[CustomerRequestAvailability]", `${props.customerId}::customer_availability_updated`);
+    query.refetch();
   });
 
-  channel.on("broadcast", { event: `professionals_availability_updated` }, payload => {
-    console.log("professionals_availability_updated");
-  });
+  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+  //   console.log("[CustomerRequestAvailability]", `person_availability_updated`);
+  // });
 
-  console.log(`${props.customerId}::customer_availability_updated`);
+  // channel.on("broadcast", { event: `customers_availability_updated` }, payload => {
+  //   console.log("[CustomerRequestAvailability]", `customers_availability_updated`);
+  // });
+
+  // console.log(`${props.customerId}::customer_availability_updated`);
 
   return (
     <div data-component="CustomerRequestAvailability">
