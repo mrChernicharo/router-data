@@ -1,4 +1,4 @@
-import { createSignal, onMount } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
@@ -16,6 +16,13 @@ export default function Login() {
     staleTime: 0,
   });
 
+  createEffect(() => {
+    if (!query.isLoading) {
+      setPId(query.data.professionals[0].id);
+      setCId(query.data.customers[0].id);
+    }
+  });
+
   return (
     <div>
       <h1>Login</h1>
@@ -26,27 +33,18 @@ export default function Login() {
       </div>
 
       <nav>
-        <Link href="/admin">admin </Link>
-        {cId() && (
-          <>
-            | <Link href={`/customer/${cId()}`}>customer </Link>
-          </>
-        )}
-        {pId() && (
-          <>
-            | <Link href={`/professional/${pId()}`}>professional </Link>
-          </>
-        )}
+        <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>customer </Link>|{" "}
+        <Link href={`/professional/${pId()}`}>professional </Link>
       </nav>
 
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <select onChange={e => setCId(e.currentTarget.value)}>
+          <select value={query.data?.customers[0].id} onChange={e => setCId(e.currentTarget.value)}>
             <For each={query.data?.customers}>
               {customer => <option value={customer.id}>{customer.name}</option>}
             </For>
           </select>
-          <select onChange={e => setPId(e.currentTarget.value)}>
+          <select value={query.data?.professionals[0].id} onChange={e => setPId(e.currentTarget.value)}>
             <For each={query.data?.professionals}>
               {professional => <option value={professional.id}>{professional.name}</option>}
             </For>
@@ -54,7 +52,7 @@ export default function Login() {
         </Suspense>
       </div>
 
-      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
+      <pre>{JSON.stringify(query, null, 2)}</pre>
     </div>
   );
 }

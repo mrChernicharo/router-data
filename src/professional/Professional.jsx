@@ -1,12 +1,14 @@
 import { createQuery } from "@tanstack/solid-query";
-import { useRouteData, Link, useParams } from "solid-app-router";
+import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import ProfessionalAppointments from "./ProfessionalAppointments";
+import AppointmentHistory from "../shared/AppointmentHistory";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
 import { createEffect } from "solid-js";
+import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 
 export default function Professional() {
   const params = useParams();
@@ -15,7 +17,8 @@ export default function Professional() {
     () => fetchProfessionalData(params.id)
   );
 
-  // console.log({ ...params });
+  const location = useLocation();
+  const isAdmin = () => location.pathname.split("/").filter(Boolean)[0] === "admin";
 
   createEffect(() => {
     console.log(query.data);
@@ -23,8 +26,7 @@ export default function Professional() {
 
   return (
     <div data-component="Professional">
-      {/* <Link href="/login"> IF NOT ADMIN */}
-      <Link href="/admin/professionals">
+      <Link href={isAdmin() ? "/admin/professionals" : "/login"}>
         <Button kind="light" type="button" text="👈🏽" />
       </Link>
       <div> Professional</div>
@@ -33,19 +35,24 @@ export default function Professional() {
         <h1>{query.data.professional.name}</h1>
         <div class="mb-5">{query.data.professional.email}</div>
 
-        <div class="mb-5">
-          <ProfessionalAppointments
-            role="professional"
-            professional={query.data.professional}
-            appointments={query.data.professional.appointments}
-          />
-        </div>
-
         <AvailabilityTable
           role="professional"
           person={query.data.professional}
           availability={query.data.professional.availability}
+          canEdit={!isAdmin()}
         />
+
+        <AppointmentsCalendar
+          role="professional"
+          canEdit={!isAdmin()}
+          person={query.data.professional}
+          availability={query.data.professional.availability}
+          appointments={query.data.professional.appointments}
+        />
+
+        <div class="mb-5">
+          <AppointmentHistory role="professional" appointments={query.data.professional.appointments} />
+        </div>
         {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
       </Show>
     </div>
