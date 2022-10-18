@@ -324,21 +324,50 @@ const confirmOffer = async offer => {
   // });
 };
 
-const updatePersonAvailability = async (person, role, availability) => {
-  console.log("updatePersonAvailability", { person, role, availability });
+const updatePersonAvailability = async (person, role, newAvailability) => {
+  const { data: initialAvailability } = await supabase
+    .from(`${role}_availability`)
+    .select("*")
+    .eq(`${role}_id`, person.id);
+  // console.log("updatePersonAvailability", { person, role, newAvailability, initialAvailability });
 
-  const { data: oldAvailability, error: deleteError } = await supabase
+  const initialAvObj = {};
+  const newAvObj = {};
+  initialAvailability.forEach(av => {
+    initialAvObj[`${av.day}::${av.time}`] = av;
+  });
+  newAvailability.forEach(av => {
+    newAvObj[`${av.day}::${av.time}`] = av;
+  });
+  
+  const toRemove = [];
+  const toAdd = [];
+  initialAvailability.forEach(av => {
+    if (!newAvObj[`${av.day}::${av.time}`]) {
+      // console.log("remove this", av);
+      toRemove.push(av)
+    }
+  });
+  newAvailability.forEach(av => {
+    if (!initialAvObj[`${av.day}::${av.time}`]) {
+      // console.log("add this", av);
+      toAdd.push(av)
+    }
+  });
+
+  const { data: prunedAvailability, error: deleteError } = await supabase
     .from(`${role}_availability`)
     .delete()
-    .match({ [`${role}_id`]: person.id })
+    .filter('id', 'in', `(${toRemove.map(o => o.id)})`)
     .select();
   if (deleteError) return console.log({ deleteError });
 
-  const { data: newAvailability, error: insertError } = await supabase
+  const { data: finalAvailability, error: insertError } = await supabase
     .from(`${role}_availability`)
-    .insert(availability)
+    .insert(toAdd)
     .select();
   if (insertError) return console.log({ insertError });
+
 
   channel.send({
     type: "broadcast",
@@ -353,16 +382,14 @@ const updatePersonAvailability = async (person, role, availability) => {
     });
   }, 500);
 
-
-
   console.log(
-    { oldAvailability, newAvailability },
+    { prunedAvailability, newAvailability, finalAvailability },
     `${role}s_availability_updated`,
     `${person.id}::person_availability_updated`,
     `${person.id}::${role}_availability_updated`
   );
 
-  return { newAvailability };
+  return { finalAvailability };
 };
 
 export {
