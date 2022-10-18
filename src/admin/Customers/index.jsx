@@ -8,6 +8,7 @@ import Loading from "../../shared/Loading";
 import { s } from "../../lib/styles";
 import { fetchCustomersData } from "../../lib/fetchFuncs";
 import { insertCustomer, removeCustomer } from "../../lib/mutationFuncs";
+import { channel } from "../../lib/supabaseClient";
 
 export default function Customers() {
   let inputRef;
@@ -43,6 +44,13 @@ export default function Customers() {
       },
     });
   }
+
+  channel.on("broadcast", { event: "customer_added" }, () => {
+    query.refetch();
+  });
+  channel.on("broadcast", { event: "customer_removed" }, () => {
+    query.refetch();
+  });
 
   return (
     <div data-component="Customers">

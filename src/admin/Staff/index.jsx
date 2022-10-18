@@ -1,6 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createMutation, createQuery } from "@tanstack/solid-query";
+import { channel } from "../../lib/supabaseClient";
 
 import { fetchStaffData } from "../../lib/fetchFuncs";
 import { insertStaff, insertProfessional, removeStaff } from "../../lib/mutationFuncs";
@@ -51,6 +52,23 @@ export default function Staff() {
       },
     });
   };
+
+  channel.on("broadcast", { event: "staff_created" }, () => {
+    console.log({ event: "staff_created" });
+    if (!query.isFetching) query.refetch();
+  });
+  channel.on("broadcast", { event: "staff_removed" }, () => {
+    console.log({ event: "staff_removed" });
+    query.refetch();
+  });
+  channel.on("broadcast", { event: "professional_added" }, () => {
+    console.log({ event: "professional_added" });
+    if (!query.isFetching) query.refetch();
+  });
+  channel.on("broadcast", { event: "professional_removed" }, () => {
+    console.log({ event: "professional_removed" });
+    query.refetch();
+  });
 
   return (
     <div data-component="Staff">

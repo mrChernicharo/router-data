@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import { createQuery, createMutation } from "@tanstack/solid-query";
 import { useRouteData, Link } from "solid-app-router";
+import { channel } from "../../lib/supabaseClient";
 
 import { fetchProfessionalsData } from "../../lib/fetchFuncs";
 import { removeProfessional } from "../../lib/mutationFuncs";
@@ -23,6 +24,13 @@ export default function Professionals() {
       },
     });
   }
+
+  channel.on("broadcast", { event: "professional_added" }, () => {
+    query.refetch();
+  });
+  channel.on("broadcast", { event: "professional_removed" }, () => {
+    query.refetch();
+  });
 
   return (
     <div data-component="Professionals">

@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { supabase, channel } from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY } from "./constants";
 
 const insertStaff = async ({ name, email }) => {
@@ -7,6 +7,12 @@ const insertStaff = async ({ name, email }) => {
   if (error) return console.log(error);
 
   const staff = data[0];
+
+  channel.send({
+    type: "broadcast",
+    event: "staff_created",
+  });
+
   return { staff };
 };
 
@@ -22,6 +28,12 @@ const removeStaff = async person => {
   if (error) return console.log(error);
 
   const entry = data[0];
+
+  channel.send({
+    type: "broadcast",
+    event: "staff_removed",
+  });
+
   return { entry };
 };
 
@@ -44,6 +56,11 @@ const insertProfessional = async ({ name, email }) => {
   const entry = { ...data[0], availability, appointments: [] };
 
   console.log("insertProfessional", { entry });
+
+  channel.send({
+    type: "broadcast",
+    event: "professional_added",
+  });
 
   return entry;
 };
@@ -111,6 +128,12 @@ const removeProfessional = async id => {
     times,
   });
 
+
+  channel.send({
+    type: "broadcast",
+    event: "professional_removed",
+  });
+
   return deletedProfessional[0];
 };
 
@@ -133,13 +156,12 @@ const insertCustomer = async person => {
 
   console.log("addCustomer", { customer, availability });
 
-  // channel.send({
-  //   type: "broadcast",
-  //   event: "customer_added",
-  //   entry,
-  // });
+  channel.send({
+    type: "broadcast",
+    event: "customer_added",
+  });
 
-  // return entry;
+  return  { customer, availability };
 };
 
 const removeCustomer = async id => {
@@ -202,6 +224,11 @@ const removeCustomer = async id => {
     times,
   });
 
+  channel.send({
+    type: "broadcast",
+    event: "customer_removed",
+  });
+
   return deletedCustomer[0];
 };
 
@@ -224,7 +251,7 @@ const createAppointmentOffers = async (customerId, offers) => {
   console.log("appointment offer created", { data, deletedData });
 };
 
-const confirmOffer = async (offer) => {
+const confirmOffer = async offer => {
   const customerId = offer.customer_id;
   console.log("confirmOffer", { offer });
 
