@@ -10,6 +10,7 @@ import AvailabilityMatch from "./AvailabilityMatch";
 import Button from "../../shared/Button";
 import Icon from "../../shared/Icon";
 import Loading from "../../shared/Loading";
+import { channel } from "../../lib/supabaseClient";
 
 export default function CustomerRequestAvailability(props) {
   const queryClient = useQueryClient();
@@ -48,52 +49,74 @@ export default function CustomerRequestAvailability(props) {
 
     sendOffers.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
-        // invalidate parent page query so we can fetch fresh data
-        // about what customers have/haven't offers/appointments now
-        queryClient.invalidateQueries(["appointment_requests"]);
+        // queryClient.invalidateQueries(["appointment_requests"]);
         query.refetch();
       },
     });
   }
 
+  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+    console.log("person_availability_updated, pião");
+  });
+
+  // we want to update our match list whenever (customer | all professionals) had a change on their availability
+  channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
+    console.log(`${props.customerId}::customer_availability_updated`);
+  });
+
+  channel.on("broadcast", { event: `professionals_availability_updated` }, payload => {
+    console.log("professionals_availability_updated");
+  });
+
+  console.log(`${props.customerId}::customer_availability_updated`);
+
   return (
-    <form onSubmit={handleSubmitOffers}>
-      <Show when={query.data} fallback={<Loading />}>
-        <div>
+    <div data-component="CustomerRequestAvailability">
+      <form onSubmit={handleSubmitOffers}>
+        <Show when={query.data} fallback={<Loading />}>
           <div>
-            <Icon filter />
-            <Button type="button" kind="light" text="day" onClick={e => setFilter("day")} />
-            <Button type="button" kind="light" text="professional" onClick={e => setFilter("professional")} />
-          </div>
-        </div>
-        <For each={Object.keys(matchesObj())}>
-          {k => (
             <div>
-              <div class="fw-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
-
-              <ul class="list-group">
-                <For each={matchesObj()[k]}>
-                  {match => <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />}
-                </For>
-              </ul>
+              <Icon filter />
+              <Button type="button" kind="light" text="day" onClick={e => setFilter("day")} />
+              <Button
+                type="button"
+                kind="light"
+                text="professional"
+                onClick={e => setFilter("professional")}
+              />
             </div>
-          )}
-        </For>
+          </div>
+          <For each={Object.keys(matchesObj())}>
+            {k => (
+              <div>
+                <div class="fw-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
 
-        <div class="mt-3">
-          <Button
-            kind="CTA"
-            text={
-              <span>
-                <Icon send /> Send Offers
-              </span>
-            }
-          />
-        </div>
-      </Show>
+                <ul class="list-group">
+                  <For each={matchesObj()[k]}>
+                    {match => (
+                      <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />
+                    )}
+                  </For>
+                </ul>
+              </div>
+            )}
+          </For>
 
-      {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
-      {/* <pre>{JSON.stringify(matchesObj(), null, 1)}</pre> */}
-    </form>
+          <div class="mt-3">
+            <Button
+              kind="CTA"
+              text={
+                <span>
+                  <Icon send /> Send Offers
+                </span>
+              }
+            />
+          </div>
+        </Show>
+
+        {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
+        {/* <pre>{JSON.stringify(matchesObj(), null, 1)}</pre> */}
+      </form>
+    </div>
   );
 }

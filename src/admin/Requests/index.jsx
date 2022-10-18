@@ -17,7 +17,7 @@ export default function AppointmentRequests(props) {
   });
 
   return (
-    <div>
+    <div data-component="AppointmentRequests">
       <Link href="/admin">
         <Button kind="light" text="👈🏽" type="button" />
       </Link>

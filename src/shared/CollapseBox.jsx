@@ -5,9 +5,11 @@ export default function CollapseBox(props) {
   const [isOpen, setIsOpen] = createSignal(!!props.open);
 
   return (
-    <Show when={isOpen()} fallback={<Button kind="open" onClick={e => setIsOpen(true)} />}>
-      <Button kind="close" onClick={e => setIsOpen(false)} />
-      {props.children}
-    </Show>
+    <div data-component="CollapseBox">
+      <Show when={isOpen()} fallback={<Button kind="open" onClick={e => setIsOpen(true)} />}>
+        <Button kind="close" onClick={e => setIsOpen(false)} />
+        {props.children}
+      </Show>
+    </div>
   );
 }

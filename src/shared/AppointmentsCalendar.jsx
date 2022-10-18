@@ -3,7 +3,7 @@ import CollapseBox from "./CollapseBox";
 
 export default function AppointmentsCalendar(props) {
   return (
-    <div>
+    <div data-component="AppointmentsCalendar">
       <h4>Appointments Calendar</h4>
       <CollapseBox>
         <Button kind="light" text="day" />

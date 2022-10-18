@@ -7,7 +7,7 @@ export default function AvailabilityMatch(props) {
     );
 
   return (
-    <li class="list-group-item">
+    <li data-component="AvailabilityMatch" class="list-group-item">
       <label>
         <div>
           <span>

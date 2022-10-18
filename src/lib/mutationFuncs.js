@@ -128,7 +128,6 @@ const removeProfessional = async id => {
     times,
   });
 
-
   channel.send({
     type: "broadcast",
     event: "professional_removed",
@@ -161,7 +160,7 @@ const insertCustomer = async person => {
     event: "customer_added",
   });
 
-  return  { customer, availability };
+  return { customer, availability };
 };
 
 const removeCustomer = async id => {
@@ -251,7 +250,7 @@ const createAppointmentOffers = async (customerId, offers) => {
   channel.send({
     type: "broadcast",
     event: `${customerId}::appointment_offers_updated`,
-  })
+  });
 
   console.log("appointment offer created", { data, deletedData });
 };
@@ -333,19 +332,42 @@ const updatePersonAvailability = async (person, role, availability) => {
     .delete()
     .match({ [`${role}_id`]: person.id })
     .select();
-  if (deleteError) {
-    console.log({ deleteError });
-    return;
-  }
+  if (deleteError) return console.log({ deleteError });
+
   const { data: newAvailability, error: insertError } = await supabase
     .from(`${role}_availability`)
     .insert(availability)
     .select();
-  if (insertError) {
-    console.log({ insertError });
-    return;
-  }
-  console.log({ oldAvailability, newAvailability });
+  if (insertError) return console.log({ insertError });
+
+  channel.send({
+    type: "broadcast",
+    event: `${person.id}::${role}_availability_updated`,
+  });
+
+
+  channel.send({
+    type: "broadcast",
+    event: "person_availability_updated",
+  });
+
+  channel.send({
+    type: "broadcast",
+    event: `${role}s_availability_updated`,
+  });
+
+  channel.send({
+    type: "broadcast",
+    event: `${person.id}::person_availability_updated`,
+  });
+
+
+  console.log(
+    { oldAvailability, newAvailability },
+    `${role}s_availability_updated`,
+    `${person.id}::person_availability_updated`,
+    `${person.id}::${role}_availability_updated`
+  );
 
   return { newAvailability };
 };

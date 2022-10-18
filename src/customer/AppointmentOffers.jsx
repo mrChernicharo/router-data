@@ -1,4 +1,4 @@
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, Show, Switch } from "solid-js";
 import { createMutation } from "@tanstack/solid-query";
 
 import { confirmOffer } from "../lib/mutationFuncs";
@@ -8,6 +8,7 @@ import PersonList from "../shared/PersonList";
 import CollapseBox from "../shared/CollapseBox";
 import Button from "../shared/Button";
 import { s } from "../lib/styles";
+import Badge from "../shared/Badge";
 
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
@@ -34,6 +35,9 @@ export default function AppointmentOffers(props) {
   const bg = id => (offerId() === id ? "#efe" : "");
   return (
     <div>
+      <Show when={props.offers.length}>
+        <Badge danger />
+      </Show>
       <h3>AppointmentOffers</h3>
 
       {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}

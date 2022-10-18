@@ -3,7 +3,7 @@ import CollapseBox from "./CollapseBox";
 
 export default function AppointmentHistory(props) {
   return (
-    <div>
+    <div data-component="AppointmentHistory">
       <h4>Appointment History</h4>
       <CollapseBox>
         <ul class="list-group">
