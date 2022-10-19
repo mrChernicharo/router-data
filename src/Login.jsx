@@ -18,9 +18,12 @@ export default function Login() {
   });
 
   createEffect(() => {
-    if (!query.isLoading) {
-      setPId(query.data.professionals[0].id);
-      setCId(query.data.customers[0].id);
+    if (!query.isLoading && query?.data?.customers && query?.data?.professionals) {
+      setPId(query?.data.professionals[0].id);
+      setCId(query?.data.customers[0].id);
+    } else {
+      setPId("");
+      setCId("");
     }
   });
 
@@ -39,18 +42,23 @@ export default function Login() {
       </nav>
 
       <div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <select value={query.data?.customers[0].id} onChange={e => setCId(e.currentTarget.value)}>
-            <For each={query.data?.customers}>
-              {customer => <option value={customer.id}>{customer.name}</option>}
-            </For>
-          </select>
-          <select value={query.data?.professionals[0].id} onChange={e => setPId(e.currentTarget.value)}>
-            <For each={query.data?.professionals}>
-              {professional => <option value={professional.id}>{professional.name}</option>}
-            </For>
-          </select>
-        </Suspense>
+        <Show when={!query.isLoading} fallback={<div>Loading...</div>}>
+          <Show when={query?.data?.customers}>
+            <select value={query?.data?.customers[0].id} onChange={e => setCId(e.currentTarget.value)}>
+              <For each={query.data?.customers}>
+                {customer => <option value={customer.id}>{customer.name}</option>}
+              </For>
+            </select>
+          </Show>
+
+          <Show when={query?.data?.professionals}>
+            <select value={query?.data?.professionals[0].id} onChange={e => setPId(e.currentTarget.value)}>
+              <For each={query.data?.professionals}>
+                {professional => <option value={professional.id}>{professional.name}</option>}
+              </For>
+            </select>
+          </Show>
+        </Show>
       </div>
 
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}

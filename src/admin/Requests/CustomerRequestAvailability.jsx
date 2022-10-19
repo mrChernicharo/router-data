@@ -11,6 +11,7 @@ import Button from "../../shared/Button";
 import Icon from "../../shared/Icon";
 import Loading from "../../shared/Loading";
 import { channel } from "../../lib/supabaseClient";
+import { addToast } from "../../shared/ToastContainer";
 
 export default function CustomerRequestAvailability(props) {
   const queryClient = useQueryClient();
@@ -40,10 +41,8 @@ export default function CustomerRequestAvailability(props) {
 
   function handleSubmitOffers(e) {
     e.preventDefault();
-    console.log(e);
 
     const selectedCheckboxes = [...e.currentTarget].filter(d => d.checked);
-
     const selectedTimeBlocks = selectedCheckboxes.map(d => ({
       ...d.dataset,
       customer_id: props.customerId,
@@ -54,14 +53,16 @@ export default function CustomerRequestAvailability(props) {
         // UPDATE BADGE AT THE PARENT
         queryClient.invalidateQueries(["appointment_requests"]);
         query.refetch();
+
+        addToast({ message: "offers sent successfully", status: "success" });
       },
     });
   }
+
   channel.on("broadcast", { event: "person_availability_updated" }, payload => {
     queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
   });
-
   channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
     // UPDATE BADGE AT THE PARENT
     queryClient.invalidateQueries(["appointment_requests"]);

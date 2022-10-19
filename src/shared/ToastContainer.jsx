@@ -2,9 +2,7 @@ import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 
 const [toastContext, setToastContext] = createStore([
-  // { id: 1, message: "heloooooo", status: "success", duration: 2000 },
-  // { id: 2, message: "heloooooo2", status: "default", duration: 3000 },
-  // { id: 3, message: "heloooooo2", status: "warn", duration: 4000 },
+  { id: 1, message: "welcome", status: "default", duration: 2000 },
 ]);
 
 const addToast = info => {
@@ -19,30 +17,9 @@ const addToast = info => {
 };
 
 function ToastContainer(props) {
-  // setTimeout(() => {
-  //   addToast({ message: "heloooooo", status: "success", duration: 4000 });
-  // }, 1000);
-
-  // setTimeout(() => {
-  //   addToast({ message: "heloooooo2", status: "warn", duration: 3000 });
-  // }, 2000);
-
-  // setTimeout(() => {
-  //   addToast({ message: "heloooooo3", status: "default", duration: 5000 });
-  // }, 3000);
-
-  // setTimeout(() => {
-  //   addToast({ message: "heloooooo4", status: "danger", duration: 2000 });
-  // }, 4000);
-
-  // setTimeout(() => {
-  //   console.log(unwrap(toastContext));
-  // }, 5000);
-
   return (
     <div
       style={{
-        // border: "1px solid red",
         position: "fixed",
         top: "50px",
         right: "20px",
@@ -89,12 +66,4 @@ function Toast(props) {
   );
 }
 
-// addToast({ message: "heelo" });
 export { ToastContainer, addToast };
-
-{
-  /* <Toast message="default" status="haaa" duration={3_000} />
-      <Toast message="oh crap" status="danger" duration={9_000} />
-      <Toast message="warning" status="warn" duration={6_000} />
-      <Toast message="hello" status="success" duration={12_000} /> */
-}

@@ -10,6 +10,7 @@ import Button from "../shared/Button";
 import { s } from "../lib/styles";
 import Badge from "../shared/Badge";
 import { channel } from "../lib/supabaseClient";
+import { addToast } from "../shared/ToastContainer";
 
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
@@ -22,19 +23,16 @@ export default function AppointmentOffers(props) {
     offer.ISODate = ISODateStrFromDateAndTime(datetime, offer.time);
 
     offer.professional_id = offer.professional.id;
-    // delete offer.professional;
 
-    console.log({
-      //   offerId: offerId(),
-      //   offers: props.offers,
-      offer,
-    });
+    // console.log({ offer });
 
     insertMutation.mutate(offer, {
       onSuccess: res => {
-        console.log("offer confirmed, appointment created", res);
+        // console.log("offer confirmed, appointment created", res);
 
         props.onAccepted(res);
+
+        addToast({ message: "appointment confirmed!", status: "success", duration: 3000 });
 
         channel.send({
           type: "broadcast",
@@ -42,7 +40,8 @@ export default function AppointmentOffers(props) {
         });
       },
       onError: err => {
-        console.log("error creating appointment", err);
+        console.log("error creating appointment", { err });
+        addToast({ message: "error creating appointment", status: "danger", duration: 4000 });
       },
     });
   }

@@ -8,15 +8,14 @@ import { s } from "../lib/styles";
 import { addToast } from "./ToastContainer";
 
 export default function AvailabilityTable(props) {
-  const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
-  const isBusy = (day, hour) =>
-    props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
-  // const isBusy = (day, hour) => props.availability.find(av => av.time === hour && av.day === day)?.status;
-
   const queryClient = useQueryClient();
   const updateMutation = createMutation(["customer", props.person.id], availability =>
     updatePersonAvailability(props.person, props.role, availability)
   );
+
+  const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
+  const isBusy = (day, hour) =>
+    props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
 
   function handleAvailabilityUpdate(e) {
     e.preventDefault();
@@ -29,7 +28,7 @@ export default function AvailabilityTable(props) {
       status: "1",
     }));
 
-    console.log("handleAvailabilityUpdate", { e, props, selectedCheckboxes, selectedTimeBlocks });
+    // console.log("handleAvailabilityUpdate", { e, props, selectedCheckboxes, selectedTimeBlocks });
 
     updateMutation.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {

@@ -1,17 +1,11 @@
-import { useNavigate, useRouteData, Link } from "solid-app-router";
+import { Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 
-import { onMount, createEffect } from "solid-js";
-import { userStore, setUserStore } from "../lib/userStore";
-
-import CollapseBox from "../shared/CollapseBox";
-import AppointmentRequests from "./Requests";
 import Button from "../shared/Button";
 import Badge from "../shared/Badge";
 import Icon from "../shared/Icon";
 import Loading from "../shared/Loading";
 import { fetchAdminData } from "../lib/fetchFuncs";
-import { addToast } from "../shared/ToastContainer";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -36,6 +30,7 @@ export default function Admin() {
         </nav>
       </div>
 
+      {/* Stats Cards */}
       <Suspense fallback={<Loading />}>
         <div class="d-flex gap-2" style={{ "flex-wrap": "wrap" }}>
           <div
@@ -84,7 +79,7 @@ export default function Admin() {
         </h3>
       </Suspense>
 
-      <pre>{JSON.stringify(query, null, 1)}</pre>
+      {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
     </div>
   );
 }
