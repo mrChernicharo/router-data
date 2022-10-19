@@ -49,12 +49,12 @@ export default function Customer() {
         <h1>{query.data.customer.name}</h1>
         <div class="mb-5">{query.data.customer.email}</div>
 
-        <AvailabilityTable
-          role="customer"
-          person={query.data.customer}
-          availability={query.data.customer.availability}
-          canEdit={!isAdmin()}
-        />
+        <Show when={query.data?.customer.appointments.length}>
+          <h4>Next Appointment</h4>
+          <div class="mb-5">
+            <AppointmentList role="customer" appointments={query.data.customer.appointments} />
+          </div>
+        </Show>
 
         <Show when={!isAdmin() && query.data?.customer.offers.length}>
           <AppointmentOffers
@@ -77,11 +77,12 @@ export default function Customer() {
           />
         </Show>
 
-        <Show when={query.data?.customer.appointments.length}>
-          <div class="mb-5">
-            <AppointmentList role="customer" appointments={query.data.customer.appointments} />
-          </div>
-        </Show>
+        <AvailabilityTable
+          role="customer"
+          person={query.data.customer}
+          availability={query.data.customer.availability}
+          canEdit={!isAdmin()}
+        />
 
         {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
       </Show>

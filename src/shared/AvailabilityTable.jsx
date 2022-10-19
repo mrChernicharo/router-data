@@ -41,7 +41,7 @@ export default function AvailabilityTable(props) {
 
   return (
     <div data-component="AvailabilityTable">
-      <h3>Availability</h3>
+      <h4>Availability</h4>
 
       {/* <CollapseBox open> */}
       <CollapseBox>
