@@ -10,7 +10,10 @@ export default function AppointmentsCalendar(props) {
         <Button kind="light" text="week" />
         <Button kind="light" text="month" />
 
-        {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
+        <div>{props.person.id}</div>
+        <div>{props.person.name}</div>
+        <div>{props.person.email}</div>
+        <pre>{JSON.stringify(props.appointments, null, 2)}</pre>
       </CollapseBox>
     </div>
   );

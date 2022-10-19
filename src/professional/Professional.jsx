@@ -1,7 +1,9 @@
 import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
+import { addMinutes, isPast, subDays } from "date-fns";
 import ProfessionalAppointments from "./ProfessionalAppointments";
-import AppointmentHistory from "../shared/AppointmentHistory";
+import AppointmentList from "../shared/AppointmentList";
+import CollapseBox from "../shared/CollapseBox";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import Button from "../shared/Button";
@@ -20,6 +22,18 @@ export default function Professional() {
 
   const isAdmin = () => location.pathname.split("/").filter(Boolean)[0] === "admin";
   const userId = () => location.pathname.split("/")[2];
+
+  const getHistoryAppointments = appointments =>
+    appointments.filter(app => isPast(addMinutes(new Date(app.datetime), 30)));
+
+  const getPatients = appointments =>
+    [
+      ...new Set(appointments.map(app => `${app.customer.id}::${app.customer.name}::${app.customer.email}`)),
+    ].map(p => {
+      const info = p.split("::");
+      const [id, name, email] = [info[0], info[1], info[2]];
+      return { id, name, email };
+    });
 
   createEffect(() => {
     console.log(query.data);
@@ -56,9 +70,36 @@ export default function Professional() {
           appointments={query.data.professional.appointments}
         />
 
-        <div class="mb-5">
-          <AppointmentHistory role="professional" appointments={query.data.professional.appointments} />
+        <div class="">
+          <h4>Patients</h4>
+          <div>patients: {getPatients(query.data.professional.appointments).length} patients</div>
+          <CollapseBox>
+            <ul class="list-group">
+              <For each={getPatients(query.data.professional.appointments)}>
+                {patient => (
+                  <li className="list-group-item">
+                    <h4>{patient.name}</h4>
+                    <small>{patient.id}</small>
+                    <div>{patient.email}</div>
+                    {/* <pre>{JSON.stringify(patientApp.customer)}</pre> */}
+                  </li>
+                )}
+              </For>
+            </ul>
+          </CollapseBox>
         </div>
+
+        <div class="">
+          <h4>Appointment History</h4>
+          <div>total: {getHistoryAppointments(query.data.professional.appointments).length} appointments</div>
+          <CollapseBox>
+            <AppointmentList
+              role="professional"
+              appointments={getHistoryAppointments(query.data.professional.appointments)}
+            />
+          </CollapseBox>
+        </div>
+
         {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
       </Show>
     </div>

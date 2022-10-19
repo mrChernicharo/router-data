@@ -7,7 +7,7 @@ import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { createEffect } from "solid-js";
-import AppointmentHistory from "../shared/AppointmentHistory";
+import AppointmentList from "../shared/AppointmentList";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 
@@ -79,7 +79,7 @@ export default function Customer() {
 
         <Show when={query.data?.customer.appointments.length}>
           <div class="mb-5">
-            <AppointmentHistory role="customer" appointments={query.data.customer.appointments} />
+            <AppointmentList role="customer" appointments={query.data.customer.appointments} />
           </div>
         </Show>
 

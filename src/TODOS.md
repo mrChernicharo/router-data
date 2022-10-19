@@ -1,8 +1,8 @@
 bring tailwind (and daisyUI)
 
-specialized versions of current AppointmentHistory
+specialized versions of current AppointmentList
     AppointmentList
-        - AppointmentHistory
+        - AppointmentList
         - WeeklyAppointments
         - NextAppointment
         - NextAppointments
