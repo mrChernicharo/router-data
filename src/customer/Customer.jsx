@@ -36,9 +36,14 @@ export default function Customer() {
     query.refetch();
   });
 
-  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+  channel.on("broadcast", { event: "person_availability_updated" }, payload => {
     // console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
     // queryClient.invalidateQueries(["customer"]);
+    query.refetch();
+  });
+
+  channel.on("broadcast", { event: "new_appointment_created" }, payload => {
+    // console.log("new_appointment_created!!!");
     query.refetch();
   });
 
@@ -61,7 +66,13 @@ export default function Customer() {
         />
 
         <Show when={!isAdmin() && query.data?.customer.offers.length}>
-          <AppointmentOffers customer={query.data?.customer} offers={query.data?.customer.offers} />
+          <AppointmentOffers
+            customer={query.data?.customer}
+            offers={query.data?.customer.offers}
+            onAccepted={val => {
+              query.refetch();
+            }}
+          />
         </Show>
 
         <Show when={query.data?.customer}>

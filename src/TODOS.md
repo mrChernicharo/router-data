@@ -6,7 +6,12 @@ bring realtime to offer matches on:
 availability update is killing offers
 
 
+update customer offers on appointment created
 
+professional can't have 2 appointments at the same day/time
+
+
+=========================
 
 how availability updates affect appointments?
     if appointment not in new availability

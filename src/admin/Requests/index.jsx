@@ -18,9 +18,11 @@ export default function AppointmentRequests(props) {
   });
   const queryClient = useQueryClient();
 
-  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-    //   console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
-    // query.refetch();
+  channel.on("broadcast", { event: "new_appointment_created" }, payload => {
+    console.log("new_appointment_created!!!");
+    // queryClient.invalidateQueries(["customer_request_availability"]);
+    queryClient.refetchQueries(["customer_request_availability"]);
+    query.refetch();
   });
 
   return (

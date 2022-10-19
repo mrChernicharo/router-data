@@ -9,6 +9,7 @@ import CollapseBox from "../shared/CollapseBox";
 import Button from "../shared/Button";
 import { s } from "../lib/styles";
 import Badge from "../shared/Badge";
+import { channel } from "../lib/supabaseClient";
 
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
@@ -29,7 +30,18 @@ export default function AppointmentOffers(props) {
       offer,
     });
 
-    insertMutation.mutate(offer);
+    insertMutation.mutate(offer, {
+      onSuccess: res => {
+        console.log("offer confirmed", res);
+
+        props.onAccepted(res);
+
+        channel.send({
+          type: "broadcast",
+          event: "new_appointment_created",
+        });
+      },
+    });
   }
 
   const bg = id => (offerId() === id ? "#efe" : "");

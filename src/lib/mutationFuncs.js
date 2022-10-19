@@ -271,30 +271,24 @@ const confirmOffer = async offer => {
     .delete()
     .eq("customer_id", customerId)
     .select();
-  if (deleteOfferError) {
-    console.log({ deleteOfferError });
-    return;
-  }
+  if (deleteOfferError) return console.log({ deleteOfferError });
+
   // 2. patch customer availability (status)
   const { data: updatedCustomerAvail, error: updateCAvError } = await supabase
     .from("customer_availability")
     .update({ status: "0" })
     .match({ customer_id: customerId, day: offer.day, time: offer.time })
     .select();
-  if (updateCAvError) {
-    console.log({ updateCAvError });
-    return;
-  }
+  if (updateCAvError) return console.log({ updateCAvError });
+
   // 3. professional availability (status)
   const { data: updatedProfAvail, error: updatePAvError } = await supabase
     .from("professional_availability")
     .update({ status: "0" })
     .match({ professional_id: offer.professional_id, day: offer.day, time: offer.time })
     .select();
-  if (updatePAvError) {
-    console.log({ updatePAvError });
-    return;
-  }
+  if (updatePAvError) return console.log({ updatePAvError });
+
   const newAppointment = {
     customer_id: customerId,
     professional_id: offer.professional_id,
@@ -303,15 +297,15 @@ const confirmOffer = async offer => {
     datetime: offer.ISODate,
     status: "1",
   };
+
   // 4. create appointment 🎉
+  // CREATE 4 IN A ROW
   const { data, error: appointmentError } = await supabase
     .from("realtime_appointments")
     .insert(newAppointment)
     .select();
-  if (appointmentError) {
-    console.log({ appointmentError });
-    return;
-  }
+
+  if (appointmentError) return console.log({ appointmentError });
 
   return { offer };
 
@@ -339,26 +333,26 @@ const updatePersonAvailability = async (person, role, newAvailability) => {
   newAvailability.forEach(av => {
     newAvObj[`${av.day}::${av.time}`] = av;
   });
-  
+
   const toRemove = [];
   const toAdd = [];
   initialAvailability.forEach(av => {
     if (!newAvObj[`${av.day}::${av.time}`]) {
       // console.log("remove this", av);
-      toRemove.push(av)
+      toRemove.push(av);
     }
   });
   newAvailability.forEach(av => {
     if (!initialAvObj[`${av.day}::${av.time}`]) {
       // console.log("add this", av);
-      toAdd.push(av)
+      toAdd.push(av);
     }
   });
 
   const { data: prunedAvailability, error: deleteError } = await supabase
     .from(`${role}_availability`)
     .delete()
-    .filter('id', 'in', `(${toRemove.map(o => o.id)})`)
+    .filter("id", "in", `(${toRemove.map(o => o.id)})`)
     .select();
   if (deleteError) return console.log({ deleteError });
 
@@ -367,7 +361,6 @@ const updatePersonAvailability = async (person, role, newAvailability) => {
     .insert(toAdd)
     .select();
   if (insertError) return console.log({ insertError });
-
 
   channel.send({
     type: "broadcast",
