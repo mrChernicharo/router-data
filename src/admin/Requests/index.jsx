@@ -2,7 +2,7 @@ import { useNavigate, useRouteData, Link } from "solid-app-router";
 import Badge from "../../shared/Badge";
 import Button from "../../shared/Button";
 import { For } from "solid-js";
-import { createQuery } from "@tanstack/solid-query";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
 
 import { createEffect } from "solid-js";
 import { Suspense } from "solid-js";
@@ -16,6 +16,7 @@ export default function AppointmentRequests(props) {
   const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
     refetchOnMount: true,
   });
+  const queryClient = useQueryClient();
 
   // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
   //   console.log("[AppointmentRequests]", "person_availability_updated, pião");
@@ -28,7 +29,9 @@ export default function AppointmentRequests(props) {
   // });
 
   channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-    console.log("[AppointmentRequests]", "professionals_availability_updated");
+    console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
+
+    // query.refetch();
   });
 
   return (

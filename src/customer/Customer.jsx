@@ -1,4 +1,4 @@
-import { createQuery } from "@tanstack/solid-query";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import CustomerAppointments from "./CustomerAppointments";
 import { fetchCustomerData } from "../lib/fetchFuncs";
@@ -14,6 +14,7 @@ import { channel } from "../lib/supabaseClient";
 export default function Customer() {
   const location = useLocation();
   const params = useParams();
+  const queryClient = useQueryClient();
   const query = createQuery(
     () => ["customer", params.id],
     () => fetchCustomerData(params.id)
@@ -31,6 +32,7 @@ export default function Customer() {
 
   channel.on("broadcast", { event: `${userId()}::appointment_offers_updated` }, () => {
     console.log({ event: `${userId()}::appointment_offers_updated` });
+    queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
 

@@ -49,26 +49,25 @@ export default function CustomerRequestAvailability(props) {
 
     sendOffers.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
-        // queryClient.invalidateQueries(["appointment_requests"]);
+        // UPDATE BADGE
+        queryClient.invalidateQueries(["appointment_requests"]);
         query.refetch();
       },
     });
   }
-
-  channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
-    console.log("[CustomerRequestAvailability]", `${props.customerId}::customer_availability_updated`);
+  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+    console.log("[CustomerRequestAvailability!!!]", "person_availability_updated");
+    // queryClient.invalidateQueries(["customer_request_availability", props.customerId]);
+    queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
   });
 
-  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-  //   console.log("[CustomerRequestAvailability]", `person_availability_updated`);
-  // });
-
-  // channel.on("broadcast", { event: `customers_availability_updated` }, payload => {
-  //   console.log("[CustomerRequestAvailability]", `customers_availability_updated`);
-  // });
-
-  // console.log(`${props.customerId}::customer_availability_updated`);
+  channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
+    console.log("[CustomerRequestAvailability]", `${props.customerId}::customer_availability_updated`);
+    // UPDATE BADGE
+    queryClient.invalidateQueries(["appointment_requests"]);
+    query.refetch();
+  });
 
   return (
     <div data-component="CustomerRequestAvailability">

@@ -40,8 +40,6 @@ export default function AppointmentOffers(props) {
       </Show>
       <h3>AppointmentOffers</h3>
 
-      {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
-
       <CollapseBox open>
         <Switch>
           <Match when={props.offers.length}>
@@ -87,6 +85,8 @@ export default function AppointmentOffers(props) {
             />
           </div>
         </div>
+
+        {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
       </CollapseBox>
     </div>
   );
