@@ -3,6 +3,7 @@ import { Routes, Route, Outlet, useNavigate } from "solid-app-router";
 
 import { s } from "./lib/styles";
 import Button from "./shared/Button";
+import { ToastContainer } from "./shared/ToastContainer";
 import Header from "./shared/Header";
 
 // import { userStore, logout } from "./userStore";
@@ -26,6 +27,8 @@ export default function Router() {
 
   const Layout = () => (
     <div>
+      <ToastContainer />
+
       <Header />
 
       <Outlet />
