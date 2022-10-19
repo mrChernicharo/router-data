@@ -8,6 +8,9 @@ import { s } from "../lib/styles";
 
 export default function AvailabilityTable(props) {
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
+  const isBusy = (day, hour) =>
+    props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
+  // const isBusy = (day, hour) => props.availability.find(av => av.time === hour && av.day === day)?.status;
 
   const queryClient = useQueryClient();
   const updateMutation = createMutation(["customer", props.person.id], availability =>
@@ -59,7 +62,8 @@ export default function AvailabilityTable(props) {
                     <th scope="row">{time}</th>
                     <For each={STR_NUM_WEEKDAYS}>
                       {weekday => (
-                        <td style={{ padding: 0 }}>
+                        <td style={{ padding: 0, border: isBusy(weekday, time) ? "1px solid red" : "" }}>
+                          {/* {isBusy(weekday, time)} */}
                           <label style={s.tdLabel}>
                             <input
                               type="checkbox"

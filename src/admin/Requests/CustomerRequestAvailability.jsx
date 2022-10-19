@@ -49,22 +49,19 @@ export default function CustomerRequestAvailability(props) {
 
     sendOffers.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
-        // UPDATE BADGE
+        // UPDATE BADGE AT THE PARENT
         queryClient.invalidateQueries(["appointment_requests"]);
         query.refetch();
       },
     });
   }
-  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-    console.log("[CustomerRequestAvailability!!!]", "person_availability_updated");
-    // queryClient.invalidateQueries(["customer_request_availability", props.customerId]);
+  channel.on("broadcast", { event: "person_availability_updated" }, payload => {
     queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
   });
 
   channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
-    console.log("[CustomerRequestAvailability]", `${props.customerId}::customer_availability_updated`);
-    // UPDATE BADGE
+    // UPDATE BADGE AT THE PARENT
     queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
   });

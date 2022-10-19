@@ -31,14 +31,14 @@ export default function Customer() {
   });
 
   channel.on("broadcast", { event: `${userId()}::appointment_offers_updated` }, () => {
-    console.log({ event: `${userId()}::appointment_offers_updated` });
-    queryClient.invalidateQueries(["customer"]);
+    // console.log({ event: `${userId()}::appointment_offers_updated` });
+    // queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
 
   channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-    console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
-    queryClient.invalidateQueries(["customer"]);
+    // console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
+    // queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
 
@@ -78,11 +78,6 @@ export default function Customer() {
           <div class="mb-5">
             <AppointmentHistory role="customer" appointments={query.data.customer.appointments} />
           </div>
-          {/* 
-              Next Appointment
-              Appointments History
-              Appointments Calendar
-          */}
         </Show>
 
         {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}

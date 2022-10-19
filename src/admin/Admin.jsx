@@ -77,7 +77,7 @@ export default function Admin() {
         <h3 class="mt-4">
           <Badge danger={query.data?.unattended_count > 0} />
           <Link class="d-flex nav-link align-items-center" href="/admin/requests">
-            <div>Appointment Requests</div>
+            <div>Requests</div>
             <Icon chevronRight />
           </Link>
         </h3>

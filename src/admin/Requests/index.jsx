@@ -18,21 +18,10 @@ export default function AppointmentRequests(props) {
   });
   const queryClient = useQueryClient();
 
-  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "person_availability_updated, pião");
-  // });
-  // channel.on("broadcast", { event: `customers_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "customers_availability_updated");
-  // });
-  // channel.on("broadcast", { event: `professionals_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "professionals_availability_updated");
-  // });
-
-  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
-
-  //   // query.refetch();
-  // });
+  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+    //   console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
+    // query.refetch();
+  });
 
   return (
     <div data-component="AppointmentRequests">
@@ -59,4 +48,16 @@ export default function AppointmentRequests(props) {
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
+}
+
+{
+  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "person_availability_updated, pião");
+  // });
+  // channel.on("broadcast", { event: `customers_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "customers_availability_updated");
+  // });
+  // channel.on("broadcast", { event: `professionals_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "professionals_availability_updated");
+  // });
 }
