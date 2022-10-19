@@ -256,89 +256,22 @@ const createAppointmentOffers = async (customerId, offers) => {
 };
 
 const confirmOffer = async offer => {
-  const customerId = offer.customer_id;
   console.log("confirmOffer", { offer });
 
-  // 1. confirm that there are no appointments to same professional/time/date
-  const { data: foundExisting, error: feErr } = await supabase
-    .from("realtime_appointments")
-    .select("*")
-    .match({
-      professional_id: offer.professional.id,
-      time: offer.time,
-      day: offer.day,
-    });
-
-  if (foundExisting.length || feErr) {
-    console.log({ foundExisting, feErr });
-    throw new Error("professional already has an appointment at the same day/time");
-  }
-
-  // 2. create appointment 🎉
-  const newAppointment = {
-    customer_id: customerId,
+  const { data: appointment, error } = await supabase.rpc("fn_create_first_appointment", {
+    customer_id: offer.customer_id,
     professional_id: offer.professional_id,
     day: offer.day,
-    time: offer.time,
+    hour: offer.time,
     datetime: offer.ISODate,
-    status: "1",
-  };
-  const { data: appointment, error: appointmentError } = await supabase
-    .from("realtime_appointments")
-    .insert(newAppointment)
-    .select();
-
-  if (appointmentError) return console.log({ appointmentError });
-
-  // 3 clear all appointment_offers made to customer
-  const { data: CDeletedOffers, error: deleteOfferError } = await supabase
-    .from("appointment_offers")
-    .delete()
-    .eq("customer_id", customerId)
-    .select();
-
-  // 4. clear same appointment_offer to other customers
-  const { data: ODeletedOffers, error: ODeleteError } = await supabase
-    .from("appointment_offers")
-    .delete()
-    .match({ professional_id: offer.professional_id, time: offer.time, day: offer.day });
-
-  if (ODeleteError || deleteOfferError) return console.log({ ODeleteError, deleteOfferError });
-
-  // 5. patch customer availability (status)
-  const { data: updatedCustomerAvail, error: updateCAvError } = await supabase
-    .from("customer_availability")
-    .update({ status: "0" })
-    .match({ customer_id: customerId, day: offer.day, time: offer.time })
-    .select();
-
-  // 6. professional availability (status)
-  const { data: updatedProfAvail, error: updatePAvError } = await supabase
-    .from("professional_availability")
-    .update({ status: "0" })
-    .match({ professional_id: offer.professional_id, day: offer.day, time: offer.time })
-    .select();
-
-  if (updateCAvError || updatePAvError) return console.log({ updateCAvError, updatePAvError });
-
-  console.log("create appointment", {
-    appointment,
-    updatedCustomerAvail,
-    updatedProfAvail,
-    CDeletedOffers,
-    ODeletedOffers,
-    offer,
   });
 
-  return { appointment };
+  if (error) {
+    console.log({ error });
+    throw new Error(error.message);
+  }
 
-  // await fetchServer();
-  // channel.send({
-  //   type: "broadcast",
-  //   event: "appointment_offer_confirmed_by_customer",
-  //   customerId,
-  //   entry: offer,
-  // });
+  return { appointment };
 };
 
 const updatePersonAvailability = async (person, role, newAvailability) => {
