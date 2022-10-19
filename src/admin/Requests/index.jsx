@@ -28,11 +28,11 @@ export default function AppointmentRequests(props) {
   //   console.log("[AppointmentRequests]", "professionals_availability_updated");
   // });
 
-  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-    console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
+  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+  //   console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
 
-    // query.refetch();
-  });
+  //   // query.refetch();
+  // });
 
   return (
     <div data-component="AppointmentRequests">

@@ -36,6 +36,12 @@ export default function Customer() {
     query.refetch();
   });
 
+  channel.on("broadcast", { event: `person_availability_updated` }, payload => {
+    console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
+    queryClient.invalidateQueries(["customer"]);
+    query.refetch();
+  });
+
   return (
     <div data-component="Customer">
       <Link href={isAdmin() ? "/admin/customers" : "/login"}>
