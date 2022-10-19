@@ -11,6 +11,7 @@ import Badge from "../shared/Badge";
 import Icon from "../shared/Icon";
 import Loading from "../shared/Loading";
 import { fetchAdminData } from "../lib/fetchFuncs";
+import { addToast } from "../shared/ToastContainer";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {

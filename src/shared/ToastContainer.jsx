@@ -7,35 +7,37 @@ const [toastContext, setToastContext] = createStore([
   // { id: 3, message: "heloooooo2", status: "warn", duration: 4000 },
 ]);
 
-const addToast = toast => {
+const addToast = info => {
   const id = Math.random();
-  setToastContext(prev => [...prev, { ...toast, id }]);
+  const toast = { id, duration: 2000, status: "default", ...info };
 
-  console.log(toastContext);
+  setToastContext(prev => [...prev, toast]);
+
+  console.log("called addToast", unwrap(toastContext));
 
   setTimeout(() => setToastContext(prev => prev.filter(t => t.id !== id)), toast.duration);
 };
 
 function ToastContainer(props) {
-  setTimeout(() => {
-    addToast({ message: "heloooooo", status: "success", duration: 4000 });
-  }, 1000);
+  // setTimeout(() => {
+  //   addToast({ message: "heloooooo", status: "success", duration: 4000 });
+  // }, 1000);
 
-  setTimeout(() => {
-    addToast({ message: "heloooooo2", status: "warn", duration: 3000 });
-  }, 2000);
+  // setTimeout(() => {
+  //   addToast({ message: "heloooooo2", status: "warn", duration: 3000 });
+  // }, 2000);
 
-  setTimeout(() => {
-    addToast({ message: "heloooooo3", status: "default", duration: 5000 });
-  }, 3000);
+  // setTimeout(() => {
+  //   addToast({ message: "heloooooo3", status: "default", duration: 5000 });
+  // }, 3000);
 
-  setTimeout(() => {
-    addToast({ message: "heloooooo4", status: "danger", duration: 2000 });
-  }, 4000);
+  // setTimeout(() => {
+  //   addToast({ message: "heloooooo4", status: "danger", duration: 2000 });
+  // }, 4000);
 
-  setTimeout(() => {
-    console.log(unwrap(toastContext));
-  }, 5000);
+  // setTimeout(() => {
+  //   console.log(unwrap(toastContext));
+  // }, 5000);
 
   return (
     <div
@@ -88,7 +90,7 @@ function Toast(props) {
 }
 
 // addToast({ message: "heelo" });
-export { ToastContainer };
+export { ToastContainer, addToast };
 
 {
   /* <Toast message="default" status="haaa" duration={3_000} />

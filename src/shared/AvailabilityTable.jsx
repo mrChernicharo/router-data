@@ -5,6 +5,7 @@ import { updatePersonAvailability } from "../lib/mutationFuncs";
 import Button from "../shared/Button";
 import CollapseBox from "../shared/CollapseBox";
 import { s } from "../lib/styles";
+import { addToast } from "./ToastContainer";
 
 export default function AvailabilityTable(props) {
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
@@ -33,6 +34,7 @@ export default function AvailabilityTable(props) {
     updateMutation.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries([props.role, props.person.id]);
+        addToast({ message: "availability updated!", status: "success", duration: 4000 });
         // query.refetch();
       },
     });

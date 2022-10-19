@@ -4,7 +4,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 
 import Button from "./shared/Button";
-import Toast from "./shared/Toast";
+import { addToast } from "./shared/ToastContainer";
 
 export default function Login() {
   const [cId, setCId] = createSignal("");
