@@ -12,9 +12,9 @@ import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 
 export default function Customer() {
+  const queryClient = useQueryClient();
   const location = useLocation();
   const params = useParams();
-  const queryClient = useQueryClient();
   const query = createQuery(
     () => ["customer", params.id],
     () => fetchCustomerData(params.id)
@@ -23,25 +23,16 @@ export default function Customer() {
   const isAdmin = () => location.pathname.split("/").filter(Boolean)[0] === "admin";
   const userId = () => location.pathname.split("/")[2];
 
-  createEffect(() => {
-    console.log(
-      { data: query.data, isAdmin: isAdmin(), userId: userId() },
-      location.pathname.split("/").filter(Boolean)[0]
-    );
-  });
-
   channel.on("broadcast", { event: `${userId()}::appointment_offers_updated` }, () => {
     // console.log({ event: `${userId()}::appointment_offers_updated` });
     // queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
-
   channel.on("broadcast", { event: "person_availability_updated" }, payload => {
     // console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
     // queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
-
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
     // console.log("new_appointment_created!!!");
     query.refetch();
@@ -70,6 +61,7 @@ export default function Customer() {
             customer={query.data?.customer}
             offers={query.data?.customer.offers}
             onAccepted={val => {
+              console.log("appointment created");
               query.refetch();
             }}
           />

@@ -32,7 +32,7 @@ export default function AppointmentOffers(props) {
 
     insertMutation.mutate(offer, {
       onSuccess: res => {
-        console.log("offer confirmed", res);
+        console.log("offer confirmed, appointment created", res);
 
         props.onAccepted(res);
 
@@ -40,6 +40,9 @@ export default function AppointmentOffers(props) {
           type: "broadcast",
           event: "new_appointment_created",
         });
+      },
+      onError: err => {
+        console.log("error creating appointment", err);
       },
     });
   }

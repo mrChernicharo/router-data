@@ -5,6 +5,8 @@ export default function AppointmentHistory(props) {
   return (
     <div data-component="AppointmentHistory">
       <h4>Appointment History</h4>
+      <div>total: {props.appointments.length} appointments</div>
+
       <CollapseBox>
         <ul class="list-group">
           <For each={props.appointments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime))}>
@@ -25,7 +27,6 @@ export default function AppointmentHistory(props) {
           </For>
         </ul>
       </CollapseBox>
-
       {/* <pre>{JSON.stringify(props.appointments, null, 2)}</pre> */}
     </div>
   );

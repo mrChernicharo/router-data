@@ -259,36 +259,22 @@ const confirmOffer = async offer => {
   const customerId = offer.customer_id;
   console.log("confirmOffer", { offer });
 
-  // 1. clear same appointment_offer to other customers
-  const { data: ODeletedOffers, error: ODeleteError } = await supabase
-    .from("appointment_offers")
-    .delete()
-    .match({ professional_id: offer.professional_id, time: offer.time, day: offer.day });
+  // 1. confirm that there are no appointments to same professional/time/date
+  const { data: foundExisting, error: feErr } = await supabase
+    .from("realtime_appointments")
+    .select("*")
+    .match({
+      professional_id: offer.professional.id,
+      time: offer.time,
+      day: offer.day,
+    });
 
-  // 1.5 clear all appointment_offers made to customer
-  const { data: CDeletedOffers, error: deleteOfferError } = await supabase
-    .from("appointment_offers")
-    .delete()
-    .eq("customer_id", customerId)
-    .select();
-  if (deleteOfferError) return console.log({ deleteOfferError });
+  if (foundExisting.length || feErr) {
+    console.log({ foundExisting, feErr });
+    throw new Error("professional already has an appointment at the same day/time");
+  }
 
-  // 2. patch customer availability (status)
-  const { data: updatedCustomerAvail, error: updateCAvError } = await supabase
-    .from("customer_availability")
-    .update({ status: "0" })
-    .match({ customer_id: customerId, day: offer.day, time: offer.time })
-    .select();
-  if (updateCAvError) return console.log({ updateCAvError });
-
-  // 3. professional availability (status)
-  const { data: updatedProfAvail, error: updatePAvError } = await supabase
-    .from("professional_availability")
-    .update({ status: "0" })
-    .match({ professional_id: offer.professional_id, day: offer.day, time: offer.time })
-    .select();
-  if (updatePAvError) return console.log({ updatePAvError });
-
+  // 2. create appointment 🎉
   const newAppointment = {
     customer_id: customerId,
     professional_id: offer.professional_id,
@@ -297,17 +283,54 @@ const confirmOffer = async offer => {
     datetime: offer.ISODate,
     status: "1",
   };
-
-  // 4. create appointment 🎉
-  // CREATE 4 IN A ROW
-  const { data, error: appointmentError } = await supabase
+  const { data: appointment, error: appointmentError } = await supabase
     .from("realtime_appointments")
     .insert(newAppointment)
     .select();
 
   if (appointmentError) return console.log({ appointmentError });
 
-  return { offer };
+  // 3 clear all appointment_offers made to customer
+  const { data: CDeletedOffers, error: deleteOfferError } = await supabase
+    .from("appointment_offers")
+    .delete()
+    .eq("customer_id", customerId)
+    .select();
+
+  // 4. clear same appointment_offer to other customers
+  const { data: ODeletedOffers, error: ODeleteError } = await supabase
+    .from("appointment_offers")
+    .delete()
+    .match({ professional_id: offer.professional_id, time: offer.time, day: offer.day });
+
+  if (ODeleteError || deleteOfferError) return console.log({ ODeleteError, deleteOfferError });
+
+  // 5. patch customer availability (status)
+  const { data: updatedCustomerAvail, error: updateCAvError } = await supabase
+    .from("customer_availability")
+    .update({ status: "0" })
+    .match({ customer_id: customerId, day: offer.day, time: offer.time })
+    .select();
+
+  // 6. professional availability (status)
+  const { data: updatedProfAvail, error: updatePAvError } = await supabase
+    .from("professional_availability")
+    .update({ status: "0" })
+    .match({ professional_id: offer.professional_id, day: offer.day, time: offer.time })
+    .select();
+
+  if (updateCAvError || updatePAvError) return console.log({ updateCAvError, updatePAvError });
+
+  console.log("create appointment", {
+    appointment,
+    updatedCustomerAvail,
+    updatedProfAvail,
+    CDeletedOffers,
+    ODeletedOffers,
+    offer,
+  });
+
+  return { appointment };
 
   // await fetchServer();
   // channel.send({

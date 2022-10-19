@@ -72,7 +72,6 @@ const fetchStaffData = async () => {
   return { staff };
 };
 
-
 const fetchAdminRequestsData = async () => {
   const { data: customers, error } = await supabase.from("vw_appointment_request_page").select("*");
 
@@ -91,17 +90,22 @@ const fetchCustomerRequestAvailability = async id => {
   const { data: slots, error: mErr } = await supabase
     .rpc("fn_get_appointment_possibilities", { id })
     .select(
-      "*, prof_slots:professional_availability ( id, day, time ), customer_slots:customer_availability ( id, day, time )"
+      "*, prof_slots:professional_availability ( id, day, time, status ), customer_slots:customer_availability ( id, day, time, status )"
     );
 
   if (mErr || oErr) return console.log(mErr || oErr);
 
   const matches = [];
-  for (let item of slots) {
+  for (let [i, item] of slots.entries()) {
     const { time, day } = item;
+    // console.log({ i, item });
 
-    const professional_availability_slot = item.prof_slots.find(s => s.time === time && s.day === day);
-    const customer_availability_slot = item.customer_slots.find(s => s.time === time && s.day === day);
+    const professional_availability_slot = item.prof_slots.find(
+      s => s.time === time && s.day === day && s.status !== "0"
+    );
+    const customer_availability_slot = item.customer_slots.find(
+      s => s.time === time && s.day === day && s.status !== "0"
+    );
 
     if (professional_availability_slot) {
       // this feels wonky: our DB function should not return slots that have no matching prof_av...but this check here does the trick
@@ -138,13 +142,16 @@ const fetchCustomerData = async id => {
     )
     .eq("id", id);
 
-  const {data: offers, error: oErr} = await supabase.from('appointment_offers').select('*').eq('customer_id', id)  
+  const { data: offers, error: oErr } = await supabase
+    .from("appointment_offers")
+    .select("*")
+    .eq("customer_id", id);
 
   if (error) return console.log({ error });
 
   const customer = data[0];
   // console.log('KUSTOMERRRR', customer)
-  
+
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);
     const { professionals } = await fetchProfessionalsId(professionalsIds);
@@ -167,7 +174,7 @@ const fetchCustomerData = async id => {
       offers[i].professional = professional;
     });
 
-    customer.offers = offers
+    customer.offers = offers;
   }
 
   console.log("fetchCustomerData", { customer });
@@ -181,7 +188,6 @@ const fetchProfessionalsData = async () => {
   console.log({ professionals });
   return { professionals };
 };
-
 
 const fetchProfessionalData = async id => {
   const { data, error } = await supabase
@@ -197,8 +203,8 @@ const fetchProfessionalData = async id => {
 
   const professional = data[0];
 
-  if (!professional.appointments?.length)  return { professional };
-  
+  if (!professional.appointments?.length) return { professional };
+
   const customersProms = [];
   for (let appointment of professional.appointments) {
     customersProms.push(supabase.from("customers").select("*").eq("id", appointment.customer_id));
@@ -212,46 +218,10 @@ const fetchProfessionalData = async id => {
     delete professional.appointments[i].customer_id;
     professional.appointments[i].customer = customer;
   }
-  
 
   console.log("fetchProfessionalData", { professional });
 
   return { professional };
-};
-
-const fetchAppointmentsData = async () => {
-  const { data, error } = await supabase.from("realtime_appointments").select("*");
-  if (error) return console.log({ error });
-  return { data };
-};
-
-const fetchAppointmentData = async id => {
-  const { data, error } = await supabase.from("realtime_appointments").select("*").eq("id", id);
-  if (error) return console.log({ error });
-  return { data };
-};
-
-const fetchCustomerAvailability = async () => {
-  const { data, error } = await supabase.from("customer_availability").select("*");
-  if (error) return console.log({ error });
-  return { data };
-};
-const fetchProfessionalAvailability = async () => {
-  const { data, error } = await supabase.from("professional_availability").select("*");
-  if (error) return console.log({ error });
-  return { data };
-};
-const fetchRealtimeAppointments = async () => {
-  const { data, error } = await supabase.from("realtime_appointments").select("*");
-  if (error) return console.log({ error });
-  return { data };
-};
-
-const fetchAppointmentOffers = async () => {
-  const { data, error } = await supabase.from("appointment_offers").select("*");
-  if (error) return console.log({ error });
-
-  return { data };
 };
 
 export {
@@ -264,10 +234,4 @@ export {
   fetchProfessionalsData,
   fetchStaffData,
   fetchProfessionalData,
-  fetchAppointmentsData,
-  fetchAppointmentData,
-  fetchCustomerAvailability,
-  fetchProfessionalAvailability,
-  fetchRealtimeAppointments,
-  fetchAppointmentOffers,
 };

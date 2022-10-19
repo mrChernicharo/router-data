@@ -33,6 +33,8 @@ export default function CustomerRequestAvailability(props) {
       mObj[match[filter()]].push(match);
     });
 
+    console.log({ q: query.data?.matches, mObj });
+
     return mObj;
   });
 
