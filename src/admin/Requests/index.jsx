@@ -31,7 +31,7 @@ export default function AppointmentRequests(props) {
         <Button kind="light" text="👈🏽" type="button" />
       </Link>
 
-      <h1>Appointment Requests</h1>
+      <h1 class="font-bold">Appointment Requests</h1>
 
       <ul class="list-group">
         <For each={query.data?.customers.filter(c => !c.has_appointment)}>

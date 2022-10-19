@@ -99,8 +99,8 @@ export default function Staff() {
         <For each={query.data?.staff}>
           {person => (
             <div>
-              <li class="list-group-item d-flex justify-content-between">
-                <div class="d-flex">
+              <li class="list-group-item flex justify-content-between">
+                <div class="flex">
                   <div
                     style={{ ...s.listHighlight, background: person.isRegistered ? "#18e697" : "#bbb" }}
                   ></div>
@@ -110,7 +110,7 @@ export default function Staff() {
                     {person.isRegistered && <div>professional id: {person.professional.id}</div>}
                   </div>
                 </div>
-                <div class="d-flex">
+                <div class="flex">
                   <Show when={!person.isRegistered}>
                     <Button
                       kind="light"

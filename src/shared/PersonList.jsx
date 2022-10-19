@@ -9,7 +9,7 @@ export default function PersonList(props) {
       <For each={props.personList}>
         {person => (
           <li class="list-group-item">
-            <div class="d-flex">
+            <div class="flex">
               <Link
                 class="w-100 text-decoration-none"
                 style={{ color: "#000" }}
@@ -19,7 +19,7 @@ export default function PersonList(props) {
                 <div>{person.name}</div>
                 <div>{person.email}</div>
               </Link>
-              <div class="d-flex align-items-center">
+              <div class="flex align-items-center">
                 <Button kind="delete" onClick={e => props.onDelete(person.id)} />
               </div>
             </div>

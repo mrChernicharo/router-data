@@ -22,7 +22,7 @@ export default function Admin() {
       </Link>
 
       <div>
-        <h1>Admin</h1>
+        <h1 class="text-3xl font-bold underline">Admin</h1>
 
         <nav class="mb-4">
           <a href="/admin/customers">Customers</a> | <a href="/admin/professionals">Professionals</a> |{" "}
@@ -32,37 +32,37 @@ export default function Admin() {
 
       {/* Stats Cards */}
       <Suspense fallback={<Loading />}>
-        <div class="d-flex gap-2" style={{ "flex-wrap": "wrap" }}>
+        <div class="flex gap-2" style={{ "flex-wrap": "wrap" }}>
           <div
-            class="card d-flex p-2 justify-content-center align-items-center"
+            class="card flex gap-2 p-2 justify-content-center align-items-center"
             style={{ "min-width": "100px" }}
           >
             <div class="card-title fw-bold">Customers</div>
             <div class="card-body">{query.data?.customers_count}</div>
           </div>
           <div
-            class="card d-flex p-2 justify-content-center align-items-center"
+            class="card flex gap-2 p-2 justify-content-center align-items-center"
             style={{ "min-width": "100px" }}
           >
             <div class="card-title fw-bold">Professionals</div>
             <div class="card-body">{query.data?.professionals_count}</div>
           </div>
           <div
-            class="card d-flex p-2 justify-content-center align-items-center"
+            class="card flex gap-2 p-2 justify-content-center align-items-center"
             style={{ "min-width": "100px" }}
           >
             <div class="card-title fw-bold">Staff</div>
             <div class="card-body">{query.data?.staff_count}</div>
           </div>
           <div
-            class="card d-flex p-2 justify-content-center align-items-center"
+            class="card flex gap-2 p-2 justify-content-center align-items-center"
             style={{ "min-width": "100px" }}
           >
             <div class="card-title fw-bold">Total Users</div>
             <div class="card-body">{query.data?.total_users_count}</div>
           </div>
           <div
-            class="card d-flex p-2 justify-content-center align-items-center"
+            class="card flex gap-2 p-2 justify-content-center align-items-center"
             style={{ "min-width": "100px" }}
           >
             <div class="card-title fw-bold">Unattended Customers</div>
@@ -72,7 +72,7 @@ export default function Admin() {
 
         <h3 class="mt-4">
           <Badge danger={query.data?.unattended_count > 0} />
-          <Link class="d-flex nav-link align-items-center" href="/admin/requests">
+          <Link class="flex nav-link align-items-center" href="/admin/requests">
             <div>Requests</div>
             <Icon chevronRight />
           </Link>
