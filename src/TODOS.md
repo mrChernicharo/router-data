@@ -1,14 +1,14 @@
-bring realtime to offer matches on:
-- change customer availability  --->  
-- change professional availability ---> should reflect on customer/appointmentOffers
+bring tailwind (and daisyUI)
 
+specialized versions of current AppointmentHistory
+    AppointmentList
+        - AppointmentHistory
+        - WeeklyAppointments
+        - NextAppointment
+        - NextAppointments
 
-availability update is killing offers
+================================
 
-
-update customer offers on appointment created
-
-professional can't have 2 appointments at the same day/time
 
 
 =========================

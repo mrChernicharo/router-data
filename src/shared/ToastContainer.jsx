@@ -21,8 +21,9 @@ function ToastContainer(props) {
     <div
       style={{
         position: "fixed",
-        top: "50px",
-        right: "20px",
+        top: "2rem",
+        right: 0,
+        "padding-right": "2rem",
       }}
     >
       <For each={toastContext}>{toast => <Toast {...toast} />}</For>
@@ -53,6 +54,7 @@ function Toast(props) {
         width: "fit-content",
         bottom: "100px",
         left: "50%",
+        padding: ".5rem",
         transform: "translateX(-50%)",
         background: colors[props.status] ? colors[props.status] : colors.default,
         animation: "render-toaster",

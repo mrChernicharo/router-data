@@ -67,7 +67,7 @@ export default function Customers() {
           <div class="d-grid input-group mb-3">
             <label class="form-label">
               Email
-              <input ref={inputRef} type="email" class="form-control" placeholder="Employee Email" />
+              <input ref={inputRef} type="email" class="form-control" placeholder="Customer Email" />
             </label>
           </div>
           <div class="d-grid mb-5">

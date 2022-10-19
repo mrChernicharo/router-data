@@ -20,16 +20,12 @@ export default function AppointmentOffers(props) {
   function handleConfirmAppointment(e) {
     const offer = props.offers.find(o => o.id === offerId());
     const datetime = getClosestDate(offer.day);
+
     offer.ISODate = ISODateStrFromDateAndTime(datetime, offer.time);
-
     offer.professional_id = offer.professional.id;
-
-    // console.log({ offer });
 
     insertMutation.mutate(offer, {
       onSuccess: res => {
-        // console.log("offer confirmed, appointment created", res);
-
         props.onAccepted(res);
 
         addToast({ message: "appointment confirmed!", status: "success", duration: 3000 });
@@ -40,7 +36,6 @@ export default function AppointmentOffers(props) {
         });
       },
       onError: err => {
-        console.log("error creating appointment", { err });
         addToast({ message: "error creating appointment", status: "danger", duration: 4000 });
       },
     });

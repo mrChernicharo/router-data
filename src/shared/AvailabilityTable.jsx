@@ -52,7 +52,7 @@ export default function AvailabilityTable(props) {
             <thead style={{ position: "sticky", top: "0" }}>
               <tr style={{ "text-align": "center" }}>
                 <For each={["", ...STR_NUM_WEEKDAYS]}>
-                  {day => <th scope="col">{day ? dateToWeekday(day) : ""}</th>}
+                  {day => <th scope="col">{day ? dateToWeekday(day).slice(0, 3) : ""}</th>}
                 </For>
               </tr>
             </thead>
@@ -63,15 +63,26 @@ export default function AvailabilityTable(props) {
                     <th scope="row">{time}</th>
                     <For each={STR_NUM_WEEKDAYS}>
                       {weekday => (
-                        <td style={{ padding: 0, background: isBusy(weekday, time) ? "coral" : "" }}>
-                          {/* {isBusy(weekday, time)} */}
-                          <label style={s.tdLabel}>
+                        <td
+                          style={{
+                            padding: 0,
+                            fontFamily: "Monospace",
+                            "border-radius": "4px",
+                            background: isBusy(weekday, time) ? "orange" : "",
+                          }}
+                        >
+                          <label
+                            class="crazy-checkbox" /**
+                            style={s.tdLabel}
+                          */
+                          >
                             <input
                               type="checkbox"
                               checked={isChecked(weekday, time)}
                               data-day={weekday}
                               data-time={time}
                             />
+                            <span class={`checkmark ${isChecked(weekday, time) ? "checked" : ""}`}></span>
                           </label>
                         </td>
                       )}
