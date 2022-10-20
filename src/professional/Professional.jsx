@@ -2,7 +2,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import { addMinutes, isPast, subDays } from "date-fns";
 import ProfessionalAppointments from "./ProfessionalAppointments";
-import AppointmentList from "../shared/AppointmentList";
+import { AppointmentList, ListItem } from "../shared/AppointmentList";
 import CollapseBox from "../shared/CollapseBox";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
 import AvailabilityTable from "../shared/AvailabilityTable";
@@ -11,6 +11,7 @@ import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
 import { createEffect } from "solid-js";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
+import { imageUrl } from "../lib/constants";
 
 export default function Professional() {
   const location = useLocation();
@@ -74,15 +75,18 @@ export default function Professional() {
           <h4>Patients</h4>
           <div>patients: {getPatients(query.data.professional.appointments).length} patients</div>
           <CollapseBox>
-            <ul class="list-group">
+            <ul>
               <For each={getPatients(query.data.professional.appointments)}>
                 {patient => (
-                  <li className="list-group-item">
-                    <h4>{patient.name}</h4>
-                    <small>{patient.id}</small>
-                    <div>{patient.email}</div>
-                    {/* <pre>{JSON.stringify(patientApp.customer)}</pre> */}
-                  </li>
+                  <ListItem>
+                    <div class="flex items-center p-4">
+                      <img src={imageUrl} alt="" class="h-10 w-10 flex-none rounded-full" />
+                      <div class="ml-4 flex-auto">
+                        <div class="font-medium">{patient.name}</div>
+                        <div class="mt-1 text-slate-700">{patient.email}</div>
+                      </div>
+                    </div>
+                  </ListItem>
                 )}
               </For>
             </ul>

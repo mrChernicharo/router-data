@@ -15,7 +15,7 @@ export default function Header(props) {
 
     switch (true) {
       case /\/customer\/.+/.test(location.pathname):
-        setPageTitle("Professional");
+        setPageTitle("Customer");
         setBackLink("/login");
         break;
       case /\/professional\/.+/.test(location.pathname):

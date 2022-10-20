@@ -7,7 +7,7 @@ import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { createEffect } from "solid-js";
-import AppointmentList from "../shared/AppointmentList";
+import { AppointmentList } from "../shared/AppointmentList";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 
