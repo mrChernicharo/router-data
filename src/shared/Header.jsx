@@ -1,6 +1,7 @@
 import Button from "../shared/Button";
 import { s } from "../lib/styles";
 import { FaSolidArrowLeft, FaSolidChevronLeft } from "solid-icons/fa";
+import { APP_NAME } from "../lib/constants";
 
 import { useLocation, Link } from "solid-app-router";
 import { createEffect, createSignal } from "solid-js";
@@ -54,6 +55,10 @@ export default function Header(props) {
         setPageTitle("Admin");
         setBackLink("/login");
         break;
+      default:
+        setBackLink("/");
+        setPageTitle(APP_NAME);
+        break;
     }
   });
 
@@ -62,12 +67,14 @@ export default function Header(props) {
       <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
 
-        <Link href={backLink()}>
-          <button>
-            {/* <FaSolidArrowLeft class="mr-1" /> */}
-            <FaSolidChevronLeft class="mr-1" />
-          </button>
-        </Link>
+        <Show when={pageTitle() !== APP_NAME}>
+          <Link href={backLink()}>
+            <button>
+              {/* <FaSolidArrowLeft class="mr-1" /> */}
+              <FaSolidChevronLeft class="mr-1" />
+            </button>
+          </Link>
+        </Show>
       </div>
     </header>
   );

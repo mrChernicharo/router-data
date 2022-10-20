@@ -1,5 +1,6 @@
 export default function Hero() {
   const height = "63vh";
+  const imgPath = "/assets/mulher-consultas.jpg";
 
   return (
     <div data-component="Hero" class="flex" style={{ height }}>
@@ -27,7 +28,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <img src="/src/assets/mulher-consultas.jpg" class="w-[50vw] object-cover" style={{ height }} />
+      <img src={imgPath} class="w-[50vw] object-cover" style={{ height }} />
     </div>
   );
 }
