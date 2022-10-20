@@ -19,8 +19,10 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0-rc.13",
     "@tanstack/solid-query": "^4.11.1",
+    "daisyui": "^2.31.0",
     "date-fns": "^2.29.3",
     "solid-app-router": "^0.4.2",
+    "solid-icons": "^1.0.2",
     "solid-js": "^1.5.1"
   }
 }

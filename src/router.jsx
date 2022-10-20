@@ -4,6 +4,7 @@ import { Routes, Route } from "solid-app-router";
 import Home from "./Home";
 import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
+import Example from "./shared/ExampleLayout";
 
 const Login = lazy(() => import("./Login"));
 const Admin = lazy(() => import("./admin"));
@@ -39,6 +40,8 @@ export default function Router() {
       <Route path="/professional" component={Layout}>
         <Route path="/:id" component={Professional} />
       </Route>
+
+      <Route path="/example" component={Example} />
 
       <Route path="/**" component={NotFound} />
     </Routes>
