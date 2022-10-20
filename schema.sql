@@ -105,9 +105,10 @@ where a.day is not null;
 ---- find customers with offers
 create or replace view vw_retrieve_customers_with_offers as
 select distinct c.* from customers as c
-left join appointment_offers as o
+inner join appointment_offers as o
 on o.customer_id = c.id
-where o.day is not null;
+
+;
 
 /************ VIEWS ***************/
 
@@ -212,6 +213,7 @@ $$ language sql;
 
 
 SELECT * FROM  information_schema.columns WHERE  table_name = 'appointment_offers';
++
 
 SELECT routine_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND routine_schema = 'public';
 
