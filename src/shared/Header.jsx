@@ -14,6 +14,10 @@ export default function Header(props) {
     console.log(location.pathname);
 
     switch (true) {
+      case /\/login/.test(location.pathname):
+        setPageTitle("Login");
+        setBackLink("/");
+        break;
       case /\/customer\/.+/.test(location.pathname):
         setPageTitle("Customer");
         setBackLink("/login");
@@ -21,6 +25,10 @@ export default function Header(props) {
       case /\/professional\/.+/.test(location.pathname):
         setPageTitle("Professional");
         setBackLink("/login");
+        break;
+      case /\/admin\/requests/.test(location.pathname):
+        setPageTitle("Requests");
+        setBackLink("/admin");
         break;
       case /\/admin\/customers\/.+/.test(location.pathname):
         setPageTitle("Customer");

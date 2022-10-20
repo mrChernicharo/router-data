@@ -64,3 +64,7 @@ export const ISODateStrFromDateAndTime = (dateStr, time) => {
       new Date(dateStr).getTimezoneOffset() * 60 * 1000
   ).toISOString();
 };
+
+export const classss = (...classes) => {
+  return classes.filter(Boolean).join(" ");
+}

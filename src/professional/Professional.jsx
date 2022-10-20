@@ -2,7 +2,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import { addMinutes, isPast, subDays } from "date-fns";
 import ProfessionalAppointments from "./ProfessionalAppointments";
-import { AppointmentList, ListItem } from "../shared/AppointmentList";
+import { AppointmentList } from "../shared/AppointmentList";
 import CollapseBox from "../shared/CollapseBox";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
 import AvailabilityTable from "../shared/AvailabilityTable";
@@ -12,6 +12,7 @@ import { fetchProfessionalData } from "../lib/fetchFuncs";
 import { createEffect } from "solid-js";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { imageUrl } from "../lib/constants";
+import ListItem from "../shared/ListItem";
 
 export default function Professional() {
   const location = useLocation();

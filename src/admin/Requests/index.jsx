@@ -11,6 +11,7 @@ import Icon from "../../shared/Icon";
 import CustomerRequest from "./CustomerRequest";
 import { fetchAdminRequestsData } from "../../lib/fetchFuncs";
 import { channel } from "../../lib/supabaseClient";
+import ListItem from "../../shared/ListItem";
 
 export default function AppointmentRequests(props) {
   const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
@@ -27,23 +28,19 @@ export default function AppointmentRequests(props) {
 
   return (
     <div data-component="AppointmentRequests">
-      <Link href="/admin">
-        <Button kind="light" text="👈🏽" type="button" />
-      </Link>
-
-      <h1 class="font-bold">Appointment Requests</h1>
-
       <ul class="list-group">
         <For each={query.data?.customers.filter(c => !c.has_appointment)}>
           {customer => (
-            <li class="list-group-item">
-              <Badge
-                danger={customer.is_unattended}
-                warn={customer.has_offer}
-                // success={customer.has_appointment}
-              />
-              <CustomerRequest customer={customer} />
-            </li>
+            <ListItem>
+              <div class="p-4">
+                <Badge
+                  danger={customer.is_unattended}
+                  warn={customer.has_offer}
+                  // success={customer.has_appointment}
+                />
+                <CustomerRequest customer={customer} />
+              </div>
+            </ListItem>
           )}
         </For>
       </ul>

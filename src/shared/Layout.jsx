@@ -4,6 +4,7 @@ import Header from "./Header";
 import Icon from "./Icon";
 import { ToastContainer } from "./ToastContainer";
 import { FiMenu } from "solid-icons/fi";
+import { classss } from "../lib/helpers";
 // import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
@@ -22,10 +23,6 @@ const userNavigation = [
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "/login" },
 ];
-
-function classss(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Layout() {
   const [menuOpen, setMenuOpen] = createSignal(false);

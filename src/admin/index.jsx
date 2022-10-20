@@ -1,11 +1,10 @@
 import { Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 
-import Button from "../shared/Button";
 import Badge from "../shared/Badge";
-import Icon from "../shared/Icon";
 import Loading from "../shared/Loading";
 import { fetchAdminData } from "../lib/fetchFuncs";
+import { FaSolidChevronRight } from "solid-icons/fa";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -51,7 +50,7 @@ export default function Admin() {
           <For each={infoCards(query.data)}>
             {card => (
               <div class="stats shadow">
-                <div class="stat place-items-center">
+                <div class="stat place-items-center bg-white">
                   <div class="stat-title">{card.title}</div>
                   <div class="stat-value">{card.value}</div>
                   <div class="stat-desc">{card.description}</div>
@@ -65,7 +64,7 @@ export default function Admin() {
           <Badge danger={query.data?.unattended_count > 0} />
           <Link class="flex nav-link align-items-center" href="/admin/requests">
             <div>Requests</div>
-            <Icon chevronRight />
+            <FaSolidChevronRight />
           </Link>
         </h3>
       </Suspense>

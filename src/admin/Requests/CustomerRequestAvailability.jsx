@@ -7,11 +7,10 @@ import { STR_NUM_WEEKDAYS } from "../../lib/constants";
 import { dateToWeekday } from "../../lib/helpers";
 
 import AvailabilityMatch from "./AvailabilityMatch";
-import Button from "../../shared/Button";
-import Icon from "../../shared/Icon";
 import Loading from "../../shared/Loading";
 import { channel } from "../../lib/supabaseClient";
 import { addToast } from "../../shared/ToastContainer";
+import { FiSend, FiFilter } from "solid-icons/fi";
 
 export default function CustomerRequestAvailability(props) {
   const queryClient = useQueryClient();
@@ -73,24 +72,23 @@ export default function CustomerRequestAvailability(props) {
     <div data-component="CustomerRequestAvailability">
       <form onSubmit={handleSubmitOffers}>
         <Show when={query.data} fallback={<Loading />}>
-          <div>
-            <div>
-              <Icon filter />
-              <Button type="button" kind="light" text="day" onClick={e => setFilter("day")} />
-              <Button
-                type="button"
-                kind="light"
-                text="professional"
-                onClick={e => setFilter("professional")}
-              />
+          <div class="my-6">
+            <div class="flex items-center gap-1">
+              <FiFilter size={24} />
+              <button type="button" class="btn" onClick={e => setFilter("day")}>
+                Day
+              </button>
+              <button type="button" class="btn" onClick={e => setFilter("professional")}>
+                professional
+              </button>
             </div>
           </div>
           <For each={Object.keys(matchesObj())}>
             {k => (
               <div>
-                <div class="fw-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
+                <div class="font-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
 
-                <ul class="list-group">
+                <ul class="flex gap-4 py-2">
                   <For each={matchesObj()[k]}>
                     {match => (
                       <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />
@@ -102,14 +100,9 @@ export default function CustomerRequestAvailability(props) {
           </For>
 
           <div class="mt-3">
-            <Button
-              kind="CTA"
-              text={
-                <span>
-                  <Icon send /> Send Offers
-                </span>
-              }
-            />
+            <button class="btn btn-accent">
+              <FiSend size={20} /> <span class="ml-2">Send Offers</span>
+            </button>
           </div>
         </Show>
 
