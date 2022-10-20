@@ -1,10 +1,17 @@
 import { Link } from "solid-app-router";
+import Hero from "./shared/Hero";
 
 export default function Home() {
   return (
     <div>
-      <h1>Hello Laços</h1>
-      <Link href="/login">Login</Link>
+      <Hero />
+      <div class="mt-8 flex justify-center w-[100%]">
+        <Link href="/login">
+          <button class="btn btn-lg btn-accent" style={{ width: `min(calc(100vw - 2rem), 800px)` }}>
+            Login
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
