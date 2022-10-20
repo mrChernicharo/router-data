@@ -6,6 +6,7 @@ import Button from "../shared/Button";
 import CollapseBox from "../shared/CollapseBox";
 import { s } from "../lib/styles";
 import { addToast } from "./ToastContainer";
+import ListItem from "./ListItem";
 
 export default function AvailabilityTable(props) {
   const queryClient = useQueryClient();
@@ -28,8 +29,6 @@ export default function AvailabilityTable(props) {
       status: "1",
     }));
 
-    // console.log("handleAvailabilityUpdate", { e, props, selectedCheckboxes, selectedTimeBlocks });
-
     updateMutation.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries([props.role, props.person.id]);
@@ -41,65 +40,58 @@ export default function AvailabilityTable(props) {
 
   return (
     <div data-component="AvailabilityTable">
-      <h4>Availability</h4>
+      <ListItem classes="p-4">
+        <h4 class="font-bold text-xl">Availability</h4>
 
-      {/* <CollapseBox open> */}
-      <CollapseBox>
-        <p>Ajuste sua disponibilidade</p>
+        <CollapseBox>
+          <p>Ajuste sua disponibilidade</p>
 
-        <form onSubmit={handleAvailabilityUpdate}>
-          <table class="table table-striped-columns">
-            <thead style={{ position: "sticky", top: "0" }}>
-              <tr style={{ "text-align": "center" }}>
-                <For each={["", ...STR_NUM_WEEKDAYS]}>
-                  {day => <th scope="col">{day ? dateToWeekday(day).slice(0, 3) : ""}</th>}
-                </For>
-              </tr>
-            </thead>
-            <tbody>
-              <For each={WORKING_HOURS}>
-                {time => (
-                  <tr>
-                    <th scope="row">{time}</th>
-                    <For each={STR_NUM_WEEKDAYS}>
-                      {weekday => (
-                        <td
-                          style={{
-                            padding: 0,
-                            fontFamily: "Monospace",
-                            "border-radius": "4px",
-                            background: isBusy(weekday, time) ? "orange" : "",
-                          }}
-                        >
-                          <label
-                            class="crazy-checkbox" /**
-                            style={s.tdLabel}
-                          */
+          <form onSubmit={handleAvailabilityUpdate}>
+            <table class="table mx-auto mt-6">
+              <thead class="sticky top-0">
+                <tr>
+                  <For each={["", ...STR_NUM_WEEKDAYS]}>
+                    {(day, i) => (i() === 0 ? <th class=""></th> : <th>{dateToWeekday(day).slice(0, 3)}</th>)}
+                  </For>
+                </tr>
+              </thead>
+              <tbody>
+                <For each={WORKING_HOURS}>
+                  {time => (
+                    <tr>
+                      <th>{time}</th>
+                      <For each={STR_NUM_WEEKDAYS}>
+                        {weekday => (
+                          <td
+                            class="p-0 hover:bg-slate-200"
+                            style={{ background: isBusy(weekday, time) ? "orange" : "" }}
                           >
-                            <input
-                              type="checkbox"
-                              checked={isChecked(weekday, time)}
-                              data-day={weekday}
-                              data-time={time}
-                            />
-                            <span class={`checkmark ${isChecked(weekday, time) ? "checked" : ""}`}></span>
-                          </label>
-                        </td>
-                      )}
-                    </For>
-                  </tr>
-                )}
-              </For>
-            </tbody>
-          </table>
+                            <label class="crazy-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={isChecked(weekday, time)}
+                                data-day={weekday}
+                                data-time={time}
+                              />
+                              <span class={`checkmark ${isChecked(weekday, time) ? "checked" : ""}`}></span>
+                            </label>
+                          </td>
+                        )}
+                      </For>
+                    </tr>
+                  )}
+                </For>
+              </tbody>
+            </table>
 
-          <div class="container">
             <div class="d-grid mt-5 mb-5">
-              <Button kind="CTA" text={<h3 style={{ margin: 0 }}>Update Availability</h3>} />
+              <button class="btn btn-accent" style={{ width: `min(calc(100vw - 2rem), 800px)` }}>
+                <span>Update Availability</span>
+              </button>
             </div>
-          </div>
-        </form>
-      </CollapseBox>
+          </form>
+        </CollapseBox>
+      </ListItem>
     </div>
   );
 }

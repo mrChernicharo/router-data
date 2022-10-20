@@ -2,7 +2,7 @@ import { dateToWeekday } from "../lib/helpers";
 import CollapseBox from "./CollapseBox";
 import { imageUrl } from "../lib/constants";
 
-function AppointmentList(props) {
+export default function AppointmentList(props) {
   return (
     <div data-component="AppointmentList">
       <ul>

@@ -2,7 +2,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import { addMinutes, isPast, subDays } from "date-fns";
 import ProfessionalAppointments from "./ProfessionalAppointments";
-import { AppointmentList } from "../shared/AppointmentList";
+import AppointmentList from "../shared/AppointmentList";
 import CollapseBox from "../shared/CollapseBox";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
 import AvailabilityTable from "../shared/AvailabilityTable";
@@ -48,13 +48,8 @@ export default function Professional() {
 
   return (
     <div data-component="Professional">
-      <Link href={isAdmin() ? "/admin/professionals" : "/login"}>
-        <Button kind="light" type="button" text="👈🏽" />
-      </Link>
-      <div> Professional</div>
-
       <Show when={query.data?.professional} fallback={<Loading />}>
-        <h1>{query.data.professional.name}</h1>
+        <h1 class="font-bold text-5xl">{query.data.professional.name}</h1>
         <div class="mb-5">{query.data.professional.email}</div>
 
         <AvailabilityTable
@@ -72,14 +67,14 @@ export default function Professional() {
           appointments={query.data.professional.appointments}
         />
 
-        <div class="">
-          <h4>Patients</h4>
-          <div>patients: {getPatients(query.data.professional.appointments).length} patients</div>
+        <ListItem classes="p-4">
+          <h4 class="font-bold text-xl">Patients</h4>
+          <div>{getPatients(query.data.professional.appointments).length} patients</div>
           <CollapseBox>
             <ul>
               <For each={getPatients(query.data.professional.appointments)}>
                 {patient => (
-                  <ListItem>
+                  <ListItem classes="w-[80%]">
                     <div class="flex items-center p-4">
                       <img src={imageUrl} alt="" class="h-10 w-10 flex-none rounded-full" />
                       <div class="ml-4 flex-auto">
@@ -92,18 +87,20 @@ export default function Professional() {
               </For>
             </ul>
           </CollapseBox>
-        </div>
+        </ListItem>
 
-        <div class="">
-          <h4>Appointment History</h4>
+        <ListItem classes="p-4">
+          <h4 class="font-bold text-xl">Appointment History</h4>
           <div>total: {getHistoryAppointments(query.data.professional.appointments).length} appointments</div>
           <CollapseBox>
-            <AppointmentList
-              role="professional"
-              appointments={getHistoryAppointments(query.data.professional.appointments)}
-            />
+            <ul>
+              <AppointmentList
+                role="professional"
+                appointments={getHistoryAppointments(query.data.professional.appointments)}
+              />
+            </ul>
           </CollapseBox>
-        </div>
+        </ListItem>
 
         {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
       </Show>

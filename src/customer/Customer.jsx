@@ -7,7 +7,7 @@ import Button from "../shared/Button";
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { createEffect } from "solid-js";
-import { AppointmentList } from "../shared/AppointmentList";
+import AppointmentList from "../shared/AppointmentList";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 
@@ -40,13 +40,8 @@ export default function Customer() {
 
   return (
     <div data-component="Customer">
-      <Link href={isAdmin() ? "/admin/customers" : "/login"}>
-        <Button kind="light" type="button" text="👈🏽" />
-      </Link>
-      <div>Customer</div>
-
       <Show when={query.data?.customer} fallback={<Loading />}>
-        <h1>{query.data.customer.name}</h1>
+        <h1 class="font-bold text-5xl">{query.data.customer.name}</h1>
         <div class="mb-5">{query.data.customer.email}</div>
 
         <Show when={query.data?.customer.appointments.length}>
