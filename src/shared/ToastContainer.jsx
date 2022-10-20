@@ -19,11 +19,14 @@ const addToast = info => {
 function ToastContainer(props) {
   return (
     <div
+      data-component="ToastContainer"
       style={{
         position: "fixed",
         top: "2rem",
         right: 0,
         "padding-right": "2rem",
+        "user-select": "none",
+        "pointer-events": "none",
       }}
     >
       <For each={toastContext}>{toast => <Toast {...toast} />}</For>

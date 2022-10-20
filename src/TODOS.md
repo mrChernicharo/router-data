@@ -10,6 +10,16 @@ specialized versions of current AppointmentList
 ================================
 
 
+# Daisy ui is on!
+
+user role => header title and links
+    admin -> requests | professionals | customers | 
+    professional ->
+    customer ->
+
+
+
+
 
 =========================
 

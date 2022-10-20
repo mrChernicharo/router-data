@@ -15,59 +15,50 @@ export default function Admin() {
     staleTime: 0,
   });
 
+  const infoCards = data => [
+    { title: "Customers", value: data?.customers_count, description: "total customers" },
+    { title: "Professionals", value: data?.professionals_count, description: "total professionals" },
+    { title: "Staff", value: data?.staff_count, description: "total staff" },
+    { title: "Total Users", value: data?.total_users_count, description: "total users" },
+    {
+      title: "Unattended Customers",
+      value: query.data?.unattended_count,
+      description: "customers waiting",
+    },
+  ];
+
   return (
     <div data-component="Admin">
-      <Link href="/login">
-        <Button kind="light" text="👈🏽" type="button" />
-      </Link>
-
-      <div>
-        <h1 class="text-3xl font-bold underline">Admin</h1>
-
-        <nav class="mb-4">
-          <a href="/admin/customers">Customers</a> | <a href="/admin/professionals">Professionals</a> |{" "}
-          <a href="/admin/staff">Staff</a>
+      <div class="text-secondary">
+        <nav class="mb-4 flex gap-1">
+          <a class="link" href="/admin/customers">
+            Customers
+          </a>
+          |
+          <a class="link" href="/admin/professionals">
+            Professionals
+          </a>
+          |
+          <a class="link" href="/admin/staff">
+            Staff
+          </a>
         </nav>
       </div>
 
       {/* Stats Cards */}
       <Suspense fallback={<Loading />}>
-        <div class="flex gap-2" style={{ "flex-wrap": "wrap" }}>
-          <div
-            class="card flex gap-2 p-2 justify-content-center align-items-center"
-            style={{ "min-width": "100px" }}
-          >
-            <div class="card-title fw-bold">Customers</div>
-            <div class="card-body">{query.data?.customers_count}</div>
-          </div>
-          <div
-            class="card flex gap-2 p-2 justify-content-center align-items-center"
-            style={{ "min-width": "100px" }}
-          >
-            <div class="card-title fw-bold">Professionals</div>
-            <div class="card-body">{query.data?.professionals_count}</div>
-          </div>
-          <div
-            class="card flex gap-2 p-2 justify-content-center align-items-center"
-            style={{ "min-width": "100px" }}
-          >
-            <div class="card-title fw-bold">Staff</div>
-            <div class="card-body">{query.data?.staff_count}</div>
-          </div>
-          <div
-            class="card flex gap-2 p-2 justify-content-center align-items-center"
-            style={{ "min-width": "100px" }}
-          >
-            <div class="card-title fw-bold">Total Users</div>
-            <div class="card-body">{query.data?.total_users_count}</div>
-          </div>
-          <div
-            class="card flex gap-2 p-2 justify-content-center align-items-center"
-            style={{ "min-width": "100px" }}
-          >
-            <div class="card-title fw-bold">Unattended Customers</div>
-            <div class="card-body">{query.data?.unattended_count}</div>
-          </div>
+        <div class="flex gap-2 flex-wrap justify-center">
+          <For each={infoCards(query.data)}>
+            {card => (
+              <div class="stats shadow">
+                <div class="stat place-items-center">
+                  <div class="stat-title">{card.title}</div>
+                  <div class="stat-value">{card.value}</div>
+                  <div class="stat-desc">{card.description}</div>
+                </div>
+              </div>
+            )}
+          </For>
         </div>
 
         <h3 class="mt-4">
