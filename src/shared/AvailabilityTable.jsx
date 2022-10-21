@@ -18,6 +18,7 @@ export default function AvailabilityTable(props) {
   const isBusy = (day, hour) =>
     props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
   const isBlocked = (day, hour) => day == 0 || (day == 6 && timeStrToMinutes(hour) > 900);
+  const hasAppointment = () => props.availability?.filter(av => av.status === "0").length > 0;
 
   function handleAvailabilityUpdate(e) {
     e.preventDefault();
@@ -45,30 +46,35 @@ export default function AvailabilityTable(props) {
         <h4 class="font-bold text-xl">Disponibilidade</h4>
 
         <CollapseBox open>
-          <p class="text-center">Clique nas caixinhas dos horários em que você tem disponibilidade</p>
+          <p class="">Clique nas caixinhas dos horários em que você tem disponibilidade</p>
 
-          <div class="pointer-events-none pl-4">
-            <h4 class="font-bold">Legenda</h4>
-            <div class="flex gap-1 mt-1">
-              <p>Horário vazio</p>
+          <div class="pointer-events-none pr-5">
+            <h4 class="font-bold text-right">Legenda</h4>
+            <div class="flex justify-end gap-1 mt-1">
+              <p>Horário disponível</p>
               <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" />
             </div>
-            <div class="flex gap-1 mt-1">
-              <p>Posso nesse horário</p>
-              <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" checked />
-            </div>
-            <div class="flex gap-1 mt-1">
+
+            <div class="flex justify-end gap-1 mt-1">
               <p>Horário indisponível</p>
               <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" disabled />
             </div>
-            <div class="flex items-center gap-1 mt-1">
-              <p>Tenho consulta</p>
-              <div class="w-8 h-4 bg-warning" />
+
+            <div class="flex justify-end gap-1 mt-1">
+              <p>Posso nesse horário</p>
+              <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" checked />
             </div>
+
+            {hasAppointment() && (
+              <div class="flex justify-end gap-1 mt-1 items-center">
+                <p>Tenho consulta</p>
+                <div class="w-8 h-4 bg-warning" />
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleAvailabilityUpdate}>
-            <div class="mx-auto mt-6">
+            <div class="max-w-[800px] mx-auto  mt-6">
               {/* THEAD */}
               <div class="sticky top-0 grid grid-cols-8  border-b-[1px] border-t-[1px]">
                 <For each={["", ...STR_NUM_WEEKDAYS]}>
