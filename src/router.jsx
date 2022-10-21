@@ -4,7 +4,6 @@ import { Routes, Route } from "solid-app-router";
 import Home from "./Home";
 import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
-import Example from "./shared/Layout";
 
 const Login = lazy(() => import("./Login"));
 const Admin = lazy(() => import("./admin"));
@@ -13,8 +12,8 @@ const Professionals = lazy(() => import("./admin/Professionals"));
 const Customers = lazy(() => import("./admin/Customers"));
 const AppointmentRequests = lazy(() => import("./admin/Requests"));
 
-const Customer = lazy(() => import("./customer/Customer"));
-const Professional = lazy(() => import("./professional/Professional"));
+const Customer = lazy(() => import("./Customer"));
+const Professional = lazy(() => import("./Professional"));
 
 export default function Router() {
   return (

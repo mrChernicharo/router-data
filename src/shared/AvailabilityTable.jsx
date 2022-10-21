@@ -45,7 +45,7 @@ export default function AvailabilityTable(props) {
       <ListItem classes="p-4">
         <h4 class="font-bold text-xl">Disponibilidade</h4>
 
-        <CollapseBox open>
+        <CollapseBox>
           <p class="">Clique nas caixinhas dos horários em que você tem disponibilidade</p>
 
           <div class="pointer-events-none pr-5">
