@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
+import postcss from './postcss.config.js'
 
 export default defineConfig({
   plugins: [solidPlugin()],
@@ -8,5 +9,8 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+  },
+  css: {
+    postcss,
   },
 });

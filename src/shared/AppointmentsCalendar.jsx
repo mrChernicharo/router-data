@@ -1,4 +1,3 @@
-import Button from "./Button";
 import CollapseBox from "./CollapseBox";
 import ListItem from "./ListItem";
 
@@ -8,9 +7,9 @@ export default function AppointmentsCalendar(props) {
       <ListItem classes="p-4">
         <h4 class="font-bold text-xl">Appointments Calendar</h4>
         <CollapseBox>
-          <Button kind="light" text="day" />
-          <Button kind="light" text="week" />
-          <Button kind="light" text="month" />
+          <button class="btn btn-ghost">day</button>
+          <button class="btn btn-ghost">week</button>
+          <button class="btn btn-ghost">month</button>
 
           <div>{props.person.id}</div>
           <div>{props.person.name}</div>

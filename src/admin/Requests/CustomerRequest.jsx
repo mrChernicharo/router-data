@@ -1,17 +1,17 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
 import CollapseBox from "../../shared/CollapseBox";
-import Button from "../../shared/Button";
+
 import Badge from "../../shared/Badge";
-import Icon from "../../shared/Icon";
+
 import CustomerRequestAvailability from "./CustomerRequestAvailability";
 
 export default function CustomerRequest(props) {
   return (
     <div data-component="CustomerRequest">
-      <h2>{props.customer.name}</h2>
+      <h2 class="font-bold capitalize">{props.customer.name}</h2>
       <div>{props.customer.email}</div>
 
-      <Show when={!props.customer.has_appointment} fallback={<div style={{ height: "36px" }}></div>}>
+      <Show when={!props.customer.has_appointment} fallback={<div>Tudo certo por aqui 👍🏼</div>}>
         <CollapseBox>
           {/* <pre>{JSON.stringify(props.customer.has_appointment, null, 3)}</pre> */}
 

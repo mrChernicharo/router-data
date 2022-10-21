@@ -7,8 +7,7 @@ import { fetchStaffData } from "../../lib/fetchFuncs";
 import { insertStaff, insertProfessional, removeStaff } from "../../lib/mutationFuncs";
 
 import { s } from "../../lib/styles";
-import Button from "../../shared/Button";
-import Icon from "../../shared/Icon";
+
 import Loading from "../../shared/Loading";
 import ListItem from "../../shared/ListItem";
 import { FiPlus, FiTrash } from "solid-icons/fi";
@@ -27,9 +26,7 @@ export default function Staff() {
   const handleInsert = async e => {
     e.preventDefault();
 
-    if (!inputRef.validity.valid) {
-      return console.log("invalid email!");
-    }
+    if (!inputRef.validity.valid) return console.log("invalid email!");
 
     const staff = {
       name: inputRef.value.split("@")[0],

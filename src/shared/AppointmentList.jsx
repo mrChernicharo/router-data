@@ -9,7 +9,7 @@ export default function AppointmentList(props) {
         <For each={props.appointments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime))}>
           {appointment => (
             <li>
-              <div class="w-[24.5rem] divide-y divide-slate-400/20 rounded-lg bg-white text-[0.8125rem] leading-5 text-slate-900 shadow-xl shadow-black/5 ring-1 ring-slate-700/10">
+              <div class="max-w-[24.5rem] divide-y divide-slate-400/20 rounded-lg bg-white text-[0.8125rem] leading-5 text-slate-900 shadow-xl shadow-black/5 ring-1 ring-slate-700/10">
                 <div class="flex items-center p-4">
                   <img src={imageUrl} alt="" class="h-10 w-10 flex-none rounded-full" />
                   <div class="ml-4 flex-auto">

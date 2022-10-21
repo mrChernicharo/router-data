@@ -1,13 +1,13 @@
 import { useNavigate, useRouteData, Link } from "solid-app-router";
 import Badge from "../../shared/Badge";
-import Button from "../../shared/Button";
+
 import { For } from "solid-js";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
 
 import { createEffect } from "solid-js";
 import { Suspense } from "solid-js";
 import Loading from "../../shared/Loading";
-import Icon from "../../shared/Icon";
+
 import CustomerRequest from "./CustomerRequest";
 import { fetchAdminRequestsData } from "../../lib/fetchFuncs";
 import { channel } from "../../lib/supabaseClient";
@@ -28,6 +28,7 @@ export default function AppointmentRequests(props) {
 
   return (
     <div data-component="AppointmentRequests">
+      {query.isLoading && <Loading large />}
       <ul class="list-group">
         <For each={query.data?.customers.filter(c => !c.has_appointment)}>
           {customer => (

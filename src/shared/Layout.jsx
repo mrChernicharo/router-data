@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { Outlet } from "solid-app-router";
 import Header from "./Header";
-import Icon from "./Icon";
+
 import Nav from "./Nav";
 import { ToastContainer } from "./ToastContainer";
 import { FiMenu } from "solid-icons/fi";

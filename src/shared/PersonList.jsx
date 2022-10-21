@@ -1,5 +1,4 @@
 import { Link } from "solid-app-router";
-import Button from "./Button";
 
 /* Customers || Professionals */
 export default function PersonList(props) {

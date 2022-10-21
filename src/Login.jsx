@@ -4,7 +4,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
-import Button from "./shared/Button";
+
 import { addToast } from "./shared/ToastContainer";
 import Header from "./shared/Header";
 

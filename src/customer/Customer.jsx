@@ -3,7 +3,7 @@ import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import CustomerAppointments from "./CustomerAppointments";
 import { fetchCustomerData } from "../lib/fetchFuncs";
 import AppointmentOffers from "./AppointmentOffers";
-import Button from "../shared/Button";
+
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { createEffect } from "solid-js";
@@ -42,10 +42,10 @@ export default function Customer() {
     <div data-component="Customer">
       <Show when={query.data?.customer} fallback={<Loading />}>
         <h1 class="font-bold text-5xl">{query.data.customer.name}</h1>
-        <div class="mb-5">{query.data.customer.email}</div>
+        <div class="mb-5 text-info">{query.data.customer.email}</div>
 
         <Show when={query.data?.customer.appointments.length}>
-          <h4>Next Appointment</h4>
+          <h4 class="text-lg">Próxima consulta</h4>
           <div class="mb-5">
             <AppointmentList role="customer" appointments={query.data.customer.appointments} />
           </div>

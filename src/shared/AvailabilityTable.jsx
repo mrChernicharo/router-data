@@ -1,12 +1,12 @@
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { STR_NUM_WEEKDAYS } from "../lib/constants";
-import { WORKING_HOURS, dateToWeekday } from "../lib/helpers";
+import { WORKING_HOURS, dateToWeekday, classss, timeStrToMinutes } from "../lib/helpers";
 import { updatePersonAvailability } from "../lib/mutationFuncs";
-import Button from "../shared/Button";
 import CollapseBox from "../shared/CollapseBox";
 import { s } from "../lib/styles";
 import { addToast } from "./ToastContainer";
 import ListItem from "./ListItem";
+import Loading from "./Loading";
 
 export default function AvailabilityTable(props) {
   const queryClient = useQueryClient();
@@ -17,6 +17,8 @@ export default function AvailabilityTable(props) {
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
   const isBusy = (day, hour) =>
     props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
+  const isBlocked = (day, hour) => day == 0 || (day == 6 && timeStrToMinutes(hour) > 900);
+  const hasAppointment = () => props.availability?.filter(av => av.status === "0").length > 0;
 
   function handleAvailabilityUpdate(e) {
     e.preventDefault();
@@ -32,7 +34,7 @@ export default function AvailabilityTable(props) {
     updateMutation.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries([props.role, props.person.id]);
-        addToast({ message: "availability updated!", status: "success", duration: 4000 });
+        addToast({ message: "disponibilidade atualizada!", status: "success", duration: 4000 });
         // query.refetch();
       },
     });
@@ -41,56 +43,86 @@ export default function AvailabilityTable(props) {
   return (
     <div data-component="AvailabilityTable">
       <ListItem classes="p-4">
-        <h4 class="font-bold text-xl">Availability</h4>
+        <h4 class="font-bold text-xl">Disponibilidade</h4>
 
-        <CollapseBox>
-          <p>Ajuste sua disponibilidade</p>
+        <CollapseBox open>
+          <p class="">Clique nas caixinhas dos horários em que você tem disponibilidade</p>
+
+          <div class="pointer-events-none pr-5">
+            <h4 class="font-bold text-right">Legenda</h4>
+            <div class="flex justify-end gap-1 mt-1">
+              <p>Horário vazio</p>
+              <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" />
+            </div>
+            <div class="flex justify-end gap-1 mt-1">
+              <p>Posso nesse horário</p>
+              <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" checked />
+            </div>
+            <div class="flex justify-end gap-1 mt-1">
+              <p>Horário indisponível</p>
+              <input type="checkbox" class="checkbox checkbox-secondary checkbox-sm rounded-[4px]" disabled />
+            </div>
+            {hasAppointment() && (
+              <div class="flex justify-end gap-1 mt-1 items-center">
+                <p>Tenho consulta</p>
+                <div class="w-8 h-4 bg-warning" />
+              </div>
+            )}
+          </div>
 
           <form onSubmit={handleAvailabilityUpdate}>
-            <div class="overflow-x-auto">
-              <table class="table table-compact mx-auto mt-6">
-                <thead class="sticky top-0">
-                  <tr>
-                    <For each={["", ...STR_NUM_WEEKDAYS]}>
-                      {(day, i) =>
-                        i() === 0 ? <th class=""></th> : <th>{dateToWeekday(day).slice(0, 3)}</th>
-                      }
-                    </For>
-                  </tr>
-                </thead>
-                <tbody>
-                  <For each={WORKING_HOURS}>
-                    {time => (
-                      <tr>
-                        <th class="text-sm">{time}</th>
-                        <For each={STR_NUM_WEEKDAYS}>
-                          {weekday => (
-                            <td
-                              class="p-0 hover:bg-slate-200"
-                              style={{ background: isBusy(weekday, time) ? "orange" : "" }}
-                            >
-                              <label class="crazy-checkbox">
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked(weekday, time)}
-                                  data-day={weekday}
-                                  data-time={time}
-                                />
-                                <span class={`checkmark ${isChecked(weekday, time) ? "checked" : ""}`}></span>
-                              </label>
-                            </td>
-                          )}
-                        </For>
-                      </tr>
-                    )}
-                  </For>
-                </tbody>
-              </table>
+            <div class="max-w-[800px] mx-auto  mt-6">
+              {/* THEAD */}
+              <div class="sticky top-0 grid grid-cols-8  border-b-[1px] border-t-[1px]">
+                <For each={["", ...STR_NUM_WEEKDAYS]}>
+                  {(day, i) =>
+                    i() === 0 ? (
+                      <div class=""></div>
+                    ) : (
+                      <div class="text-center">{dateToWeekday(day).slice(0, 3)}</div>
+                    )
+                  }
+                </For>
+              </div>
+              <div>
+                {/* TBODY */}
+                <For each={WORKING_HOURS}>
+                  {time => (
+                    <div class="grid grid-cols-8 border-b-[1px]">
+                      <div class="text-xs font-bold flex items-center">{time}</div>
+                      <For each={STR_NUM_WEEKDAYS}>
+                        {weekday => (
+                          <div
+                            class={classss(
+                              "p-[0.125rem] hover:bg-slate-200",
+                              isBusy(weekday, time) ? "bg-warning" : ""
+                            )}
+                          >
+                            <label class="w-full flex justify-center items-center">
+                              <input
+                                type="checkbox"
+                                class="checkbox checkbox-secondary checkbox-sm rounded-[4px]"
+                                checked={isChecked(weekday, time)}
+                                disabled={isBlocked(weekday, time)}
+                                data-day={weekday}
+                                data-time={time}
+                              />
+                            </label>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  )}
+                </For>
+              </div>
             </div>
 
-            <div class="d-grid mt-5 mb-5 flex justify-center">
+            <div class="mt-5 mb-5 flex justify-center">
               <button class="btn btn-accent w-full sm:w-[30rem]">
-                <span>Update Availability</span>
+                <span>Confirmar Disponibilidade</span>
+                <Show when={updateMutation.isLoading}>
+                  <Loading classes="ml-1" />
+                </Show>
               </button>
             </div>
           </form>

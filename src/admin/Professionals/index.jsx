@@ -9,7 +9,7 @@ import { s } from "../../lib/styles";
 
 import PersonList from "../../shared/PersonList";
 import ListItem from "../../shared/ListItem";
-import Button from "../../shared/Button";
+
 import { FiTrash } from "solid-icons/fi";
 
 export default function Professionals() {
@@ -17,10 +17,11 @@ export default function Professionals() {
 
   const removeMutation = createMutation(["professionals"], id => removeProfessional(id));
 
-  function handleRemove(id) {
-    console.log("handleRemove", id);
+  function handleRemove(person) {
+    console.log("handleRemove", person);
+    if (!confirm(`certeza que você quer deletar ${person.name}?`)) return;
 
-    removeMutation.mutate(id, {
+    removeMutation.mutate(person.id, {
       onSuccess: (data, variables, context) => {
         query.refetch();
       },
@@ -54,7 +55,7 @@ export default function Professionals() {
                   <p>{professional.email}</p>
                 </Link>
                 <div class="flex items-center pr-2">
-                  <button class="btn btn-ghost text-error" onClick={e => handleRemove(professional.id)}>
+                  <button class="btn btn-ghost text-error" onClick={e => handleRemove(professional)}>
                     <FiTrash size={22} />
                   </button>
                 </div>
