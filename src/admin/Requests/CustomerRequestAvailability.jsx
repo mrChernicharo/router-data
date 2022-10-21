@@ -72,8 +72,8 @@ export default function CustomerRequestAvailability(props) {
     <div data-component="CustomerRequestAvailability">
       <form onSubmit={handleSubmitOffers}>
         <Show when={query.data} fallback={<Loading />}>
-          <div class="my-6">
-            <div class="flex items-center gap-1">
+          <div class="">
+            <div class="flex items-center gap-1 mt-6 mb-4">
               <FiFilter size={24} />
               <button type="button" class="btn" onClick={e => setFilter("day")}>
                 Day
@@ -82,27 +82,26 @@ export default function CustomerRequestAvailability(props) {
                 professional
               </button>
             </div>
-          </div>
-          <For each={Object.keys(matchesObj())}>
-            {k => (
-              <div>
-                <div class="font-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
+            <For each={Object.keys(matchesObj())}>
+              {k => (
+                <div>
+                  <div class="font-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
+                  <ul class="flex gap-3 py-2 pl-2 flex-wrap ">
+                    <For each={matchesObj()[k]}>
+                      {match => (
+                        <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />
+                      )}
+                    </For>
+                  </ul>
+                </div>
+              )}
+            </For>
 
-                <ul class="flex gap-4 py-2">
-                  <For each={matchesObj()[k]}>
-                    {match => (
-                      <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />
-                    )}
-                  </For>
-                </ul>
-              </div>
-            )}
-          </For>
-
-          <div class="mt-3">
-            <button class="btn btn-accent">
-              <FiSend size={20} /> <span class="ml-2">Send Offers</span>
-            </button>
+            <div class="mt-3">
+              <button class="btn btn-accent">
+                <FiSend size={20} /> <span class="ml-2">Send Offers</span>
+              </button>
+            </div>
           </div>
         </Show>
 

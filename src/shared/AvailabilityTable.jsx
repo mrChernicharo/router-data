@@ -43,49 +43,53 @@ export default function AvailabilityTable(props) {
       <ListItem classes="p-4">
         <h4 class="font-bold text-xl">Availability</h4>
 
-        <CollapseBox>
+        <CollapseBox open>
           <p>Ajuste sua disponibilidade</p>
 
           <form onSubmit={handleAvailabilityUpdate}>
-            <table class="table mx-auto mt-6">
-              <thead class="sticky top-0">
-                <tr>
-                  <For each={["", ...STR_NUM_WEEKDAYS]}>
-                    {(day, i) => (i() === 0 ? <th class=""></th> : <th>{dateToWeekday(day).slice(0, 3)}</th>)}
+            <div class="overflow-x-auto">
+              <table class="table table-compact mx-auto mt-6">
+                <thead class="sticky top-0">
+                  <tr>
+                    <For each={["", ...STR_NUM_WEEKDAYS]}>
+                      {(day, i) =>
+                        i() === 0 ? <th class=""></th> : <th>{dateToWeekday(day).slice(0, 3)}</th>
+                      }
+                    </For>
+                  </tr>
+                </thead>
+                <tbody>
+                  <For each={WORKING_HOURS}>
+                    {time => (
+                      <tr>
+                        <th class="text-sm">{time}</th>
+                        <For each={STR_NUM_WEEKDAYS}>
+                          {weekday => (
+                            <td
+                              class="p-0 hover:bg-slate-200"
+                              style={{ background: isBusy(weekday, time) ? "orange" : "" }}
+                            >
+                              <label class="crazy-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked(weekday, time)}
+                                  data-day={weekday}
+                                  data-time={time}
+                                />
+                                <span class={`checkmark ${isChecked(weekday, time) ? "checked" : ""}`}></span>
+                              </label>
+                            </td>
+                          )}
+                        </For>
+                      </tr>
+                    )}
                   </For>
-                </tr>
-              </thead>
-              <tbody>
-                <For each={WORKING_HOURS}>
-                  {time => (
-                    <tr>
-                      <th class="py-0">{time}</th>
-                      <For each={STR_NUM_WEEKDAYS}>
-                        {weekday => (
-                          <td
-                            class="p-0 hover:bg-slate-200"
-                            style={{ background: isBusy(weekday, time) ? "orange" : "" }}
-                          >
-                            <label class="crazy-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={isChecked(weekday, time)}
-                                data-day={weekday}
-                                data-time={time}
-                              />
-                              <span class={`checkmark ${isChecked(weekday, time) ? "checked" : ""}`}></span>
-                            </label>
-                          </td>
-                        )}
-                      </For>
-                    </tr>
-                  )}
-                </For>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
 
-            <div class="d-grid mt-5 mb-5">
-              <button class="btn btn-accent" style={{ width: `min(calc(100vw - 2rem), 800px)` }}>
+            <div class="d-grid mt-5 mb-5 flex justify-center border">
+              <button class="btn btn-accent w-full sm:w-[30rem]">
                 <span>Update Availability</span>
               </button>
             </div>

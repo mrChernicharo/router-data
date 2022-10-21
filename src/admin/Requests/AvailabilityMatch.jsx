@@ -8,7 +8,7 @@ export default function AvailabilityMatch(props) {
 
   return (
     <div data-component="AvailabilityMatch" class="list-group-item">
-      <ListItem classes="w-36">
+      <ListItem classes="">
         <label>
           <div class="flex gap-1 p-2">
             <div>
