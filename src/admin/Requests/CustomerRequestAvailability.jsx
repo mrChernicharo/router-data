@@ -4,7 +4,7 @@ import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-que
 import { fetchCustomerRequestAvailability } from "../../lib/fetchFuncs";
 import { createAppointmentOffers } from "../../lib/mutationFuncs";
 import { STR_NUM_WEEKDAYS } from "../../lib/constants";
-import { dateToWeekday } from "../../lib/helpers";
+import { classss, dateToWeekday } from "../../lib/helpers";
 
 import AvailabilityMatch from "./AvailabilityMatch";
 import Loading from "../../shared/Loading";
@@ -74,18 +74,28 @@ export default function CustomerRequestAvailability(props) {
         <Show when={query.data} fallback={<Loading />}>
           <div class="">
             <div class="flex items-center gap-1 mt-6 mb-4">
-              <FiFilter size={24} />
-              <button type="button" class="btn" onClick={e => setFilter("day")}>
-                Day
+              <span class="mr-1">Agrupar por</span>
+              <button
+                type="button"
+                class={classss("btn btn-sm", filter() === "day" && "btn-success")}
+                onClick={e => setFilter("day")}
+              >
+                Dia
               </button>
-              <button type="button" class="btn" onClick={e => setFilter("professional")}>
-                professional
+              <button
+                type="button"
+                class={classss("btn btn-sm", filter() === "professional" && "btn-success")}
+                onClick={e => setFilter("professional")}
+              >
+                Profissional
               </button>
             </div>
             <For each={Object.keys(matchesObj())}>
               {k => (
                 <div>
-                  <div class="font-bold">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
+                  <div class="font-bold capitalize">
+                    {STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}
+                  </div>
                   <ul class="flex gap-3 py-2 pl-2 flex-wrap ">
                     <For each={matchesObj()[k]}>
                       {match => (
@@ -99,7 +109,13 @@ export default function CustomerRequestAvailability(props) {
 
             <div class="mt-3">
               <button class="btn btn-accent">
-                <FiSend size={20} /> <span class="ml-2">Send Offers</span>
+                <div class="flex items-center">
+                  {sendOffers.isLoading ? <Loading small /> : <FiSend size={20} />}
+                  {/* <Show when={sendOffers.isLoading} fallback={<FiSend size={20} />}>
+                   
+                  </Show> */}
+                  <span class="mx-2">Enviar Ofertas</span>
+                </div>
               </button>
             </div>
           </div>

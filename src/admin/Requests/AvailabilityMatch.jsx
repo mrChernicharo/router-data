@@ -8,9 +8,9 @@ export default function AvailabilityMatch(props) {
 
   return (
     <div data-component="AvailabilityMatch" class="list-group-item">
-      <ListItem classes="">
-        <label>
-          <div class="flex gap-1 p-2">
+      <ListItem classes="hover:bg-base-200">
+        <label class="">
+          <div class="cursor-pointer flex gap-1 p-2">
             <div>
               <span>
                 {props.filter === "professional" ? dateToWeekday(props.match.day) : props.match.professional}{" "}
@@ -20,7 +20,7 @@ export default function AvailabilityMatch(props) {
 
             <input
               id={`${props.match.professional}:d${props.match.day}:${props.match.time}`}
-              class="ms-2"
+              class="checkbox checkbox-primary checkbox-sm rounded-[4px] ms-2"
               type="checkbox"
               checked={isChecked(props.match, props.offers)}
               data-day={props.match.day}

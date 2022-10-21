@@ -21,9 +21,7 @@ export default function Customers() {
 
   function handleInsert(e) {
     e.preventDefault();
-    if (!inputRef.validity.valid) {
-      return console.log("invalid email!");
-    }
+    if (!inputRef.validity.valid) return console.log("invalid email!");
 
     const customer = {
       name: inputRef.value.split("@")[0],

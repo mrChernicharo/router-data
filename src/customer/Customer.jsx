@@ -3,7 +3,7 @@ import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import CustomerAppointments from "./CustomerAppointments";
 import { fetchCustomerData } from "../lib/fetchFuncs";
 import AppointmentOffers from "./AppointmentOffers";
-import Button from "../shared/Button";
+
 import Loading from "../shared/Loading";
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { createEffect } from "solid-js";

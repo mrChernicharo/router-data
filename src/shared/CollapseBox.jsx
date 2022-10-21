@@ -1,7 +1,6 @@
 import { FaSolidChevronRight, FaSolidChevronDown, FaSolidX } from "solid-icons/fa";
 import { FiX } from "solid-icons/fi";
 import { Show, createSignal } from "solid-js";
-import Button from "./Button";
 
 export default function CollapseBox(props) {
   const [isOpen, setIsOpen] = createSignal(!!props.open);

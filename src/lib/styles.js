@@ -33,6 +33,20 @@ export const s = {
   },
 };
 
+export const daisy = {
+  original: {
+    primary: "#8b5cf6",
+    secondary: "#7e22ce",
+    accent: "#f472b6",
+    neutral: "#d6d3d1",
+    "base-100": "#fff",
+    "base-200": "#f3f4f6",
+    info: "#a8a29e",
+    success: "#34d399",
+    warning: "#fb923c",
+    error: "#DC2828",
+  },
+};
 
 // login input
 // class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"

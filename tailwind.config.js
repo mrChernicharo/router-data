@@ -1,10 +1,66 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  theme: {
-    extend: {},
-  },
   plugins: [require("daisyui")],
+  theme: {
+    extend: {
+      animation: {
+        // renderToast: "renderToast",
+        // loadingSpin: "loadingSpin 1s cubic-bezier(0, 0.2, 0.8, 1) infinite",
+        // loadingSpin2: "loadingSpin 1s -.5s cubic-bezier(0, 0.2, 0.8, 1) infinite",
+      },
+      keyframes: {
+        // renderToast: {
+        //   "0%": {
+        //     transform: "translateX(100%)",
+        //     opacity: 0,
+        //   },
+        //   "10%": {
+        //     transform: "translateX(0%)",
+        //     opacity: 1,
+        //   },
+        //   "90%": {
+        //     transform: "translateX(0%)",
+        //     opacity: 1,
+        //   },
+        //   "100%": {
+        //     transform: "translateX(100%)",
+        //     opacity: 0,
+        //   },
+        // },
+        // loadingSpin: {
+        //   "0%": {
+        //     top: "45%",
+        //     left: "45%",
+        //     width: "0",
+        //     height: "0",
+        //     opacity: "0",
+        //   },
+        //   "4.9%": {
+        //     top: "45%",
+        //     left: "45%",
+        //     width: "0",
+        //     height: "0",
+        //     opacity: "0",
+        //   },
+        //   "5%": {
+        //     top: "45%",
+        //     left: "45%",
+        //     width: "0",
+        //     height: "0",
+        //     opacity: "1",
+        //   },
+        //   "100%": {
+        //     top: "0px",
+        //     left: "0px",
+        //     width: "90%",
+        //     height: "90%",
+        //     opacity: "0",
+        //   },
+        // },
+      },
+    },
+  },
   daisyui: {
     themes: [
       {

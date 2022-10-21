@@ -6,7 +6,7 @@ import AppointmentList from "../shared/AppointmentList";
 import CollapseBox from "../shared/CollapseBox";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
 import AvailabilityTable from "../shared/AvailabilityTable";
-import Button from "../shared/Button";
+
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
 import { createEffect } from "solid-js";

@@ -1,4 +1,3 @@
-import Button from "../shared/Button";
 import { s } from "../lib/styles";
 import { FaSolidArrowLeft, FaSolidChevronLeft } from "solid-icons/fa";
 import { APP_NAME } from "../lib/constants";

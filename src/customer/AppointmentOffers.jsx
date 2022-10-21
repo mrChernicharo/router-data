@@ -6,7 +6,7 @@ import { dateToWeekday, getClosestDate, ISODateStrFromDateAndTime } from "../lib
 
 import PersonList from "../shared/PersonList";
 import CollapseBox from "../shared/CollapseBox";
-import Button from "../shared/Button";
+
 import { s } from "../lib/styles";
 import Badge from "../shared/Badge";
 import { channel } from "../lib/supabaseClient";
