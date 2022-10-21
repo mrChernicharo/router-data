@@ -70,7 +70,6 @@ export default function Header(props) {
         <Show when={pageTitle() !== APP_NAME}>
           <Link href={backLink()}>
             <button>
-              {/* <FaSolidArrowLeft class="mr-1" /> */}
               <FaSolidChevronLeft class="mr-1" />
             </button>
           </Link>

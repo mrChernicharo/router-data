@@ -1,16 +1,15 @@
-import { For, createSignal } from "solid-js";
+import { For, createSignal, createMemo } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery, createMutation } from "@tanstack/solid-query";
 
 import PersonList from "../../shared/PersonList";
 import ListItem from "../../shared/ListItem";
-import Button from "../../shared/Button";
 import Loading from "../../shared/Loading";
-import { s } from "../../lib/styles";
 import { fetchCustomersData } from "../../lib/fetchFuncs";
 import { insertCustomer, removeCustomer } from "../../lib/mutationFuncs";
 import { channel } from "../../lib/supabaseClient";
 import { FiMail, FiSearch, FiTrash } from "solid-icons/fi";
+import { addToast } from "../../shared/ToastContainer";
 
 export default function Customers() {
   let inputRef;
@@ -39,15 +38,24 @@ export default function Customers() {
     });
   }
 
-  function handleRemove(id) {
-    console.log("handleRemove", id);
+  function handleRemove(customer) {
+    console.log("handleRemove", customer);
+    if (!confirm(`certeza que você quer deletar ${customer.name}?`)) return;
 
-    removeMutation.mutate(id, {
+    removeMutation.mutate(customer.id, {
       onSuccess: (data, variables, context) => {
+        addToast({
+          message: `${customer.name} deletado com sucesso`,
+          status: "danger",
+        });
         query.refetch();
       },
     });
   }
+
+  const filteredCustomers = createMemo(() =>
+    query.data?.customers.filter(d => (filter() ? d.name.toLowerCase().includes(filter().toLowerCase()) : d))
+  );
 
   channel.on("broadcast", { event: "customer_added" }, () => {
     query.refetch();
@@ -59,9 +67,10 @@ export default function Customers() {
   return (
     <div data-component="Customers">
       <div class="flex justify-around mt-6">
+        {/* FILTER CUSTOMERS */}
         <fieldset>
           <div>
-            <h3 class="text-xl font-bold">Filter Clients</h3>
+            <h3 class="text-xl font-bold">Filter Customers</h3>
             <div class="d-grid input-group mb-3">
               <label class="form-label">
                 <div class="flex items-center gap-1">
@@ -79,6 +88,7 @@ export default function Customers() {
           </div>
         </fieldset>
 
+        {/* REGISTER NEW CUSTOMER */}
         <form onSubmit={handleInsert}>
           <div class="d-grid input-group mb-3">
             <div>
@@ -104,27 +114,19 @@ export default function Customers() {
 
       {/* <PersonList personList={query.data?.customers} url={`/admin/customers`} onDelete={handleRemove} /> */}
 
+      {/* CUSTOMERS LIST */}
       <ul>
-        {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
-        <For
-          each={query.data?.customers.filter(d =>
-            filter() ? d.name.toLowerCase().includes(filter().toLowerCase()) : d
-          )}
-        >
+        <For each={filteredCustomers()}>
           {customer => (
             <ListItem>
               <div class="flex justify-between p-4 hover:bg-base-100">
-                <Link
-                  class="w-[100%] text-decoration-none"
-                  style={{ color: "#000" }}
-                  href={`${`/admin/customers`}/${customer.id}`}
-                >
+                <Link class="w-[100%] text-decoration-none" href={`${`/admin/customers`}/${customer.id}`}>
                   <p class="text-xl font-bold">{customer.name}</p>
                   <p class="text-sm text-base-300">{customer.id}</p>
                   <p>{customer.email}</p>
                 </Link>
                 <div class="flex items-center pr-2">
-                  <button class="btn btn-ghost text-error" onClick={e => handleRemove(customer.id)}>
+                  <button class="btn btn-ghost text-error" onClick={e => handleRemove(customer)}>
                     <FiTrash size={22} />
                   </button>
                 </div>

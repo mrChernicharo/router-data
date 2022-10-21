@@ -30,17 +30,22 @@ export default function Admin() {
     <div data-component="Admin">
       <div class="text-secondary">
         <nav class="mb-4 flex gap-1">
-          <a class="link" href="/admin/customers">
+          <Link class="link" href="/admin/customers">
             Customers
-          </a>
+          </Link>
           |
-          <a class="link" href="/admin/professionals">
+          <Link class="link" href="/admin/professionals">
             Professionals
-          </a>
+          </Link>
           |
-          <a class="link" href="/admin/staff">
+          <Link class="link" href="/admin/staff">
             Staff
-          </a>
+          </Link>
+          |
+          <Link class="link" href="/admin/requests">
+            <Badge alignRight danger={query.data?.unattended_count > 0} />
+            Requests
+          </Link>
         </nav>
       </div>
 
@@ -59,15 +64,10 @@ export default function Admin() {
             )}
           </For>
         </div>
-
-        <h3 class="mt-4">
-          <Badge danger={query.data?.unattended_count > 0} />
-          <Link class="flex nav-link align-items-center" href="/admin/requests">
-            <div>Requests</div>
-            <FaSolidChevronRight />
-          </Link>
-        </h3>
       </Suspense>
+
+      <div class="h-[20vh] flex justify-center items-center">Some Charts</div>
+      <div class="h-[20vh] flex justify-center items-center">Calendar</div>
 
       {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
     </div>

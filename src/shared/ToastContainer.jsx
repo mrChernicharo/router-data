@@ -5,6 +5,14 @@ const [toastContext, setToastContext] = createStore([
   { id: 1, message: "welcome", status: "default", duration: 2000 },
 ]);
 
+/**
+ * @function addToast
+ *
+ * @param {Object} info
+ * @param {string} info.message
+ * @param {string} info.status
+ * @param {number} info.duration
+ */
 const addToast = info => {
   const id = Math.random();
   const toast = { id, duration: 2000, status: "default", ...info };

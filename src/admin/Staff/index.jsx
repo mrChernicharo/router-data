@@ -10,6 +10,9 @@ import { s } from "../../lib/styles";
 import Button from "../../shared/Button";
 import Icon from "../../shared/Icon";
 import Loading from "../../shared/Loading";
+import ListItem from "../../shared/ListItem";
+import { FiPlus, FiTrash } from "solid-icons/fi";
+import { addToast } from "../../shared/ToastContainer";
 
 export default function Staff() {
   let inputRef;
@@ -43,15 +46,25 @@ export default function Staff() {
   const handleProfessionalRegister = async person => {
     registerMutation.mutate(person, {
       onSuccess: () => {
-        query.refetch();
         queryClient.invalidateQueries(["professionals"]);
+        addToast({
+          message: "Profissional registrado com sucesso",
+          status: "success",
+        });
+        query.refetch();
       },
     });
   };
 
   const handleStaffRemove = async person => {
+    if (!confirm(`certeza que você quer deletar ${person.name}?`)) return;
+
     removeMutation.mutate(person, {
       onSuccess: (data, variables, context) => {
+        addToast({
+          message: "Staff deletado com sucesso",
+          status: "danger",
+        });
         query.refetch();
       },
     });
@@ -76,11 +89,6 @@ export default function Staff() {
 
   return (
     <div data-component="Staff">
-      <Link href="/admin">
-        <Button kind="light" type="button" text="👈🏽" />
-      </Link>
-      <h1>Staff</h1>
-
       <div class="container">
         <h3>Register new Staff</h3>
 
@@ -92,7 +100,9 @@ export default function Staff() {
             </label>
           </div>
           <div class="d-grid mb-5">
-            <Button kind="CTA" text={<h3 style={{ margin: 0 }}>Register</h3>} />
+            <button type="button" class="btn btn-accent">
+              <h3 style={{ margin: 0 }}>Register</h3>
+            </button>
           </div>
         </form>
       </div>
@@ -103,29 +113,41 @@ export default function Staff() {
         <For each={query.data?.staff}>
           {person => (
             <div>
-              <li class="list-group-item flex justify-content-between">
+              {/* <li class="list-group-item flex justify-content-between"> */}
+              <ListItem>
                 <div class="flex">
                   <div
                     style={{ ...s.listHighlight, background: person.isRegistered ? "#18e697" : "#bbb" }}
                   ></div>
-                  <div>
-                    <div class="fw-bold">{person.name}</div>
+
+                  <div class="w-[100%] p-2">
+                    <div class="text-lg font-bold">{person.name}</div>
                     <div>{person.email}</div>
-                    {person.isRegistered && <div>professional id: {person.professional.id}</div>}
+                    {person.isRegistered && (
+                      <div class="text-base-300">professional id: {person.professional.id}</div>
+                    )}
+                  </div>
+
+                  <div class="flex items-center">
+                    <Show when={!person.isRegistered}>
+                      <button
+                        class="btn btn-ghost text-success"
+                        type="button"
+                        onClick={e => handleProfessionalRegister(person)}
+                      >
+                        <FiPlus size={20} />
+                      </button>
+                    </Show>
+                    <button
+                      class="btn btn-ghost text-error mr-2"
+                      type="button"
+                      onClick={e => handleStaffRemove(person)}
+                    >
+                      <FiTrash size={20} />
+                    </button>
                   </div>
                 </div>
-                <div class="flex">
-                  <Show when={!person.isRegistered}>
-                    <Button
-                      kind="light"
-                      type="button"
-                      text={<Icon plus />}
-                      onClick={e => handleProfessionalRegister(person)}
-                    />
-                  </Show>
-                  <Button kind="delete" type="button" onClick={e => handleStaffRemove(person)} />
-                </div>
-              </li>
+              </ListItem>
             </div>
           )}
         </For>
