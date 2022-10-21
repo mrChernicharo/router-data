@@ -1,7 +1,8 @@
 import { createSignal } from "solid-js";
 import CollapseBox from "./CollapseBox";
 import ListItem from "./ListItem";
-import Example from "./Example";
+import Calendar from "./Calendar";
+import { isSameDay } from "date-fns";
 
 export default function AppointmentsCalendar(props) {
   const [selectedDate, setSelectedDate] = createSignal(null);
@@ -11,14 +12,14 @@ export default function AppointmentsCalendar(props) {
       <ListItem classes="p-4">
         <h4 class="font-bold text-xl">Appointments Calendar</h4>
         <CollapseBox open>
-          <div>{selectedDate()}</div>
+          <div>{JSON.stringify(selectedDate())}</div>
           <div class="sm:grid grid-cols-2">
             {/* Calendar */}
             <div class="border">
               <h3>Calendário</h3>
 
               <div>
-                <Example />
+                <Calendar onDateSelected={setSelectedDate} />
               </div>
             </div>
 
@@ -27,7 +28,11 @@ export default function AppointmentsCalendar(props) {
               <h3>Consultas</h3>
 
               <div>
-                <For each={props.person.appointments}>
+                <For
+                  each={props.person.appointments.filter(app =>
+                    isSameDay(new Date(app.datetime), selectedDate())
+                  )}
+                >
                   {appointment => (
                     <ListItem>
                       <div class="p-2">
