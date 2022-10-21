@@ -106,9 +106,7 @@ where a.day is not null;
 create or replace view vw_retrieve_customers_with_offers as
 select distinct c.* from customers as c
 inner join appointment_offers as o
-on o.customer_id = c.id
-
-;
+on o.customer_id = c.id;
 
 /************ VIEWS ***************/
 

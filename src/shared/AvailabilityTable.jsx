@@ -59,7 +59,7 @@ export default function AvailabilityTable(props) {
                 <For each={WORKING_HOURS}>
                   {time => (
                     <tr>
-                      <th>{time}</th>
+                      <th class="py-0">{time}</th>
                       <For each={STR_NUM_WEEKDAYS}>
                         {weekday => (
                           <td

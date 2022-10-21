@@ -8,7 +8,9 @@ import { removeProfessional } from "../../lib/mutationFuncs";
 import { s } from "../../lib/styles";
 
 import PersonList from "../../shared/PersonList";
+import ListItem from "../../shared/ListItem";
 import Button from "../../shared/Button";
+import { FiTrash } from "solid-icons/fi";
 
 export default function Professionals() {
   const query = createQuery(() => ["professionals"], fetchProfessionalsData);
@@ -34,18 +36,33 @@ export default function Professionals() {
 
   return (
     <div data-component="Professionals">
-      <h1>Professionals</h1>
-      <Link href="/admin">
-        <Button kind="light" type="button" text="👈🏽" />
-      </Link>
+      {query.isLoading && <div>Loading...</div>}
 
-      {/* {data.loading && <div>Loading...</div>} */}
-
-      <PersonList
-        personList={query.data?.professionals}
-        url={`/admin/professionals`}
-        onDelete={handleRemove}
-      />
+      <ul>
+        {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}
+        <For each={query.data?.professionals}>
+          {professional => (
+            <ListItem>
+              <div class="flex justify-between p-4 hover:bg-base-100">
+                <Link
+                  class="w-[100%] text-decoration-none"
+                  style={{ color: "#000" }}
+                  href={`${`/admin/professionals`}/${professional.id}`}
+                >
+                  <p class="text-xl font-bold">{professional.name}</p>
+                  <p class="text-sm text-base-300">{professional.id}</p>
+                  <p>{professional.email}</p>
+                </Link>
+                <div class="flex items-center pr-2">
+                  <button class="btn btn-ghost text-error" onClick={e => handleRemove(professional.id)}>
+                    <FiTrash size={22} />
+                  </button>
+                </div>
+              </div>
+            </ListItem>
+          )}
+        </For>
+      </ul>
 
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>

@@ -1,6 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
-import { createMutation, createQuery } from "@tanstack/solid-query";
+import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { channel } from "../../lib/supabaseClient";
 
 import { fetchStaffData } from "../../lib/fetchFuncs";
@@ -16,6 +16,7 @@ export default function Staff() {
   // const [isSubmitting, setIsSubmitting] = createSignal(false);
 
   const query = createQuery(() => ["staff"], fetchStaffData);
+  const queryClient = useQueryClient();
   const insertMutation = createMutation(["staff"], newStaff => insertStaff(newStaff));
   const removeMutation = createMutation(["staff"], person => removeStaff(person));
   const registerMutation = createMutation(["staff"], person => insertProfessional(person));
@@ -41,7 +42,10 @@ export default function Staff() {
 
   const handleProfessionalRegister = async person => {
     registerMutation.mutate(person, {
-      onSuccess: () => query.refetch(),
+      onSuccess: () => {
+        query.refetch();
+        queryClient.invalidateQueries(["professionals"]);
+      },
     });
   };
 
