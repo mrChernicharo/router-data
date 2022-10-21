@@ -94,9 +94,14 @@ export default function Staff() {
 
         <form onSubmit={handleInsert}>
           <div class="d-grid input-group mb-3">
-            <label class="form-label">
+            <label class="label-text font-bold">
               Email
-              <input ref={inputRef} type="email" class="form-control" placeholder="Employee Email" />
+              <input
+                ref={inputRef}
+                type="email"
+                class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
+                placeholder="Employee Email"
+              />
             </label>
           </div>
           <div class="d-grid mb-5">
@@ -113,13 +118,13 @@ export default function Staff() {
         <For each={query.data?.staff}>
           {person => (
             <div>
-              {/* <li class="list-group-item flex justify-content-between"> */}
               <ListItem>
-                <div class="flex">
+                <div class="flex hover:bg-base-100">
                   <div
                     style={{ ...s.listHighlight, background: person.isRegistered ? "#18e697" : "#bbb" }}
                   ></div>
 
+                  {/* <Link class="w-[100%] href={`/admin/professionals/${person.id}`}> */}
                   <div class="w-[100%] p-2">
                     <div class="text-lg font-bold">{person.name}</div>
                     <div>{person.email}</div>
@@ -127,20 +132,24 @@ export default function Staff() {
                       <div class="text-base-300">professional id: {person.professional.id}</div>
                     )}
                   </div>
+                  {/* </Link> */}
 
                   <div class="flex items-center">
                     <Show when={!person.isRegistered}>
                       <button
                         class="btn btn-ghost text-success"
                         type="button"
+                        title="registrar profissional"
                         onClick={e => handleProfessionalRegister(person)}
                       >
                         <FiPlus size={20} />
                       </button>
                     </Show>
+
                     <button
                       class="btn btn-ghost text-error mr-2"
                       type="button"
+                      title="remover profissional"
                       onClick={e => handleStaffRemove(person)}
                     >
                       <FiTrash size={20} />
@@ -151,6 +160,8 @@ export default function Staff() {
             </div>
           )}
         </For>
+
+        <div>{(insertMutation.isLoading || removeMutation.isLoading) && <Loading />}</div>
       </ul>
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>

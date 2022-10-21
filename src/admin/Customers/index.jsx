@@ -72,13 +72,13 @@ export default function Customers() {
           <div>
             <h3 class="text-xl font-bold">Filter Customers</h3>
             <div class="d-grid input-group mb-3">
-              <label class="form-label">
+              <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
                   Filter <FiSearch />
                 </div>
                 <input
                   type="text"
-                  class="form-control"
+                  class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
                   placeholder="Search"
                   onInput={e => setFilter(e.currentTarget.value)}
                 />
@@ -94,11 +94,16 @@ export default function Customers() {
             <div>
               <h3 class="text-xl font-bold">Register new Customer</h3>
 
-              <label class="form-label">
+              <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
                   Email <FiMail />
                 </div>
-                <input ref={inputRef} type="email" class="form-control" placeholder="Customer Email" />
+                <input
+                  ref={inputRef}
+                  type="email"
+                  class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
+                  placeholder="Employee Email"
+                />
               </label>
             </div>
           </div>

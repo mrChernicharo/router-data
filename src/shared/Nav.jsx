@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
-import Icon from "./Icon";
-import { FiMenu } from "solid-icons/fi";
+import { FiChevronDown, FiMenu, FiX } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
+import { FaSolidChevronDown } from "solid-icons/fa";
 // import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
@@ -30,14 +30,7 @@ export default function Nav() {
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
-            <div class="flex-shrink-0">
-              🌺
-              {/* <img
-                    class="h-8 w-8"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  /> */}
-            </div>
+            <div class="flex-shrink-0">🌺</div>
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
                 <For each={navigation}>
@@ -103,7 +96,7 @@ export default function Nav() {
             >
               <span class="sr-only">Open main menu</span>
               {menuOpen() ? (
-                <Icon class="block h-6 w-6" aria-hidden="true" close />
+                <FiX class="block h-6 w-6" aria-hidden="true" />
               ) : (
                 <FiMenu class="block h-6 w-6" aria-hidden="true" />
               )}
@@ -144,8 +137,7 @@ export default function Nav() {
                 class="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 onClick={e => setUserMenuOpen(!userMenuOpen())}
               >
-                <span class="sr-only">View notifications</span>
-                <Icon class="h-6 w-6" aria-hidden="true" chevronDown />
+                <FiChevronDown class="block h-6 w-6" />
               </button>
             </div>
             <Show when={userMenuOpen()}>

@@ -37,10 +37,6 @@ export default function Professional() {
       return { id, name, email };
     });
 
-  createEffect(() => {
-    console.log(query.data);
-  });
-
   // channel.on("broadcast", { event: `${userId()}::appointments` }, () => {
   //   console.log({ event: `${userId()}::appointments` });
   //   query.refetch();

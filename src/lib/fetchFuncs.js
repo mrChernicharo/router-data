@@ -203,7 +203,7 @@ const fetchProfessionalData = async id => {
 
   const professional = data[0];
 
-  if (!professional.appointments?.length) return { professional };
+  if (!professional?.appointments?.length) return { professional };
 
   const customersProms = [];
   for (let appointment of professional.appointments) {

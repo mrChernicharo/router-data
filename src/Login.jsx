@@ -9,6 +9,7 @@ import { addToast } from "./shared/ToastContainer";
 import Header from "./shared/Header";
 
 export default function Login() {
+  let emailInputRef;
   const [email, setEmail] = createSignal("");
 
   const [cId, setCId] = createSignal("");
@@ -50,19 +51,21 @@ export default function Login() {
             </p>
           </div>
           <form class="mt-8 space-y-6">
-            <input type="hidden" name="remember" />
             <div class="rounded-md shadow-sm -space-y-px">
               <div>
                 <label for="email-address" class="sr-only">
                   Email address
                 </label>
                 <input
+                  ref={emailInputRef}
                   id="email-address"
                   name="email"
                   type="email"
                   // use:formControl={[email, setEmail]}
+                  value={email()}
+                  onInput={e => setEmail(e.currentTarget.value)}
                   required
-                  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  class="input input-bordered input-primary w-full max-w-md bg-white"
                   placeholder="Email address"
                 />
               </div>
@@ -70,10 +73,12 @@ export default function Login() {
             <div>
               <button
                 type="button"
-                disabled={!email()}
-                class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                disabled={!email() || !emailInputRef.validity.valid}
+                class="btn btn-primary relative w-full"
                 onClick={async e => {
-                  const res = await emailLogin(email());
+                  console.log({ emailInputRef });
+                  if (!emailInputRef.validity.valid) return;
+                  // const res = await emailLogin(email());
                   alert("cheque seu email");
                 }}
               >

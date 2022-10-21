@@ -43,7 +43,7 @@ export default function AvailabilityTable(props) {
       <ListItem classes="p-4">
         <h4 class="font-bold text-xl">Availability</h4>
 
-        <CollapseBox open>
+        <CollapseBox>
           <p>Ajuste sua disponibilidade</p>
 
           <form onSubmit={handleAvailabilityUpdate}>
@@ -88,7 +88,7 @@ export default function AvailabilityTable(props) {
               </table>
             </div>
 
-            <div class="d-grid mt-5 mb-5 flex justify-center border">
+            <div class="d-grid mt-5 mb-5 flex justify-center">
               <button class="btn btn-accent w-full sm:w-[30rem]">
                 <span>Update Availability</span>
               </button>
