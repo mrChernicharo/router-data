@@ -51,7 +51,7 @@ export default function AppointmentOffers(props) {
           <Badge danger />
         </Show>
         <h4 class="font-bold text-xl">Appointment Offers</h4>
-        <CollapseBox open>
+        <CollapseBox>
           <Switch>
             <Match when={props.offers.length}>
               <p>Escolha o horário ideal pra você</p>

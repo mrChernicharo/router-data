@@ -14,33 +14,29 @@ export default function AppointmentsCalendar(props) {
   return (
     <div data-component="AppointmentsCalendar">
       <ListItem classes="p-4">
-        <h4 class="font-bold text-xl">Appointments Calendar</h4>
-        <CollapseBox open>
-          <div>{JSON.stringify(selectedDate())}</div>
+        <h4 class="font-bold text-xl">Consultas</h4>
+
+        <CollapseBox>
           <div class="sm:grid grid-cols-2">
             {/* Calendar */}
-            <div class="border">
-              <h3>Calendário</h3>
-
-              <div>
-                <Calendar onDateSelected={setSelectedDate} />
-              </div>
+            <div class="">
+              <Calendar onDateSelected={setSelectedDate} appointments={props.person.appointments} />
             </div>
 
-            <div class="border">
-              <Show when={true}>
-                <h3>Consultas do dia</h3>
+            <div class="">
+              <Show when={selectedDate()}>
+                <h3 class="pt-6 pb-2 font-semibold text-lg">
+                  {`Consultas do dia ${format(selectedDate(), "d")}`}
+                </h3>
 
                 <div>
+                  {!appointmentsInDay().length && <div class="text-info">Sem consultas nesse dia</div>}
                   <For each={appointmentsInDay()}>
                     {appointment => (
                       <ListItem>
                         <div class="p-2">
                           <div>{appointment[person()].name}</div>
-                          <div>
-                            {appointment.time}
-                            {/* {format(new Date(appointment.datetime), "eee dd")}  */}
-                          </div>
+                          <div>{appointment.time}</div>
                         </div>
                       </ListItem>
                     )}
@@ -51,7 +47,7 @@ export default function AppointmentsCalendar(props) {
           </div>
         </CollapseBox>
       </ListItem>
-      <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre>
+      {/* <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre> */}
     </div>
   );
 }
@@ -64,5 +60,6 @@ export default function AppointmentsCalendar(props) {
       <div>{props.person.id}</div>
       <div>{props.person.name}</div>
       <div>{props.person.email}</div>
-      <pre>{JSON.stringify(props.appointments, null, 2)}</pre> */
+     
+    */
 }

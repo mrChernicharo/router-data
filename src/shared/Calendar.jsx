@@ -16,7 +16,7 @@ import {
   startOfToday,
   startOfWeek,
 } from "date-fns";
-import { createEffect, createSignal, onMount } from "solid-js";
+import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { classss } from "../lib/helpers";
 import { addDays } from "date-fns/esm";
 
@@ -45,7 +45,10 @@ export default function Calendar(props) {
       end: endOfMonth(firstDayCurrentMonth()),
     });
 
-  const prevMonthLastDays = () => {
+  const haveAppointment = day =>
+    props.appointments && props.appointments.find(app => isSameDay(day, new Date(app.datetime)));
+
+  const prevMonthLastDays = createMemo(() => {
     const weekStart = startOfWeek(firstDayCurrentMonth());
 
     return firstDayCurrentMonth().getDay() === 0
@@ -54,17 +57,17 @@ export default function Calendar(props) {
           start: weekStart,
           end: lastDayOfMonth(weekStart),
         });
-  };
+  });
 
-  const nextMonthInitialDays = () => {
+  const nextMonthInitialDays = createMemo(() => {
     const monthLastDay = lastDayOfMonth(firstDayCurrentMonth());
     const daysTilSaturday = 6 - monthLastDay.getDay();
     const start = addDays(monthLastDay, 1);
     const end = addDays(monthLastDay, daysTilSaturday);
-    console.log({ start, end });
+    // console.log({ start, end });
 
     return isBefore(end, start) ? [] : eachDayOfInterval({ start, end });
-  };
+  });
 
   function previousMonth() {
     let firstDayNextMonth = add(firstDayCurrentMonth(), { months: -1 });
@@ -76,30 +79,23 @@ export default function Calendar(props) {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  createEffect(() => {
-    props.onDateSelected(selectedDay());
+  const [MIN, MAX] = [32, 120];
+  const getCellHeight = () => Math.max(MIN, Math.min(MAX, divRef.getBoundingClientRect().width / 7));
 
-    console.log({
-      firstDayCurrentMonth: firstDayCurrentMonth(),
-      prevMonthLastDays: prevMonthLastDays(),
-      nextMonthInitialDays: nextMonthInitialDays(),
+  onMount(() => {
+    setCellHeight(getCellHeight());
+    window.addEventListener("resize", e => {
+      setCellHeight(getCellHeight());
     });
   });
 
-  onMount(() => {
-    const [MIN, MAX] = [32, 120];
-    const getCellHeight = () => Math.max(MIN, Math.min(MAX, divRef.getBoundingClientRect().width / 7));
-
-    console.log(divRef.getBoundingClientRect());
-    setCellHeight(getCellHeight());
-    window.addEventListener("resize", e => {
-      console.log(
-        /**
-        e, divRef.getBoundingClientRect(),
-      */ cellHeight()
-      );
-      setCellHeight(getCellHeight());
-    });
+  createEffect(() => {
+    props.onDateSelected(selectedDay());
+    // console.log({
+    //   firstDayCurrentMonth: firstDayCurrentMonth(),
+    //   prevMonthLastDays: prevMonthLastDays(),
+    //   nextMonthInitialDays: nextMonthInitialDays(),
+    // });
   });
 
   return (
@@ -153,13 +149,17 @@ export default function Calendar(props) {
                         !isEqual(day, selectedDay()) && !isToday(day) && !isSameMonth(day, firstDayCurrentMonth()) && "text-base-300",
                         !isEqual(day, selectedDay()) && "hover:bg-base-200",
                         (isEqual(day, selectedDay()) || isToday(day)) && "font-semibold",
-                        "mx-auto flex items-center justify-center",
+                        "relative mx-auto flex items-center justify-center",
                         'h-8 w-8',
                         'rounded-full',
                         // cellHeight() < 54 ? ' rounded-sm' : cellHeight() > 84 ? ' rounded-lg' : ' rounded-md'
                       )}
                   >
                     <time dateTime={format(day, "yyyy-MM-dd")}>{format(day, "d")}</time>
+
+                    <Show when={haveAppointment(day)}>
+                      <div class="absolute bg-secondary h-1 w-1 rounded-full bottom-0.5"></div>
+                    </Show>
                   </button>
                 </div>
               );

@@ -1,7 +1,6 @@
 import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
 import { addMinutes, isPast, subDays } from "date-fns";
-import ProfessionalAppointments from "./ProfessionalAppointments";
 import AppointmentList from "../shared/AppointmentList";
 import CollapseBox from "../shared/CollapseBox";
 // import ProfessionalAvailability from "./ProfessionalAvailability";
@@ -64,7 +63,7 @@ export default function Professional() {
         />
 
         <ListItem classes="p-4">
-          <h4 class="font-bold text-xl">Patients</h4>
+          <h4 class="font-bold text-xl">Pacientes</h4>
           <div>{getPatients(query.data.professional.appointments).length} patients</div>
           <CollapseBox>
             <ul>
