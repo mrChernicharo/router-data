@@ -3,6 +3,7 @@ import { createQuery } from "@tanstack/solid-query";
 
 import Badge from "../shared/Badge";
 import Loading from "../shared/Loading";
+import Calendar from "../shared/Calendar";
 import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
 
@@ -66,8 +67,12 @@ export default function Admin() {
         </div>
       </Suspense>
 
-      <div class="h-[20vh] flex justify-center items-center">Some Charts</div>
-      <div class="h-[20vh] flex justify-center items-center">Calendar</div>
+      {/* <div class="h-[20vh] flex justify-center items-center"></div> */}
+      <div class="flex justify-center items-center">
+        <div class="my-12">
+          <Calendar onDateSelected={console.log} width={"500px"} />
+        </div>
+      </div>
 
       {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
     </div>

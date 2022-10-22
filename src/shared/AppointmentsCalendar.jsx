@@ -1,11 +1,14 @@
-import { createSignal } from "solid-js";
+import { createSignal, createMemo, Show } from "solid-js";
 import CollapseBox from "./CollapseBox";
 import ListItem from "./ListItem";
 import Calendar from "./Calendar";
-import { isSameDay } from "date-fns";
+import { isSameDay, format } from "date-fns";
 
 export default function AppointmentsCalendar(props) {
   const [selectedDate, setSelectedDate] = createSignal(null);
+  const appointmentsInDay = createMemo(() =>
+    props.person.appointments.filter(app => isSameDay(new Date(app.datetime), selectedDate()))
+  );
 
   return (
     <div data-component="AppointmentsCalendar">
@@ -23,26 +26,26 @@ export default function AppointmentsCalendar(props) {
               </div>
             </div>
 
-            {/* Appointments in day */}
             <div class="border">
-              <h3>Consultas</h3>
+              <Show when={true}>
+                <h3>Consultas do dia</h3>
 
-              <div>
-                <For
-                  each={props.person.appointments.filter(app =>
-                    isSameDay(new Date(app.datetime), selectedDate())
-                  )}
-                >
-                  {appointment => (
-                    <ListItem>
-                      <div class="p-2">
-                        <div>{appointment.customer.name}</div>
-                        <div>{appointment.datetime}</div>
-                      </div>
-                    </ListItem>
-                  )}
-                </For>
-              </div>
+                <div>
+                  <For each={appointmentsInDay()}>
+                    {appointment => (
+                      <ListItem>
+                        <div class="p-2">
+                          <div>{appointment.customer.name}</div>
+                          <div>
+                            {appointment.time}
+                            {/* {format(new Date(appointment.datetime), "eee dd")}  */}
+                          </div>
+                        </div>
+                      </ListItem>
+                    )}
+                  </For>
+                </div>
+              </Show>
             </div>
           </div>
         </CollapseBox>

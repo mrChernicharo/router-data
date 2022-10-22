@@ -9,12 +9,15 @@ import {
   isSameDay,
   isSameMonth,
   isToday,
+  lastDayOfMonth,
   parse,
   parseISO,
   startOfToday,
+  startOfWeek,
 } from "date-fns";
 import { createEffect, createSignal } from "solid-js";
 import { classss } from "../lib/helpers";
+import { addDays } from "date-fns/esm";
 
 let colStartClasses = [
   "",
@@ -38,6 +41,26 @@ export default function Calendar(props) {
       end: endOfMonth(firstDayCurrentMonth()),
     });
 
+  const prevMonthLastDays = () => {
+    const weekStart = startOfWeek(firstDayCurrentMonth());
+
+    return firstDayCurrentMonth().getDay() === 0
+      ? []
+      : eachDayOfInterval({
+          start: weekStart,
+          end: lastDayOfMonth(weekStart),
+        });
+  };
+
+  const nextMonthInitialDays = () => {
+    const monthLastDay = lastDayOfMonth(firstDayCurrentMonth());
+    const daysTilSaturday = 6 - monthLastDay.getDay();
+    const start = addDays(monthLastDay, 1);
+    const end = addDays(monthLastDay, daysTilSaturday);
+
+    return eachDayOfInterval({ start, end });
+  };
+
   function previousMonth() {
     let firstDayNextMonth = add(firstDayCurrentMonth(), { months: -1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
@@ -50,11 +73,17 @@ export default function Calendar(props) {
 
   createEffect(() => {
     props.onDateSelected(selectedDay());
+
+    console.log({
+      firstDayCurrentMonth: firstDayCurrentMonth(),
+      prevMonthLastDays: prevMonthLastDays(),
+      nextMonthInitialDays: nextMonthInitialDays(),
+    });
   });
 
   return (
     <div class="pt-2 pb-6">
-      <div class="max-w-[360px] px-4 mx-auto">
+      <div class={`px-4 mx-auto`} style={{ width: `min(100vw, ${props.width ?? "600px"})` }}>
         <div class="">
           <div class="flex items-center">
             <h2 class="flex-auto font-semibold text-gray-900">
@@ -87,16 +116,17 @@ export default function Calendar(props) {
             <div>S</div>
           </div>
           <div class="grid grid-cols-7 mt-2 text-sm">
-            <For each={days()}>
+            <For each={[...prevMonthLastDays(), ...days(), ...nextMonthInitialDays()]}>
               {(day, dayIdx) => {
                 return (
-                  <div class={classss(dayIdx() === 0 && colStartClasses[getDay(day)], "py-1.5")}>
+                  <div class={"py-1.5"}>
+                    {/* <div class={classss(dayIdx() === 0 && colStartClasses[getDay(day)], "py-1.5")}> */}
                     <button
                       type="button"
                       onClick={() => setSelectedDay(day)}
                       class={classss(
                         isEqual(day, selectedDay()) && "text-white",
-                        !isEqual(day, selectedDay()) && isToday(day) && "text-secondary",
+                        !isEqual(day, selectedDay()) && isToday(day) && "text-accent",
                         !isEqual(day, selectedDay()) &&
                           !isToday(day) &&
                           isSameMonth(day, firstDayCurrentMonth()) &&
