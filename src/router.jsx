@@ -12,8 +12,8 @@ const Professionals = lazy(() => import("./admin/Professionals"));
 const Customers = lazy(() => import("./admin/Customers"));
 const AppointmentRequests = lazy(() => import("./admin/Requests"));
 
-const Customer = lazy(() => import("./Customer"));
-const Professional = lazy(() => import("./Professional"));
+const Customer = lazy(() => import("./customer/Customer"));
+const Professional = lazy(() => import("./professional/Professional"));
 
 export default function Router() {
   return (

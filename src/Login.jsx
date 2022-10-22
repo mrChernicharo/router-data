@@ -98,7 +98,11 @@ export default function Login() {
       <div class="flex justify-center my-6">
         <Show when={!query.isLoading} fallback={<div>Loading...</div>}>
           <Show when={query.data?.customers}>
-            <select value={query.data?.customers[0].id} onChange={e => setCId(e.currentTarget.value)}>
+            <select
+              class="capitalize"
+              value={query.data?.customers[0].id}
+              onChange={e => setCId(e.currentTarget.value)}
+            >
               <For each={query.data?.customers}>
                 {customer => <option value={customer.id}>{customer.name}</option>}
               </For>
@@ -106,7 +110,11 @@ export default function Login() {
           </Show>
 
           <Show when={query.data?.professionals}>
-            <select value={query?.data?.professionals[0].id} onChange={e => setPId(e.currentTarget.value)}>
+            <select
+              class="capitalize"
+              value={query?.data?.professionals[0].id}
+              onChange={e => setPId(e.currentTarget.value)}
+            >
               <For each={query.data?.professionals}>
                 {professional => <option value={professional.id}>{professional.name}</option>}
               </For>
