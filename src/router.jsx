@@ -6,6 +6,8 @@ import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
 
 const Login = lazy(() => import("./Login"));
+const Signup = lazy(() => import("./Signup"));
+
 const Admin = lazy(() => import("./admin"));
 const Staff = lazy(() => import("./admin/Staff"));
 const Professionals = lazy(() => import("./admin/Professionals"));
@@ -21,6 +23,7 @@ export default function Router() {
       <Route path="/" component={Home} />
 
       <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
 
       <Route path="/admin" component={Layout}>
         <Route path="/" component={Admin} />

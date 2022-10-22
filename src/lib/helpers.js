@@ -55,8 +55,6 @@ export const getClosestDate = day => {
   return closestPossibleDateTimestamp;
 };
 
-
-
 export const ISODateStrFromDateAndTime = (dateStr, time) => {
   return new Date(
     new Date(dateStr).getTime() +
@@ -67,4 +65,12 @@ export const ISODateStrFromDateAndTime = (dateStr, time) => {
 
 export const classss = (...classes) => {
   return classes.filter(Boolean).join(" ");
-}
+};
+
+export const translateError = message => {
+  const translations = {
+    "Invalid login credentials": "Credenciais inválidas. Verifique se Email e Senha estão corretos",
+  };
+
+  return translations[message] ? translations[message] : message;
+};

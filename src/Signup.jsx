@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, createMemo } from "solid-js";
+import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
@@ -11,58 +11,32 @@ import { addToast, ToastContainer } from "./shared/ToastContainer";
 
 import Header from "./shared/Header";
 
-export default function Login() {
+export default function Signup() {
   let emailInputRef;
   let passwordInputRef;
+  let usernameInputRef;
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
+  const [username, setUsername] = createSignal("");
 
-  /////////////////************************//////////////////************************/
-  const [cId, setCId] = createSignal("");
-  const [pId, setPId] = createSignal("");
-  // const data = useRouteData();
-  const query = createQuery(() => ["admin"], fetchLoginFakeData, {
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    // cacheTime: 0,
-    // staleTime: 0,
-  });
-
-  const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
-
-  createEffect(() => {
-    if (!query.isLoading && query?.data?.customers && query?.data?.professionals) {
-      setPId(query?.data.professionals[0].id);
-      setCId(query?.data.customers[0].id);
-    } else {
-      setPId("");
-      setCId("");
-    }
-  });
-  //////////////////////////////////************************//////////////////************************/
-
-  // const navigate = useNavigate();
-  // const [store, { emailLogin }] = useAuthContext();
+  const isDisabled = createMemo(
+    () => !email() || !password() || !username() || !emailInputRef.validity.valid
+  );
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log({ email: email(), password: password() });
+    const credentials = { email: email(), password: password(), username: username() };
+    console.log(credentials);
     if (!emailInputRef.validity.valid || !passwordInputRef.value) return;
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: email(), password: password() });
-    if (error) {
-      addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
-    }
+    const { data, error } = await supabase.auth.signUp(credentials);
+
+    if (error) addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
 
     console.log({ data, error });
 
     // alert("cheque seu email");
   }
-
-  createEffect(async () => {
-    const { data: sessionData } = await supabase.auth.getSession();
-    console.log({ user: sessionData.session?.user ?? null, session: sessionData.session });
-  });
 
   return (
     <div>
@@ -72,11 +46,11 @@ export default function Login() {
       <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
           <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Logar na sua conta</h2>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Criar conta</h2>
             <p class="mt-2 text-center text-sm text-gray-600">
-              Ou{" "}
-              <Link href="/signup" class="font-medium text-indigo-600 hover:text-indigo-500">
-                crie uma nova aqui mesmo
+              já tem conta?{" "}
+              <Link href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+                fazer login
               </Link>
             </p>
           </div>
@@ -119,6 +93,25 @@ export default function Login() {
                 />
               </div>
             </div>
+            <div class="rounded-md shadow-sm">
+              <div>
+                <label for="username" class="text-sm">
+                  Como devemos de chamar?
+                </label>
+                <input
+                  ref={usernameInputRef}
+                  id="username"
+                  name="username"
+                  type="text"
+                  // use:formControl={[email, setEmail]}
+                  value={username()}
+                  onInput={e => setUsername(e.currentTarget.value)}
+                  required
+                  class="input input-bordered input-primary w-full max-w-md bg-white"
+                  placeholder="Nome"
+                />
+              </div>
+            </div>
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
@@ -127,44 +120,11 @@ export default function Login() {
                     aria-hidden="true"
                   />
                 </span>
-                Sign in
+                Criar conta
               </button>
             </div>
           </form>
         </div>
-      </div>
-
-      <div class="flex justify-center my-6">
-        <Show when={!query.isLoading} fallback={<div>Loading...</div>}>
-          <Show when={query.data?.customers}>
-            <select
-              class="capitalize"
-              value={query.data?.customers[0].id}
-              onChange={e => setCId(e.currentTarget.value)}
-            >
-              <For each={query.data?.customers}>
-                {customer => <option value={customer.id}>{customer.name}</option>}
-              </For>
-            </select>
-          </Show>
-
-          <Show when={query.data?.professionals}>
-            <select
-              class="capitalize"
-              value={query?.data?.professionals[0].id}
-              onChange={e => setPId(e.currentTarget.value)}
-            >
-              <For each={query.data?.professionals}>
-                {professional => <option value={professional.id}>{professional.name}</option>}
-              </For>
-            </select>
-          </Show>
-        </Show>
-      </div>
-
-      <div class="flex justify-between px-24 capitalize">
-        <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>cliente </Link>|{" "}
-        <Link href={`/professional/${pId()}`}>profissional </Link>
       </div>
     </div>
   );
