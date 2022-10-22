@@ -64,7 +64,7 @@ export default function Customers() {
 
   return (
     <div data-component="Customers">
-      <div class="flex justify-around mt-6">
+      <div class="grid md:grid-cols-2">
         {/* FILTER CUSTOMERS */}
         <fieldset>
           <div>

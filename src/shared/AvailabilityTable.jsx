@@ -76,13 +76,13 @@ export default function AvailabilityTable(props) {
           <form onSubmit={handleAvailabilityUpdate}>
             <div class="max-w-[800px] mx-auto  mt-6">
               {/* THEAD */}
-              <div class="sticky top-0 grid grid-cols-8  border-b-[1px] border-t-[1px]">
+              <div class="sticky top-0 grid grid-cols-8  border-b-[1px] border-t-[1px] bg-base-100">
                 <For each={["", ...STR_NUM_WEEKDAYS]}>
                   {(day, i) =>
                     i() === 0 ? (
                       <div class=""></div>
                     ) : (
-                      <div class="text-center">{dateToWeekday(day).slice(0, 3)}</div>
+                      <div class="font-bold uppercase text-center py-2">{dateToWeekday(day).slice(0, 3)}</div>
                     )
                   }
                 </For>
@@ -90,8 +90,13 @@ export default function AvailabilityTable(props) {
               <div>
                 {/* TBODY */}
                 <For each={WORKING_HOURS}>
-                  {time => (
-                    <div class="grid grid-cols-8 border-b-[1px]">
+                  {(time, idx) => (
+                    <div
+                      class={classss(
+                        "grid grid-cols-8",
+                        /**"border-b-[1px]", */ idx() % 2 === 0 && "bg-base-200"
+                      )}
+                    >
                       <div class="text-xs font-bold flex items-center">{time}</div>
                       <For each={STR_NUM_WEEKDAYS}>
                         {weekday => (
