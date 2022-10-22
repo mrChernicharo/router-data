@@ -10,16 +10,19 @@ import Header from "./shared/Header";
 
 export default function Login() {
   let emailInputRef;
+  let passwordInputRef;
   const [email, setEmail] = createSignal("");
+  const [password, setPassword] = createSignal("");
 
+  /////////////////************************//////////////////************************/
   const [cId, setCId] = createSignal("");
   const [pId, setPId] = createSignal("");
   // const data = useRouteData();
   const query = createQuery(() => ["admin"], fetchLoginFakeData, {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    cacheTime: 0,
-    staleTime: 0,
+    // cacheTime: 0,
+    // staleTime: 0,
   });
 
   createEffect(() => {
@@ -31,9 +34,18 @@ export default function Login() {
       setCId("");
     }
   });
+  //////////////////////////////////************************//////////////////************************/
 
   // const navigate = useNavigate();
   // const [store, { emailLogin }] = useAuthContext();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    console.log({ email: email(), password: password() });
+    if (!emailInputRef.validity.valid || !passwordInputRef.value) return;
+
+    alert("cheque seu email");
+  }
 
   return (
     <div>
@@ -50,11 +62,11 @@ export default function Login() {
               </Link>
             </p>
           </div>
-          <form class="mt-8 space-y-6">
+          <form class="mt-8" onSubmit={handleSubmit}>
             <div class="rounded-md shadow-sm -space-y-px">
               <div>
-                <label for="email-address" class="sr-only">
-                  Email address
+                <label for="email-address" class="text-sm">
+                  Email
                 </label>
                 <input
                   ref={emailInputRef}
@@ -66,22 +78,31 @@ export default function Login() {
                   onInput={e => setEmail(e.currentTarget.value)}
                   required
                   class="input input-bordered input-primary w-full max-w-md bg-white"
-                  placeholder="Email address"
+                  placeholder="Endereço de email"
                 />
               </div>
             </div>
-            <div>
-              <button
-                type="button"
-                disabled={!email() || !emailInputRef.validity.valid}
-                class="btn btn-primary relative w-full"
-                onClick={async e => {
-                  console.log({ emailInputRef });
-                  if (!emailInputRef.validity.valid) return;
-                  // const res = await emailLogin(email());
-                  alert("cheque seu email");
-                }}
-              >
+            <div class="rounded-md shadow-sm">
+              <div>
+                <label for="password" class="text-sm">
+                  Senha
+                </label>
+                <input
+                  ref={passwordInputRef}
+                  id="password"
+                  name="password"
+                  type="text"
+                  // use:formControl={[email, setEmail]}
+                  value={password()}
+                  onInput={e => setPassword(e.currentTarget.value)}
+                  required
+                  class="input input-bordered input-primary w-full max-w-md bg-white"
+                  placeholder="Senha"
+                />
+              </div>
+            </div>
+            <div class="pt-6">
+              <button disabled={!email() || !password()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                   <AiFillLock
                     class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
@@ -123,9 +144,9 @@ export default function Login() {
         </Show>
       </div>
 
-      <div class="flex justify-between px-24">
-        <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>customer </Link>|{" "}
-        <Link href={`/professional/${pId()}`}>professional </Link>
+      <div class="flex justify-between px-24 capitalize">
+        <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>cliente </Link>|{" "}
+        <Link href={`/professional/${pId()}`}>profissional </Link>
       </div>
     </div>
   );
