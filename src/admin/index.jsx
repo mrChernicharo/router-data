@@ -69,8 +69,8 @@ export default function Admin() {
 
       {/* <div class="h-[20vh] flex justify-center items-center"></div> */}
       <div class="flex justify-center items-center">
-        <div class="my-12">
-          <Calendar onDateSelected={console.log} width={"500px"} />
+        <div class="my-12 w-full h-[500px]">
+          <Calendar onDateSelected={console.log} />
         </div>
       </div>
 

@@ -9,6 +9,7 @@ export default function AppointmentsCalendar(props) {
   const appointmentsInDay = createMemo(() =>
     props.person.appointments.filter(app => isSameDay(new Date(app.datetime), selectedDate()))
   );
+  const person = createMemo(() => (props.role === "customer" ? "professional" : "customer"));
 
   return (
     <div data-component="AppointmentsCalendar">
@@ -35,7 +36,7 @@ export default function AppointmentsCalendar(props) {
                     {appointment => (
                       <ListItem>
                         <div class="p-2">
-                          <div>{appointment.customer.name}</div>
+                          <div>{appointment[person()].name}</div>
                           <div>
                             {appointment.time}
                             {/* {format(new Date(appointment.datetime), "eee dd")}  */}
@@ -50,7 +51,7 @@ export default function AppointmentsCalendar(props) {
           </div>
         </CollapseBox>
       </ListItem>
-      <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre> */
+      <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre>
     </div>
   );
 }
