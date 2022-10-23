@@ -1,15 +1,21 @@
+import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 
-export const [userStore, setUserStore] = createStore({ user: null });
+export const [userStore, setUserStore] = createSignal({ session: null, user: null });
 
-const login = email => {
-  console.log("login", email);
-  setUserStore("user", email);
-};
 
-const logout = () => {
-  console.log("logout");
-  setUserStore("user", null);
-};
+// createEffect(() => {
+//   // console.log({ session: query.data?.session });
+// });
 
-export { login, logout };
+// const login = email => {
+//   console.log("login", email);
+//   setUserStore("user", email);
+// };
+
+// const logout = () => {
+//   console.log("logout");
+//   setUserStore("user", null);
+// };
+
+// export { login, logout };

@@ -4,12 +4,22 @@ import { FaSolidArrowLeft, FaSolidChevronLeft } from "solid-icons/fa";
 import { APP_NAME } from "../lib/constants";
 
 import { useLocation, Link } from "solid-app-router";
-import { createEffect, createSignal, onMount } from "solid-js";
+import { createEffect, createSignal, onMount, Show } from "solid-js";
+import { userStore } from "../lib/userStore";
+import { useQueryClient } from "@tanstack/solid-query";
 
 export default function Header(props) {
   const location = useLocation();
   const [pageTitle, setPageTitle] = createSignal("Admin");
   const [backLink, setBackLink] = createSignal("/login");
+
+  const queryClient = useQueryClient();
+  // console.log(queryClient.getQueryData(() => ["auth"]));
+  const email = () => queryClient.getQueryData(() => ["auth"])?.session?.user?.email;
+
+  createEffect(() => {
+    console.log(email());
+  });
 
   createEffect(() => {
     // console.log(location.pathname);
@@ -70,6 +80,12 @@ export default function Header(props) {
     <header class="bg-white">
       <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
+
+        {/* <Show when={userStore().user}>
+          <div>{userStore().user.email}</div>
+        </Show> */}
+
+        {queryClient.getQueryData(() => ["auth"]) && <div>{email()}</div>}
 
         <Show when={pageTitle() !== APP_NAME}>
           <Link href={backLink()}>

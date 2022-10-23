@@ -122,11 +122,15 @@ export default function Login() {
                     aria-hidden="true"
                   />
                 </span>
-                Sign in
+                Entrar
               </button>
             </div>
           </form>
         </div>
+
+        <button class="btn" type="button" onClick={async e => await supabase.auth.signOut()}>
+          logout
+        </button>
       </div>
 
       <div class="flex justify-center my-6">
