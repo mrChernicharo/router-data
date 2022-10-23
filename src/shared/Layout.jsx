@@ -6,6 +6,7 @@ import Nav from "./Nav";
 import { ToastContainer } from "./Toast";
 import { FiMenu } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
+import { userStore } from "../lib/userStore";
 
 export default function Layout() {
   return (
@@ -23,6 +24,8 @@ export default function Layout() {
           </div>
         </div>
       </main>
+
+      <pre class="text-xs">{JSON.stringify(userStore.user, null, 2)}</pre>
     </>
   );
 }

@@ -8,6 +8,7 @@ import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
 import { setUserStore, userStore } from "./lib/userStore";
 import { fetchAuthState } from "./lib/fetchFuncs";
+import { addToast } from "./shared/Toast";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -37,11 +38,33 @@ export default function Router() {
       const { data, error } = await supabase.from("staff").select("*").eq("email", session.user.email);
       const staff = data[0] ?? null;
 
-      setUserStore("session", session);
-      setUserStore("user", { ...session.user, category: staff.category ?? "customer" });
+      let personData;
+      if (staff) {
+        const { data, error } = await supabase
+          .from("professionals")
+          .select("*")
+          .eq("email", session.user.email);
+        personData = data[0];
+      } else {
+        const { data, error } = await supabase.from("customers").select("*").eq("email", session.user.email);
+        personData = data[0];
+      }
+
+      const user = { ...session.user, ...personData, category: staff?.category ?? "customer" };
+
+      setUserStore("user", user);
+      setUserStore("session", { ...session, user });
 
       queryClient.cancelQueries({ queryKey: ["admin"] });
-      navigate("/admin");
+      console.log("redirect!", { userStore });
+
+      const redirects = {
+        admin: "/admin",
+        customer: `/customer/${user.id}`,
+        professional: `/professional/${user.id}`,
+      };
+
+      navigate(redirects[user.category]);
     } else {
       setUserStore("session", null);
       setUserStore("user", null);
@@ -50,7 +73,7 @@ export default function Router() {
 
   onMount(async () => {
     const { session } = await fetchAuthState();
-    console.log(session);
+    // console.log(session);
     updateAuthState(session);
     supabase.auth.onAuthStateChange(async (e, session) => updateAuthState(session));
   });

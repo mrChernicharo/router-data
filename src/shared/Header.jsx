@@ -74,12 +74,13 @@ export default function Header(props) {
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
 
         <Show when={userStore.user}>
-          <div>{userStore.user.email}</div>
+          <div>{userStore.user.name}</div>
+          <div>{userStore.user.category}</div>
         </Show>
 
         {/* {queryClient.getQueryData(() => ["auth"]) && <div>{email()}</div>} */}
 
-        <Show when={pageTitle() !== APP_NAME}>
+        <Show when={pageTitle() !== APP_NAME && pageTitle() !== "Admin"}>
           <Link href={backLink()}>
             <button>
               <FaSolidChevronLeft class="mr-1" />

@@ -10,9 +10,9 @@ import { FaSolidChevronRight } from "solid-icons/fa";
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
     refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    cacheTime: 0,
-    staleTime: 0,
+    refetchOnMount: false,
+    cacheTime: 20_000,
+    staleTime: 10_000,
   });
 
   const infoCards = data => [
@@ -74,7 +74,7 @@ export default function Admin() {
         </div>
       </div>
 
-      <pre>{JSON.stringify(query, null, 1)}</pre>
+      {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
     </div>
   );
 }

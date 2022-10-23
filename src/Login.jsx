@@ -18,29 +18,28 @@ export default function Login() {
   let passwordInputRef;
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
-
-  /////////////////************************//////////////////************************/
-  const [cId, setCId] = createSignal("");
-  const [pId, setPId] = createSignal("");
-  // const data = useRouteData();
-  const query = createQuery(() => ["admin"], fetchLoginFakeData, {
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    // cacheTime: 0,
-    // staleTime: 0,
-  });
-
   const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
 
-  createEffect(() => {
-    if (!query.isLoading && query?.data?.customers?.length && query?.data?.professionals?.length) {
-      setPId(query?.data.professionals[0].id);
-      setCId(query?.data.customers[0].id);
-    } else {
-      setPId("");
-      setCId("");
-    }
-  });
+  /////////////////************************//////////////////************************/
+  // const [cId, setCId] = createSignal("");
+  // const [pId, setPId] = createSignal("");
+  // // const data = useRouteData();
+  // const query = createQuery(() => ["admin"], fetchLoginFakeData, {
+  //   refetchOnWindowFocus: true,
+  //   refetchOnMount: true,
+  //   // cacheTime: 0,
+  //   // staleTime: 0,
+  // });
+
+  // createEffect(() => {
+  //   if (!query.isLoading && query?.data?.customers?.length && query?.data?.professionals?.length) {
+  //     setPId(query?.data.professionals[0].id);
+  //     setCId(query?.data.customers[0].id);
+  //   } else {
+  //     setPId("");
+  //     setCId("");
+  //   }
+  // });
   //////////////////////////////////************************//////////////////************************/
 
   async function handleSubmit(e) {
@@ -51,18 +50,9 @@ export default function Login() {
     if (error) {
       return addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
     }
+
     addToast({ message: "boas vindas!", status: "success", duration: 2000 });
-
-    console.log("HAAAA", userStore.user);
-    // navigate('')
-
-    // console.log({ data, error });
   }
-
-  // createEffect(async () => {
-  //   const { data: sessionData } = await supabase.auth.getSession();
-  //   console.log({ user: sessionData.session?.user ?? null, session: sessionData.session });
-  // });
 
   return (
     <div>
@@ -133,12 +123,12 @@ export default function Login() {
           </form>
         </div>
 
-        <button class="btn" type="button" onClick={async e => await supabase.auth.signOut()}>
+        {/* <button class="btn" type="button" onClick={async e => await supabase.auth.signOut()}>
           logout
-        </button>
+        </button> */}
       </div>
 
-      <div class="flex justify-center my-6">
+      {/* <div class="flex justify-center my-6">
         <Show when={!query.isLoading} fallback={<div>Loading...</div>}>
           <Show when={query.data?.customers}>
             <select
@@ -164,12 +154,12 @@ export default function Login() {
             </select>
           </Show>
         </Show>
-      </div>
+      </div> */}
 
-      <div class="flex justify-between px-24 capitalize">
+      {/* <div class="flex justify-between px-24 capitalize">
         <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>cliente </Link>|{" "}
         <Link href={`/professional/${pId()}`}>profissional </Link>
-      </div>
+      </div> */}
     </div>
   );
 }
