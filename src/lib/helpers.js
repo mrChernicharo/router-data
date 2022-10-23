@@ -71,7 +71,8 @@ export const translateError = message => {
   const translations = {
     "Rate limit exceeded": "Limite de tentativas excedido. Espere alguns minutos e tente novamente.",
     "Invalid login credentials": "Credenciais inválidas. Verifique se Email e Senha estão corretos",
-    'duplicate key value violates unique constraint "customers_email_key"': 'Já existe um usuário cadastrado com esse email'
+    'duplicate key value violates unique constraint "customers_email_key"': 'Já existe um usuário cadastrado com esse email',
+    'Email not confirmed': "Você precisa ir no seu email e clicar no link para ativar a sua conta"
   };
 
   return translations[message] ? translations[message] : message;

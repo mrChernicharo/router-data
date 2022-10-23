@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onMount, createMemo } from "solid-js";
-import { useRouteData, Link } from "solid-app-router";
+import { useRouteData, Link, useNavigate } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
@@ -10,8 +10,10 @@ import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 import { addToast, ToastContainer } from "./shared/Toast";
 
 import Header from "./shared/Header";
+import { userStore } from "./lib/userStore";
 
 export default function Login() {
+  const navigate = useNavigate();
   let emailInputRef;
   let passwordInputRef;
   const [email, setEmail] = createSignal("");
@@ -50,6 +52,9 @@ export default function Login() {
       return addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
     }
     addToast({ message: "boas vindas!", status: "success", duration: 2000 });
+
+    console.log("HAAAA", userStore.user);
+    // navigate('')
 
     // console.log({ data, error });
   }

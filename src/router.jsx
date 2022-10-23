@@ -1,7 +1,7 @@
 import { lazy, createEffect, onMount, batch } from "solid-js";
 import { supabase } from "./lib/supabaseClient";
-import { createQuery } from "@tanstack/solid-query";
-import { Routes, Route } from "solid-app-router";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
+import { Routes, Route, Navigate, Outlet, useNavigate } from "solid-app-router";
 
 import Home from "./Home";
 import NotFound from "./NotFound";
@@ -22,17 +22,37 @@ const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
 export default function Router() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const Protected = () => {
+    return (
+      <Show when={userStore.session?.user?.id} fallback={<Navigate href="/login" />}>
+        <Outlet />
+      </Show>
+    );
+  };
+
+  const updateAuthState = async session => {
+    if (session) {
+      const { data, error } = await supabase.from("staff").select("*").eq("email", session.user.email);
+      const staff = data[0] ?? null;
+
+      setUserStore("session", session);
+      setUserStore("user", { ...session.user, category: staff.category ?? "customer" });
+
+      queryClient.cancelQueries({ queryKey: ["admin"] });
+      navigate("/admin");
+    } else {
+      setUserStore("session", null);
+      setUserStore("user", null);
+    }
+  };
+
   onMount(async () => {
     const { session } = await fetchAuthState();
-    setUserStore("session", session);
-
-    supabase.auth.onAuthStateChange((e, session) => {
-      if (session) {
-        setUserStore("session", session);
-      } else {
-        setUserStore("session", null);
-      }
-    });
+    console.log(session);
+    updateAuthState(session);
+    supabase.auth.onAuthStateChange(async (e, session) => updateAuthState(session));
   });
 
   return (
@@ -42,22 +62,24 @@ export default function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
 
-      <Route path="/admin" component={Layout}>
-        <Route path="/" component={Admin} />
-        <Route path="/customers" component={Customers} />
-        <Route path="/customers/:id" component={Customer} />
-        <Route path="/professionals" component={Professionals} />
-        <Route path="/professionals/:id" component={Professional} />
-        <Route path="/staff" component={Staff} />
-        <Route path="/requests" component={AppointmentRequests} />
-      </Route>
+      <Route path="" component={Protected}>
+        <Route path="/admin" component={Layout}>
+          <Route path="/" component={Admin} />
+          <Route path="/customers" component={Customers} />
+          <Route path="/customers/:id" component={Customer} />
+          <Route path="/professionals" component={Professionals} />
+          <Route path="/professionals/:id" component={Professional} />
+          <Route path="/staff" component={Staff} />
+          <Route path="/requests" component={AppointmentRequests} />
+        </Route>
 
-      <Route path="/customer" component={Layout}>
-        <Route path="/:id" component={Customer} />
-      </Route>
+        <Route path="/customer" component={Layout}>
+          <Route path="/:id" component={Customer} />
+        </Route>
 
-      <Route path="/professional" component={Layout}>
-        <Route path="/:id" component={Professional} />
+        <Route path="/professional" component={Layout}>
+          <Route path="/:id" component={Professional} />
+        </Route>
       </Route>
 
       <Route path="/**" component={NotFound} />
