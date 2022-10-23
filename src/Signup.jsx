@@ -10,32 +10,57 @@ import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 import { addToast, ToastContainer } from "./shared/ToastContainer";
 
 import Header from "./shared/Header";
+import { createUser } from "./lib/mutationFuncs";
+import Loading from "./shared/Loading";
 
 export default function Signup() {
   let emailInputRef;
   let passwordInputRef;
   let usernameInputRef;
-  const [email, setEmail] = createSignal("");
-  const [password, setPassword] = createSignal("");
-  const [username, setUsername] = createSignal("");
+  const [email, setEmail] = createSignal("felipe.chernicharo@gmail.com");
+  const [password, setPassword] = createSignal("123123");
+  const [username, setUsername] = createSignal("Felipe");
+  const [isLoading, setIsLoading] = createSignal(false);
 
   const isDisabled = createMemo(
-    () => !email() || !password() || !username() || !emailInputRef.validity.valid
+    () => !email() || !password() || !username() || (emailInputRef && !emailInputRef.validity.valid)
   );
+
+  // const registerMutation = createMutation(["staff"], person => insertProfessional(person));
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!emailInputRef?.validity.valid || !passwordInputRef.value) return;
+
+    setIsLoading(true);
+
     const credentials = { email: email(), password: password(), username: username() };
-    console.log(credentials);
-    if (!emailInputRef.validity.valid || !passwordInputRef.value) return;
 
-    const { data, error } = await supabase.auth.signUp(credentials);
+    const { data: authData, error: authErr } = await supabase.auth.signUp(credentials);
+    if (authErr) {
+      setIsLoading(false);
+      return addToast({ message: translateError(authErr.message), status: "danger" });
+    }
 
-    if (error) addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
+    credentials.auth_id = authData.user.id;
+    const res = await createUser(credentials);
 
-    console.log({ data, error });
+    setIsLoading(false);
 
-    // alert("cheque seu email");
+    if (!res || res.code) {
+      return addToast({
+        message: res.code ? translateError(res.message) : "Erro ao criar sua conta",
+        status: "danger",
+        duration: 4000,
+      });
+    }
+
+    addToast({
+      title: "Conta Criada!",
+      message: "Enviamos um email pra você! Abre lá e clica no link para concluir seu cadastro",
+      status: "success",
+      duration: 5000,
+    });
   }
 
   return (
@@ -120,7 +145,9 @@ export default function Signup() {
                     aria-hidden="true"
                   />
                 </span>
-                Criar conta
+                <div class="flex items-center">
+                  <span>Criar conta</span> {isLoading() && <Loading small classes="ml-2" />}
+                </div>
               </button>
             </div>
           </form>

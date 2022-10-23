@@ -1,8 +1,31 @@
+/************** ALTERS ***************/
+
+/* disable foreign_key_checks */
+-- SET session_replication_role = 'replica';
+/*  enable foreign_key_checks  */
+-- SET session_replication_role = 'origin';
+
+-- LINK AUTH.USERS WITH CUSTOMERS/PROFESSIONALS
+
+alter table professionals add column auth_id uuid;
+alter table professionals add constraint fk_professional_auth_id foreign key (auth_id) references auth.users(id);
+select * from professionals;
+select * from auth.users where id = 'f57577ec-1a72-4796-a48f-659cba57d9e2';
+
+
+alter table customers add column auth_id uuid;
+alter table customers modify column auth_id uuid to auth_id uuid not null;
+alter table customers add constraint fk_customer_auth_id foreign key (auth_id) references auth.users(id);
+select * from customers;
+select * from auth.users where id = '7b4a1836-63ce-47ab-943a-07faa4795f65';
+
+
 /************ DDL *************/
 
 CREATE TYPE AVAILABILITY_STATUS AS ENUM('0', '1');
 CREATE TYPE REALTIME_APPOINTMENT_STATUS  AS ENUM('0', '1', '2'); -- canceled | confirmed | completed
 CREATE TYPE WEEK_DAY AS ENUM('0', '1', '2', '3', '4', '5', '6');
+CREATE TYPE USER_CATEGORY AS ENUM('customer', 'professional', 'manager', 'admin');
 CREATE TYPE TIME_SLOT AS ENUM('00:00', '00:30',
 '01:00', '01:30', '02:00', '02:30', '03:00', '03:30',
 '04:00', '04:30', '05:00', '05:30',  '06:00', '06:30',
@@ -13,23 +36,35 @@ CREATE TYPE TIME_SLOT AS ENUM('00:00', '00:30',
 '19:00', '19:30', '20:00', '20:30', '21:00', '21:30',
 '22:00', '22:30', '23:00', '23:30');
 
+select * from auth.users;
+
 create table staff (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name varchar(60),
+  category USER_CATEGORY default 'professional',
   email varchar(100) unique
 );
+
 
 create table professionals (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name varchar(60),
-  email varchar(100) unique
+  email varchar(100) unique,
+  auth_id uuid not null,
+
+  constraint fk_professional_auth_id foreign key (auth_id) references auth.users(id) --ON delete cascade,
 );
+
 
 create table customers (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name varchar(60),
-  email varchar(100) unique
+  email varchar(100) unique,
+  auth_id uuid not null,
+
+  constraint fk_customer_auth_id foreign key (auth_id) references auth.users(id)
 );
+
+
 
 create table customer_availability (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -50,6 +85,7 @@ create table professional_availability (
 
   constraint fk_availability_professional_id foreign key (professional_id) references professionals(id) ON delete cascade
 );
+
 
 create table appointment_offers (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -122,7 +158,7 @@ select
 
 /* 2 ADMIN/STAFF PAGE */
 create or replace view vw_staff_page as
-select s.id as staff_id, s.name as staff_name, s.email as staff_email, p.id as professional_id, p.name as professional_name, p.email as professional_email
+select s.id as staff_id, s.category, s.email as staff_email, p.id as professional_id, p.name as professional_name, p.email as professional_email
 from staff as s
 full join professionals as p
 on s.email = p.email;
@@ -142,7 +178,7 @@ select * from vw_appointment_request_page;
 
 
 /* 4 ADMIN/CUSTOMER REQUEST AVAILABILITY */
-create or replace view customer_appointment_possibilities as 
+create or replace view vw_customer_appointment_possibilities as 
   select distinct  c.id as customer_id, ca.day, c.name as customer,  
     pa.time, p.name as professional, p.id as professional_id
   from customer_availability as ca
@@ -159,9 +195,9 @@ create or replace view customer_appointment_possibilities as
 /************ FUNCTIONS ***************/
 
 -- 1. GET APPOINTMENT POSSIBILITIES (IMPERFEITA)
-create or replace function get_appointment_possibilities(id uuid) 
-returns setof customer_appointment_possibilities as $$
-  select * from customer_appointment_possibilities
+create or replace function fn_get_appointment_possibilities(id uuid) 
+returns setof vw_customer_appointment_possibilities as $$
+  select * from vw_customer_appointment_possibilities
   where customer_id = id;
 $$ language sql;
 
@@ -193,12 +229,55 @@ $$ language sql;
 
 /************ RESETS ***************/
 
--- select * from pg_catalog.pg_proc where proname = 'fn_create_first_appointment';
--- delete from pg_catalog.pg_proc where proname = 'fn_create_first_appointment';
--- drop view vw_staff_page;
--- drop function get_appointment_possibilities;
--- drop view customer_appointment_possibilities;
--- drop view vw_appointment_request_page;
+
+alter table profesisonals drop constraint fk_professional_auth_id;
+alter table customers drop constraint fk_customer_auth_id;
+alter table customer_availability drop constraint fk_availability_customer_id;
+alter table professional_availability drop constraint fk_availability_professional_id;
+alter table appointment_offers drop constraint fk_appointment_offer_professional_id;
+alter table appointment_offers drop constraint fk_appointment_offer_customer_id;
+alter table appointment_offers drop constraint fk_professional_availability_slot_id;
+alter table appointment_offers drop constraint fk_customer_availability_slot_id;
+alter table realtime_appointments drop constraint fk_appointments_customer_id;
+alter table realtime_appointments drop constraint fk_appointments_professional_id;
+alter table realtime_appointments drop constraint realtime_appointments_pkey;
+
+
+select * from pg_catalog.pg_proc where proname = 'fn_create_first_appointment';
+delete from pg_catalog.pg_proc where proname = 'fn_create_first_appointment';
+
+
+drop function fn_get_appointment_possibilities;
+
+drop view vw_retrieve_unattended_customers;
+drop view vw_retrieve_customers_with_appointments;
+drop view vw_retrieve_customers_with_offers;
+drop view vw_admin_page;
+drop view vw_staff_page;
+drop view vw_appointment_request_page;
+drop view vw_customer_appointment_possibilities;
+
+
+
+delete from staff;
+delete from customers;
+delete from professionals;
+delete from customer_availability;
+delete from professional_availability;
+delete from realtime_appointments;
+delete from appointment_offers;
+
+
+drop table staff;
+drop table appointment_offers;
+drop table customers;
+drop table professionals;
+drop table customer_availability;
+drop table professional_availability;
+drop table realtime_appointments;
+
+
+
 
 ----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------
@@ -210,9 +289,14 @@ $$ language sql;
 
 
 
-SELECT * FROM  information_schema.columns WHERE  table_name = 'appointment_offers';
-+
+-- select count(*) from customer_availability;
+-- select count(*) from professional_availability;
 
-SELECT routine_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND routine_schema = 'public';
+-- select * from staff;
+-- select * from customers;
+-- select * from professionals;
+-- select * from customer_availability;
+-- select * from professional_availability;
+-- select * from realtime_appointments;
+-- select * from appointment_offers;
 
-delete FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND routine_schema = 'public' and routine_name = 'fn_create_first_appointment';

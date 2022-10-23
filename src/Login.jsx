@@ -31,7 +31,7 @@ export default function Login() {
   const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
 
   createEffect(() => {
-    if (!query.isLoading && query?.data?.customers && query?.data?.professionals) {
+    if (!query.isLoading && query?.data?.customers?.length && query?.data?.professionals?.length) {
       setPId(query?.data.professionals[0].id);
       setCId(query?.data.customers[0].id);
     } else {
@@ -135,7 +135,7 @@ export default function Login() {
           <Show when={query.data?.customers}>
             <select
               class="capitalize"
-              value={query.data?.customers[0].id}
+              value={query.data?.customers.length && query.data?.customers[0].id}
               onChange={e => setCId(e.currentTarget.value)}
             >
               <For each={query.data?.customers}>
@@ -147,7 +147,7 @@ export default function Login() {
           <Show when={query.data?.professionals}>
             <select
               class="capitalize"
-              value={query?.data?.professionals[0].id}
+              value={query.data?.professionals.length && query.data?.professionals[0].id}
               onChange={e => setPId(e.currentTarget.value)}
             >
               <For each={query.data?.professionals}>

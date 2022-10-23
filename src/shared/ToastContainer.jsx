@@ -9,6 +9,7 @@ const [toastContext, setToastContext] = createStore([
  * @function addToast
  *
  * @param {Object} info
+ * @param {string} info.title
  * @param {string} info.message
  * @param {string} info.status
  * @param {number} info.duration
@@ -74,6 +75,7 @@ function Toast(props) {
         "animation-fill-mode": "forwards",
       }}
     >
+      {props.title && <div class="text-lg font-bold">{props.title}</div>}
       <div>{props.message}</div>
     </div>
   );

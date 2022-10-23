@@ -27,7 +27,7 @@ export default function Staff() {
   const queryClient = useQueryClient();
   const insertMutation = createMutation(["staff"], newStaff => insertStaff(newStaff));
   const removeMutation = createMutation(["staff"], person => removeStaff(person));
-  const registerMutation = createMutation(["staff"], person => insertProfessional(person));
+  // const registerMutation = createMutation(["staff"], person => insertProfessional(person));
 
   const handleInsert = async e => {
     e.preventDefault();
@@ -44,22 +44,9 @@ export default function Staff() {
     insertMutation.mutate(staff, {
       onSuccess: (data, variables, context) => {
         addToast({
-          message: "Membro cadastrado com sucesso",
+          message: "Membro cadastrado com sucesso!",
           status: "success",
           duration: 3000,
-        });
-        query.refetch();
-      },
-    });
-  };
-
-  const handleProfessionalRegister = async person => {
-    registerMutation.mutate(person, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["professionals"]);
-        addToast({
-          message: "Profissional registrado com sucesso",
-          status: "success",
         });
         query.refetch();
       },
@@ -159,7 +146,7 @@ export default function Staff() {
                   {/* </Link> */}
 
                   <div class="flex items-center">
-                    <Show when={!person.isRegistered}>
+                    {/* <Show when={!person.isRegistered}>
                       <button
                         class="btn btn-ghost text-success"
                         type="button"
@@ -168,7 +155,7 @@ export default function Staff() {
                       >
                         <FiPlus size={20} />
                       </button>
-                    </Show>
+                    </Show> */}
 
                     <button
                       class="btn btn-ghost text-error mr-2"

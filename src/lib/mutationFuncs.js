@@ -37,8 +37,37 @@ const removeStaff = async person => {
   return { entry };
 };
 
-const insertProfessional = async ({ name, email }) => {
-  const { data, error } = await supabase.from("professionals").insert([{ name, email }]).select();
+const createUser = async info => {
+  const { email, username, auth_id } = info;
+
+  const { data: staffData, error: sErr } = await supabase.from("staff").select("*").eq("email", email);
+
+  const staff = staffData[0] ?? null;
+
+  console.log("createUser", { info, staff });
+
+  if (staff) {
+    if (staff.category === "professional") {
+      const newProf = await insertProfessional({ name: username, email, auth_id });
+      return newProf;
+    }
+    // professional | manager | admin
+  } else {
+    // customer
+    const newCustomer = await insertCustomer({ name: username, email, auth_id });
+    return newCustomer;
+  }
+};
+
+const insertProfessional = async ({ name, email, auth_id }) => {
+  // console.log(auth_id ? "Professional Signup" : "Admin Created Professional");
+
+  // if (!auth_id) {
+  //   const { data: authData } = await supabase.auth.signUp({ email, password: 'chernicharo:admin' });
+  //   auth_id = authData.user.id;
+  // }
+
+  const { data, error } = await supabase.from("professionals").insert([{ name, email, auth_id }]).select();
   if (error) return console.log(error);
 
   const professionalAvailability = DEFAULT_PROFESSIONAL_AVAILABILITY.map(o => ({
@@ -137,8 +166,15 @@ const removeProfessional = async id => {
 };
 
 const insertCustomer = async person => {
+  console.log(person.auth_id ? "Customer Signup" : "Admin Created Customer");
+
+  if (!person.auth_id) {
+    const { data: authData } = await supabase.auth.signUp({ ...person, password: 'chernicharo:admin' });
+    person.auth_id = authData.user.id;
+  }
+
   const { data, error } = await supabase.from("customers").insert([person]).select();
-  if (error) return console.log(error);
+  if (error) return error;
 
   const customer = data[0];
   const customerAvailability = DEFAULT_CUSTOMER_AVAILABILITY.map(o => ({
@@ -350,5 +386,6 @@ export {
   removeCustomer,
   createAppointmentOffers,
   updatePersonAvailability,
+  createUser,
   confirmOffer,
 };
