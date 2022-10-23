@@ -13,14 +13,6 @@ export default function Header(props) {
   const [pageTitle, setPageTitle] = createSignal("Admin");
   const [backLink, setBackLink] = createSignal("/login");
 
-  const queryClient = useQueryClient();
-  // console.log(queryClient.getQueryData(() => ["auth"]));
-  const email = () => queryClient.getQueryData(() => ["auth"])?.session?.user?.email;
-
-  createEffect(() => {
-    console.log(email());
-  });
-
   createEffect(() => {
     // console.log(location.pathname);
 
@@ -81,11 +73,11 @@ export default function Header(props) {
       <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
 
-        {/* <Show when={userStore().user}>
-          <div>{userStore().user.email}</div>
-        </Show> */}
+        <Show when={userStore.session}>
+          <div>{userStore.session.user.email}</div>
+        </Show>
 
-        {queryClient.getQueryData(() => ["auth"]) && <div>{email()}</div>}
+        {/* {queryClient.getQueryData(() => ["auth"]) && <div>{email()}</div>} */}
 
         <Show when={pageTitle() !== APP_NAME}>
           <Link href={backLink()}>

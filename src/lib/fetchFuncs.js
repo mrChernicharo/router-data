@@ -20,6 +20,12 @@ const fetchProfessionalsId = async ids => {
   return { professionals };
 };
 
+const fetchAuthState = async () => {
+  const { data: authData, error } = await supabase.auth.getSession();
+  return authData;
+};
+
+
 // ************ PAGE FETCHERS ************
 
 const fetchLoginFakeData = async () => {
@@ -225,6 +231,7 @@ const fetchProfessionalData = async id => {
 };
 
 export {
+  fetchAuthState,
   fetchLoginFakeData,
   fetchAdminData,
   fetchAdminRequestsData,

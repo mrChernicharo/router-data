@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 
-export const [userStore, setUserStore] = createSignal({ session: null, user: null });
+const [userStore, setUserStore] = createStore({ session: null });
 
 
 // createEffect(() => {
@@ -19,3 +19,5 @@ export const [userStore, setUserStore] = createSignal({ session: null, user: nul
 // };
 
 // export { login, logout };
+
+export {userStore, setUserStore}

@@ -7,7 +7,7 @@ import Home from "./Home";
 import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
 import { setUserStore, userStore } from "./lib/userStore";
-import { unwrap } from "solid-js/store";
+import { fetchAuthState } from "./lib/fetchFuncs";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -21,29 +21,18 @@ const AppointmentRequests = lazy(() => import("./admin/Requests"));
 const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
-const fetchAuthState = async () => {
-  const { data: authData, error } = await supabase.auth.getSession();
-  // setUserStore(prev => ({ session: authData?.session, user: authData?.session.user ?? null }));
-  // setUserStore("user", authData?.session.user ?? null);
-  // console.log("App", { session: authData.session, user: authData.session?.user ?? null });
-  return authData;
-};
-
 export default function Router() {
-  const query = createQuery(() => ["auth"], fetchAuthState);
-  // const updateUser = session => {
-  //   setUserStore("session", session);
-  //   setUserStore("user", session?.user ?? null);
-  // };
+  onMount(async () => {
+    const { session } = await fetchAuthState();
+    setUserStore("session", session);
 
-  onMount(() => {
     supabase.auth.onAuthStateChange((e, session) => {
-      query.refetch();
+      if (session) {
+        setUserStore("session", session);
+      } else {
+        setUserStore("session", null);
+      }
     });
-  });
-
-  createEffect(() => {
-    console.log(query.data, userStore());
   });
 
   return (
