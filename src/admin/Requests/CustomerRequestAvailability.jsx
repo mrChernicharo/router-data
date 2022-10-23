@@ -9,7 +9,7 @@ import { classss, dateToWeekday } from "../../lib/helpers";
 import AvailabilityMatch from "./AvailabilityMatch";
 import Loading from "../../shared/Loading";
 import { channel } from "../../lib/supabaseClient";
-import { addToast } from "../../shared/ToastContainer";
+import { addToast } from "../../shared/Toast";
 import { FiSend, FiFilter } from "solid-icons/fi";
 
 export default function CustomerRequestAvailability(props) {
@@ -53,7 +53,7 @@ export default function CustomerRequestAvailability(props) {
         queryClient.invalidateQueries(["appointment_requests"]);
         query.refetch();
 
-        addToast({ message: "offers sent successfully", status: "success" });
+        addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });
       },
     });
   }

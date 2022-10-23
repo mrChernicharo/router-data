@@ -12,7 +12,7 @@ import Loading from "../../shared/Loading";
 import CollapseBox from "../../shared/CollapseBox";
 import ListItem from "../../shared/ListItem";
 import { FiPlus, FiTrash } from "solid-icons/fi";
-import { addToast } from "../../shared/ToastContainer";
+import { addToast } from "../../shared/Toast";
 
 const CATEGORIES = [
   { name: "Profissional", value: "professional" },

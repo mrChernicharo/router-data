@@ -1,9 +1,10 @@
 import { s } from "../lib/styles";
+// import { supabase } from "../lib/supabaseClient";
 import { FaSolidArrowLeft, FaSolidChevronLeft } from "solid-icons/fa";
 import { APP_NAME } from "../lib/constants";
 
 import { useLocation, Link } from "solid-app-router";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 
 export default function Header(props) {
   const location = useLocation();
@@ -11,7 +12,7 @@ export default function Header(props) {
   const [backLink, setBackLink] = createSignal("/login");
 
   createEffect(() => {
-    console.log(location.pathname);
+    // console.log(location.pathname);
 
     switch (true) {
       case /\/login/.test(location.pathname):

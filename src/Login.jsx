@@ -7,7 +7,7 @@ import { translateError } from "./lib/helpers";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 
-import { addToast, ToastContainer } from "./shared/ToastContainer";
+import { addToast, ToastContainer } from "./shared/Toast";
 
 import Header from "./shared/Header";
 
@@ -43,7 +43,6 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log({ email: email(), password: password() });
     if (!emailInputRef.validity.valid || !passwordInputRef.value) return;
 
     const { data, error } = await supabase.auth.signInWithPassword({ email: email(), password: password() });
@@ -52,13 +51,13 @@ export default function Login() {
     }
     addToast({ message: "boas vindas!", status: "success", duration: 2000 });
 
-    console.log({ data, error });
+    // console.log({ data, error });
   }
 
-  createEffect(async () => {
-    const { data: sessionData } = await supabase.auth.getSession();
-    console.log({ user: sessionData.session?.user ?? null, session: sessionData.session });
-  });
+  // createEffect(async () => {
+  //   const { data: sessionData } = await supabase.auth.getSession();
+  //   console.log({ user: sessionData.session?.user ?? null, session: sessionData.session });
+  // });
 
   return (
     <div>

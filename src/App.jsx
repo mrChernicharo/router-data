@@ -1,9 +1,10 @@
-import { ErrorBoundary } from "solid-js";
+import { createEffect, ErrorBoundary, onMount } from "solid-js";
 import Router from "./router";
-import { QueryClientProvider } from "@tanstack/solid-query";
+import { createQuery, QueryClientProvider, useQueryClient } from "@tanstack/solid-query";
 import { queryClient } from "./lib/queryClient";
-import { addToast } from "./shared/ToastContainer";
+import { addToast } from "./shared/Toast";
 import { translateError } from "./lib/helpers";
+import { supabase } from "./lib/supabaseClient";
 
 function App() {
   return (

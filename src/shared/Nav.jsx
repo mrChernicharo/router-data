@@ -3,7 +3,7 @@ import { FiChevronDown, FiMenu, FiX } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
 import { FaSolidChevronDown } from "solid-icons/fa";
 import { supabase } from "../lib/supabaseClient";
-import { addToast } from "./ToastContainer";
+import { addToast } from "./Toast";
 // import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
@@ -26,6 +26,17 @@ const userNavigation = [
 export default function Nav() {
   const [menuOpen, setMenuOpen] = createSignal(false);
   const [userMenuOpen, setUserMenuOpen] = createSignal(false);
+
+  async function handleSignOut(e, item) {
+    console.log(e, item);
+    if (item.name == "Sign out") {
+      await supabase.auth.signOut();
+      addToast({
+        message: "até a próxima!",
+        status: "info",
+      });
+    }
+  }
 
   return (
     <nav class="bg-gray-800">
@@ -74,6 +85,7 @@ export default function Nav() {
                       {item => (
                         <div>
                           <a
+                            onClick={e => handleSignOut(e, item)}
                             href={item.href}
                             class={classss(
                               // active ? "bg-gray-100" : "",
@@ -148,16 +160,7 @@ export default function Nav() {
                   <a
                     href={item.href}
                     class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                    onClick={async e => {
-                      console.log(item);
-                      if (item.name == "Sign out") {
-                        await supabase.auth.signOut();
-                        addToast({
-                          message: "até a próxima!",
-                          status: "info",
-                        });
-                      }
-                    }}
+                    onClick={e => handleSignOut(e, item)}
                   >
                     {item.name}
                   </a>

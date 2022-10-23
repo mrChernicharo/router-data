@@ -3,7 +3,7 @@ import { classss } from "../lib/helpers";
 
 const [accent] = ["#f472b6"];
 
-console.log({ accent });
+// console.log({ accent });
 
 export default function Loading(props) {
   const spinnerStyles = {

@@ -1,4 +1,6 @@
-import { lazy } from "solid-js";
+import { lazy, createEffect, onMount } from "solid-js";
+import { supabase } from "./lib/supabaseClient";
+import { createQuery } from "@tanstack/solid-query";
 import { Routes, Route } from "solid-app-router";
 
 import Home from "./Home";
@@ -17,7 +19,32 @@ const AppointmentRequests = lazy(() => import("./admin/Requests"));
 const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
+const fetchAuthState = async () => {
+  const { data: authData, error } = await supabase.auth.getSession();
+  // console.log("App", { session: authData.session, user: authData.session?.user ?? null });
+  return authData;
+};
+
 export default function Router() {
+  const query = createQuery(() => ["auth"], fetchAuthState);
+
+  onMount(() => {
+    supabase.auth.onAuthStateChange((e, session) => {
+      console.log({ e, session });
+
+      if (session?.user) {
+        console.log({ sessionUser: session.user });
+        // setState("authUser", session.user);
+      } else {
+        console.log("oooout");
+      }
+    });
+  });
+
+  createEffect(() => {
+    console.log({ query, session: query.data?.session });
+  });
+
   return (
     <Routes>
       <Route path="/" component={Home} />

@@ -35,6 +35,7 @@ function ToastContainer(props) {
         right: 0,
         "padding-right": "2rem",
         "user-select": "none",
+        "z-index": "1000000",
         "pointer-events": "none",
       }}
     >
@@ -68,6 +69,7 @@ function Toast(props) {
         left: "50%",
         padding: ".5rem",
         transform: "translateX(-50%)",
+        "z-index": "1000000",
         background: colors[props.status] ? colors[props.status] : colors.default,
         animation: "render-toaster",
         "animation-duration": props.duration / 1000 + "s",

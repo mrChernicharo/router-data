@@ -10,7 +10,7 @@ import CollapseBox from "../shared/CollapseBox";
 import { s } from "../lib/styles";
 import Badge from "../shared/Badge";
 import { channel } from "../lib/supabaseClient";
-import { addToast } from "../shared/ToastContainer";
+import { addToast } from "../shared/Toast";
 import ListItem from "../shared/ListItem";
 import { FiCheck } from "solid-icons/fi";
 

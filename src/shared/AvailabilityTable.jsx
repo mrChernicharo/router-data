@@ -4,7 +4,7 @@ import { WORKING_HOURS, dateToWeekday, classss, timeStrToMinutes } from "../lib/
 import { updatePersonAvailability } from "../lib/mutationFuncs";
 import CollapseBox from "../shared/CollapseBox";
 import { s } from "../lib/styles";
-import { addToast } from "./ToastContainer";
+import { addToast } from "./Toast";
 import ListItem from "./ListItem";
 import Loading from "./Loading";
 

@@ -9,7 +9,7 @@ import { fetchCustomersData } from "../../lib/fetchFuncs";
 import { insertCustomer, removeCustomer } from "../../lib/mutationFuncs";
 import { channel } from "../../lib/supabaseClient";
 import { FiMail, FiSearch, FiTrash } from "solid-icons/fi";
-import { addToast } from "../../shared/ToastContainer";
+import { addToast } from "../../shared/Toast";
 
 export default function Customers() {
   let inputRef;

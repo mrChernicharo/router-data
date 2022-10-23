@@ -3,7 +3,7 @@ import { Outlet } from "solid-app-router";
 import Header from "./Header";
 
 import Nav from "./Nav";
-import { ToastContainer } from "./ToastContainer";
+import { ToastContainer } from "./Toast";
 import { FiMenu } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
 

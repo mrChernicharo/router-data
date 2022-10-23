@@ -7,7 +7,7 @@ import { translateError } from "./lib/helpers";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 
-import { addToast, ToastContainer } from "./shared/ToastContainer";
+import { addToast, ToastContainer } from "./shared/Toast";
 
 import Header from "./shared/Header";
 import { createUser } from "./lib/mutationFuncs";
