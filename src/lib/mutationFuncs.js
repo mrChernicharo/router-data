@@ -1,9 +1,9 @@
 import { supabase, channel } from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY } from "./constants";
 
-const insertStaff = async ({ name, email }) => {
-  console.log("insertStaff", { name, email });
-  const { data, error } = await supabase.from("staff").insert([{ name, email }]).select();
+const insertStaff = async ({ email, category }) => {
+  console.log("insertStaff", { email, category });
+  const { data, error } = await supabase.from("staff").insert([{ email, category }]).select();
   if (error) return console.log(error);
 
   const staff = data[0];

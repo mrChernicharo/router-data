@@ -2,7 +2,7 @@ import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 
 const [toastContext, setToastContext] = createStore([
-  { id: 1, message: "welcome", status: "default", duration: 2000 },
+  // { id: 1, message: "welcome", status: "default", duration: 2000 },
 ]);
 
 /**

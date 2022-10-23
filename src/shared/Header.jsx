@@ -18,36 +18,40 @@ export default function Header(props) {
         setPageTitle("Login");
         setBackLink("/");
         break;
+      case /\/signup/.test(location.pathname):
+        setPageTitle("Criar Conta");
+        setBackLink("/");
+        break;
       case /\/customer\/.+/.test(location.pathname):
-        setPageTitle("Customer");
+        setPageTitle("Cliente");
         setBackLink("/login");
         break;
       case /\/professional\/.+/.test(location.pathname):
-        setPageTitle("Professional");
+        setPageTitle("Profissional");
         setBackLink("/login");
         break;
       case /\/admin\/requests/.test(location.pathname):
-        setPageTitle("Requests");
+        setPageTitle("Requisições");
         setBackLink("/admin");
         break;
       case /\/admin\/customers\/.+/.test(location.pathname):
-        setPageTitle("Customer");
+        setPageTitle("Cliente");
         setBackLink("/admin/customers");
         break;
       case /\/admin\/professionals\/.+/.test(location.pathname):
-        setPageTitle("Professional");
+        setPageTitle("Profissional");
         setBackLink("/admin/professionals");
         break;
       case /\/admin\/professionals/.test(location.pathname):
-        setPageTitle("Professionals");
+        setPageTitle("Profissionais");
         setBackLink("/admin");
         break;
       case /\/admin\/customers/.test(location.pathname):
-        setPageTitle("Customers");
+        setPageTitle("Clientes");
         setBackLink("/admin");
         break;
       case /\/admin\/staff/.test(location.pathname):
-        setPageTitle("Staff");
+        setPageTitle("Membros");
         setBackLink("/admin");
         break;
       case /\/admin/.test(location.pathname):

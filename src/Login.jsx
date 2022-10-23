@@ -41,9 +41,6 @@ export default function Login() {
   });
   //////////////////////////////////************************//////////////////************************/
 
-  // const navigate = useNavigate();
-  // const [store, { emailLogin }] = useAuthContext();
-
   async function handleSubmit(e) {
     e.preventDefault();
     console.log({ email: email(), password: password() });
@@ -51,12 +48,11 @@ export default function Login() {
 
     const { data, error } = await supabase.auth.signInWithPassword({ email: email(), password: password() });
     if (error) {
-      addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
+      return addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
     }
+    addToast({ message: "boas vindas!", status: "success", duration: 2000 });
 
     console.log({ data, error });
-
-    // alert("cheque seu email");
   }
 
   createEffect(async () => {

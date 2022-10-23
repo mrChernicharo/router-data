@@ -9,13 +9,19 @@ import { insertStaff, insertProfessional, removeStaff } from "../../lib/mutation
 import { s } from "../../lib/styles";
 
 import Loading from "../../shared/Loading";
+import CollapseBox from "../../shared/CollapseBox";
 import ListItem from "../../shared/ListItem";
 import { FiPlus, FiTrash } from "solid-icons/fi";
 import { addToast } from "../../shared/ToastContainer";
 
+const CATEGORIES = [
+  { name: "Profissional", value: "professional" },
+  { name: "Gerente", value: "manager" },
+  { name: "Administrador", value: "admin" },
+];
+
 export default function Staff() {
-  let inputRef;
-  // const [isSubmitting, setIsSubmitting] = createSignal(false);
+  let inputRef, selectRef;
 
   const query = createQuery(() => ["staff"], fetchStaffData);
   const queryClient = useQueryClient();
@@ -29,12 +35,19 @@ export default function Staff() {
     if (!inputRef.validity.valid) return console.log("invalid email!");
 
     const staff = {
-      name: inputRef.value.split("@")[0],
       email: inputRef.value,
+      category: selectRef.value,
     };
+
+    console.log({ staff });
 
     insertMutation.mutate(staff, {
       onSuccess: (data, variables, context) => {
+        addToast({
+          message: "Membro cadastrado com sucesso",
+          status: "success",
+          duration: 3000,
+        });
         query.refetch();
       },
     });
@@ -54,13 +67,13 @@ export default function Staff() {
   };
 
   const handleStaffRemove = async person => {
-    if (!confirm(`certeza que você quer deletar ${person.name}?`)) return;
+    if (!confirm(`certeza que você quer deletar membro com email ${person.email}?`)) return;
 
     removeMutation.mutate(person, {
       onSuccess: (data, variables, context) => {
         addToast({
           message: "Staff deletado com sucesso",
-          status: "danger",
+          status: "success",
         });
         query.refetch();
       },
@@ -86,31 +99,46 @@ export default function Staff() {
 
   return (
     <div data-component="Staff">
-      <div class="container">
-        <h3>Register new Staff</h3>
+      {/* REGISTER NEW STAFF */}
+      <ListItem classes="p-4 mb-4">
+        <h3 class="text-xl font-bold">Cadastrar Novo Membro</h3>
 
-        <form onSubmit={handleInsert}>
-          <div class="d-grid input-group mb-3">
-            <label class="label-text font-bold">
-              Email
-              <input
-                ref={inputRef}
-                type="email"
-                class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
-                placeholder="Employee Email"
-              />
-            </label>
-          </div>
-          <div class="d-grid mb-5">
-            <button type="button" class="btn btn-accent">
-              <h3 style={{ margin: 0 }}>Register</h3>
-            </button>
-          </div>
-        </form>
-      </div>
+        <CollapseBox>
+          <form onSubmit={handleInsert}>
+            <div class="">
+              <label class="block w-full label-text ">Categoria</label>
+              <select ref={selectRef} class="">
+                <For each={CATEGORIES}>
+                  {category => <option value={category.value}>{category.name}</option>}
+                </For>
+              </select>
+            </div>
+            <div class="input-group mb-3">
+              <label class="label-text ">
+                Email
+                <input
+                  ref={inputRef}
+                  type="email"
+                  class="input input-primary input-bordered input-md w-full max-w-xs bg-white "
+                  placeholder="Employee Email"
+                />
+              </label>
+            </div>
+
+            <div class="d-grid mb-5">
+              <button class="btn btn-accent">
+                Cadastrar
+                <div>{insertMutation.isLoading && <Loading />}</div>
+              </button>
+            </div>
+          </form>
+        </CollapseBox>
+      </ListItem>
 
       <div>{query.isLoading && <Loading />}</div>
+      <div>{removeMutation.isLoading && <Loading />}</div>
 
+      {/* STAFF LIST */}
       <ul class="list-group">
         <For each={query.data?.staff}>
           {person => (
@@ -121,10 +149,9 @@ export default function Staff() {
                     style={{ ...s.listHighlight, background: person.isRegistered ? "#18e697" : "#bbb" }}
                   ></div>
 
-                  {/* <Link class="w-[100%] href={`/admin/professionals/${person.id}`}> */}
                   <div class="w-[100%] p-2">
-                    <div class="text-lg font-bold">{person.name}</div>
                     <div>{person.email}</div>
+                    <div>{person.category}</div>
                     {person.isRegistered && (
                       <div class="text-base-300">professional id: {person.professional.id}</div>
                     )}
@@ -157,8 +184,6 @@ export default function Staff() {
             </div>
           )}
         </For>
-
-        <div>{(insertMutation.isLoading || removeMutation.isLoading) && <Loading />}</div>
       </ul>
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>

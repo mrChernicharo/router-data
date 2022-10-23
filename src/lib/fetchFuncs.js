@@ -49,20 +49,20 @@ const fetchStaffData = async () => {
 
   const staff = [];
   for (const d of data) {
-    const { professional_email, professional_id, professional_name, staff_email, staff_id, staff_name } = d;
+    const { professional_email, professional_id, category, staff_email, staff_id, staff_name } = d;
 
     const professional = professional_id
       ? {
           id: professional_id,
-          name: professional_name,
+          category,
           email: professional_email,
         }
       : null;
 
     staff.push({
       id: staff_id,
-      name: staff_name,
       email: staff_email,
+      category,
       isRegistered: !!professional,
       professional,
     });
