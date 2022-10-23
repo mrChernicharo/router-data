@@ -65,3 +65,22 @@ appointments
 
 AppointmentsHistory
     display all appointments where data < Date.now
+
+
+
+
+==========================================
+
+
+
+fix channel events reaction in Professional component
+user category based nav links
+user category based back btns
+put userData into localStorage
+
+
+
+
+
+
+

@@ -50,7 +50,8 @@ export default function Customer() {
           </div>
         </Show>
 
-        <Show when={!isAdmin() && query.data?.customer.offers.length}>
+        <Show when={query.data?.customer.offers.length}>
+          {/* <Show when={!isAdmin() && query.data?.customer.offers.length}> */}
           <AppointmentOffers
             customer={query.data?.customer}
             offers={query.data?.customer.offers}
@@ -64,7 +65,8 @@ export default function Customer() {
         <Show when={query.data?.customer}>
           <AppointmentsCalendar
             role="customer"
-            canEdit={!isAdmin()}
+            // canEdit={!isAdmin()}
+            canEdit={true}
             person={query.data.customer}
             availability={query.data.customer.availability}
             appointments={query.data.customer.appointments}
@@ -75,7 +77,8 @@ export default function Customer() {
           role="customer"
           person={query.data.customer}
           availability={query.data.customer.availability}
-          canEdit={!isAdmin()}
+          canEdit={true}
+          // canEdit={!isAdmin()}
         />
 
         {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
