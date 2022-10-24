@@ -1,35 +1,42 @@
 // for a full working demo of Netlify Identity + Functions, see https://netlify-gotrue-in-react.netlify.com/
 
-const fetch = require('node-fetch')
+const fetch = require("node-fetch");
+const { createClient } = require("@supabase/supabase-js");
+
+const { VITE_PROJECT_URL, VITE_ANON_PUB, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY } = process.env;
 
 const handler = async function (event, context) {
- 
   try {
-    const response = await fetch('https://api.chucknorris.io/jokes/random')
-    if (!response.ok) {
-      // NOT res.status >= 200 && res.status < 300
-      return { statusCode: response.status, body: response.statusText }
-    }
-    const data = await response.json()
-    console.log(data)
+    // const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SUPABASE_KEY);
+    // const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SUPABASE_KEY, VITE_SERVICE_ROLE);
+    const supabaseAdmin = createClient(VITE_PROJECT_URL,  VITE_SERVICE_ROLE, {
+      auth: {
+        storageKey: VITE_SUPABASE_KEY
+      },
+      supabaseKey: VITE_SUPABASE_KEY
+    });
+    // const supabaseAdmin = createClient(VITE_PROJECT_URL, { apiKey: VITE_SUPABASE_KEY, service_role: VITE_SERVICE_ROLE });
+    
+
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ msg: data.value }),
+      body: JSON.stringify({ data, error }),
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'Application/json'
-      }
-    }
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "Application/json",
+      },
+    };
   } catch (error) {
-    // output to netlify function log
-    console.log(error)
+    console.log(error);
     return {
       statusCode: 500,
       // Could be a custom message or object i.e. JSON.stringify(err)
-      body: JSON.stringify({ msg: error.message }),
-    }
+      body: JSON.stringify({ ...error }),
+    };
   }
-}
+};
 
-module.exports = { handler }
+module.exports = { handler };
