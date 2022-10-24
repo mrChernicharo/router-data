@@ -6,6 +6,8 @@ import Loading from "../shared/Loading";
 import Calendar from "../shared/Calendar";
 import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
+import { createEffect } from "solid-js";
+import { setUserStore } from "../lib/userStore";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -29,27 +31,6 @@ export default function Admin() {
 
   return (
     <div data-component="Admin">
-      <div class="text-secondary">
-        <nav class="mb-4 flex gap-1">
-          <Link class="link" href="/admin/customers">
-            Customers
-          </Link>
-          |
-          <Link class="link" href="/admin/professionals">
-            Professionals
-          </Link>
-          |
-          <Link class="link" href="/admin/staff">
-            Staff
-          </Link>
-          |
-          <Link class="link" href="/admin/requests">
-            <Badge alignRight danger={query.data?.unattended_count > 0} />
-            Requests
-          </Link>
-        </nav>
-      </div>
-
       {/* Stats Cards */}
       <Suspense fallback={<Loading />}>
         <div class="flex gap-2 flex-wrap justify-center">

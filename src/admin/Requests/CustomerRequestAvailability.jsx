@@ -50,7 +50,7 @@ export default function CustomerRequestAvailability(props) {
     sendOffers.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
         // UPDATE BADGE AT THE PARENT
-        queryClient.invalidateQueries(["appointment_requests"]);
+        queryClient.invalidateQueries(["appointment_requests", "admin"]);
         query.refetch();
 
         addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });

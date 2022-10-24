@@ -68,16 +68,16 @@ export default function Customers() {
         {/* FILTER CUSTOMERS */}
         <fieldset>
           <div>
-            <h3 class="text-xl font-bold">Filter Customers</h3>
+            <h3 class="text-xl font-bold">Filtrar Clientes</h3>
             <div class="d-grid input-group mb-3">
               <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
-                  Filter <FiSearch />
+                  Procurar <FiSearch />
                 </div>
                 <input
                   type="text"
                   class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
-                  placeholder="Search"
+                  placeholder="digite o nome"
                   onInput={e => setFilter(e.currentTarget.value)}
                 />
               </label>
@@ -90,7 +90,7 @@ export default function Customers() {
         <form onSubmit={handleInsert}>
           <div class="d-grid input-group mb-3">
             <div>
-              <h3 class="text-xl font-bold">Register new Customer</h3>
+              <h3 class="text-xl font-bold">Registrar Cliente</h3>
 
               <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
@@ -100,14 +100,14 @@ export default function Customers() {
                   ref={inputRef}
                   type="email"
                   class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
-                  placeholder="Employee Email"
+                  placeholder="Email do cliente"
                 />
               </label>
             </div>
           </div>
           <div class="d-grid mb-5">
             <button class="btn btn-accent">
-              <h3 style={{ margin: 0 }}>Register</h3>
+              <h3>Registrar</h3>
             </button>
           </div>
         </form>

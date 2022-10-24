@@ -1,10 +1,12 @@
-import { createSignal } from "solid-js";
+import { createMemo, createSignal } from "solid-js";
 import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser, FiX } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
 import { FaSolidChevronDown } from "solid-icons/fa";
 import { supabase } from "../lib/supabaseClient";
 import { addToast } from "./Toast";
 import { userStore } from "../lib/userStore";
+import Badge from "./Badge";
+import { useQueryClient } from "@tanstack/solid-query";
 // import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
@@ -24,7 +26,7 @@ const navLinks = () => {
       { name: "Profissionais", title: "Profissionais", href: "/admin/professionals" },
       { name: "Clientes", title: "Clientes", href: "/admin/customers" },
       { name: "Membros", title: "Membros", href: "/admin/staff" },
-      { name: "Requisições", title: "Requisições", href: "/admin/requests" },
+      { name: "Requests", title: "Requisições", href: "/admin/requests" },
     ],
     customer: [
       { name: "Home", title: "Home", href: `/customer/${id}` },
@@ -44,6 +46,8 @@ const navLinks = () => {
 };
 
 export default function Nav() {
+  const queryClient = useQueryClient();
+
   const userNavigation = [
     { name: "profile", title: "Perfil", href: "#", icon: <FiUser /> },
     { name: "settings", title: "Configurações", href: "#", icon: <FiSettings /> },
@@ -54,10 +58,16 @@ export default function Nav() {
   const [userMenuOpen, setUserMenuOpen] = createSignal(false);
   const [active, setActive] = createSignal("Home");
 
+  const showBadge = async () => {
+    return true;
+  };
+
   async function handleSignOut(e, item) {
     console.log(e, item);
     if (item.name == "sign out") {
       await supabase.auth.signOut();
+      setMenuOpen(false);
+      setUserMenuOpen(false);
       addToast({
         message: "até a próxima!",
         status: "info",
@@ -74,21 +84,25 @@ export default function Nav() {
               <div class="flex-shrink-0">🌺</div>
               <div class="hidden md:block">
                 <div class="ml-10 flex items-baseline space-x-4">
+                  {/* Nav Links */}
                   <For each={navLinks()}>
                     {item => (
                       <a
-                        key={item.name}
                         href={item.href}
                         class={classss(
-                          item.name === active()
+                          item.title === active()
                             ? "bg-gray-900 text-white"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "px-3 py-2 rounded-md text-sm font-medium"
                         )}
-                        aria-current={item.name === active() ? "page" : undefined}
-                        onClick={e => setActive(item.name)}
+                        aria-current={item.title === active() ? "page" : undefined}
+                        onClick={e => setActive(item.title)}
                       >
-                        {item.name}
+                        {item.name === "Requests" &&
+                          /** userStore.user.category === "admin" && */
+                          showBadge() && <Badge alignRight danger />}
+
+                        {item.title}
                       </a>
                     )}
                   </For>
@@ -97,7 +111,7 @@ export default function Nav() {
             </div>
             <div class="hidden md:block">
               <div class="ml-4 flex items-center md:ml-6">
-                {/* Avatar dropdown */}
+                {/* Avatar dropdown menu */}
                 <div class="relative ml-3">
                   <div>
                     <button
@@ -158,20 +172,25 @@ export default function Nav() {
         <div class="md:hidden">
           <Show when={menuOpen()}>
             <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
+              {/* Mobile menu */}
               <For each={navLinks()}>
                 {item => (
                   <a
                     href={item.href}
                     class={classss(
-                      item.name === active()
+                      item.title === active()
                         ? "bg-gray-900 text-white"
                         : "text-gray-300 hover:bg-gray-700 hover:text-white",
                       "block px-3 py-2 rounded-md text-base font-medium"
                     )}
-                    aria-current={item.name === active() ? "page" : undefined}
-                    onClick={e => setActive(item.name)}
+                    aria-current={item.title === active() ? "page" : undefined}
+                    onClick={e => setActive(item.title)}
                   >
-                    {item.name}
+                    {item.name === "Requests" &&
+                      /** userStore.user.category === "admin" && */
+                      showBadge() && <Badge alignRight danger />}
+
+                    {item.title}
                   </a>
                 )}
               </For>
@@ -193,6 +212,7 @@ export default function Nav() {
                   <FiChevronDown class="block h-6 w-6" />
                 </button>
               </div>
+              {/* Mobile Avatar dropdown menu */}
               <Show when={userMenuOpen()}>
                 <div class="mt-3 space-y-1 px-2">
                   {userNavigation.map(item => (
