@@ -30,12 +30,14 @@ export default function Admin() {
     },
   ];
 
-  onMount(async () => {
+  createEffect(async () => {
     // const res = await fetch("/.netlify/functions/hello");
-    // const res = await fetch("http://localhost:9999/.netlify/functions/hello");
-    // const res = await fetch("https://lambent-vacherin-760b11.netlify.app/.netlify/functions/hello");
-    // const data = await res.json();
-    // console.log({ data });
+    // const res = await fetch("http://localhost:9999/.netlify/functions/hello-world");
+    const res = await fetch(
+      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/hello-world"
+    );
+    const data = await res.json();
+    console.log({ data });
   });
 
   createEffect(async () => {
