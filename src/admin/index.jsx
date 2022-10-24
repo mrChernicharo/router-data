@@ -31,22 +31,28 @@ export default function Admin() {
   ];
 
   createEffect(async () => {
+    // DEV
     // const res = await fetch("/.netlify/functions/hello");
     // const res = await fetch("http://localhost:9999/.netlify/functions/hello-world");
-    const res = await fetch(
+
+    // PROD
+    const data = await fetch(
       "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/hello-world"
-    );
-    const data = await res.json();
+    ).then(async res => await res.json());
     console.log({ data });
   });
 
   createEffect(async () => {
+    // DEV
     // const res = await fetch("/.netlify/functions/adminList2");
-    // const res = await fetch("http://localhost:9999/.netlify/functions/adminList2");
-    // const res = await fetch("https://lambent-vacherin-760b11.netlify.app/.netlify/functions/adminList2");
-    // const { data, errror } = await supabaseAdmin.auth.admin.listUsers();
-    // const data = await res.json();
-    // console.log({ data });
+    // const res = await fetch("http://localhost:9999/.netlify/functions/chuck-norris");
+
+    // PROD
+    const res = await fetch(
+      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/chuck-norris"
+    );
+    const data = await res.json();
+    console.log({ data });
   });
 
   return (
