@@ -15,7 +15,7 @@ export default function Customers() {
   let inputRef;
   const query = createQuery(() => ["customers"], fetchCustomersData);
   const insertMutation = createMutation(["customers"], newCustomer => insertCustomer(newCustomer));
-  const removeMutation = createMutation(["customers"], id => removeCustomer(id));
+  const removeMutation = createMutation(["customers"], customer => removeCustomer(customer));
 
   const [filter, setFilter] = createSignal("");
 
@@ -40,7 +40,7 @@ export default function Customers() {
     console.log("handleRemove", customer);
     if (!confirm(`certeza que você quer deletar ${customer.name}?`)) return;
 
-    removeMutation.mutate(customer.id, {
+    removeMutation.mutate(customer, {
       onSuccess: (data, variables, context) => {
         addToast({
           message: `${customer.name} deletado com sucesso`,

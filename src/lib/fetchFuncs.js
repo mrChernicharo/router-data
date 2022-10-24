@@ -153,10 +153,10 @@ const fetchCustomerData = async id => {
     .select("*")
     .eq("customer_id", id);
 
-  if (error) return console.log({ error });
+  if (error || oErr) return console.log({ error, oErr });
 
   const customer = data[0];
-  // console.log('KUSTOMERRRR', customer)
+  if (!customer) throw new Error('Customer missing')
 
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);

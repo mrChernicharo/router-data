@@ -1,4 +1,4 @@
-import { supabase, channel } from "./supabaseClient";
+import { supabase, channel, supabaseAdmin } from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY } from "./constants";
 
 const insertStaff = async ({ email, category }) => {
@@ -169,7 +169,7 @@ const insertCustomer = async person => {
   console.log(person.auth_id ? "Customer Signup" : "Admin Created Customer");
 
   if (!person.auth_id) {
-    const { data: authData } = await supabase.auth.signUp({ ...person, password: 'chernicharo:admin' });
+    const { data: authData } = await supabase.auth.signUp({ ...person, password: "chernicharo:admin" });
     person.auth_id = authData.user.id;
   }
 
@@ -199,14 +199,14 @@ const insertCustomer = async person => {
   return { customer, availability };
 };
 
-const removeCustomer = async id => {
-  console.log("removeCustomer", id);
+const removeCustomer = async customer => {
+  console.log("removeCustomer", customer);
 
   // 1. remove customer availability
   const { data: removedAvailability, err } = await supabase
     .from("customer_availability")
     .delete()
-    .match({ customer_id: id })
+    .match({ customer_id: customer.id })
     .select();
   if (err) return console.log(err);
 
@@ -214,7 +214,7 @@ const removeCustomer = async id => {
   const { data: removedAppointments, error: err1 } = await supabase
     .from("realtime_appointments")
     .delete()
-    .match({ customer_id: id })
+    .match({ customer_id: customer.id })
     .select();
   if (err1) return console.log(err1);
 
@@ -245,11 +245,20 @@ const removeCustomer = async id => {
   }
 
   // 4. delete the damn customer!
-  const { data: deletedCustomer, error } = await supabase.from("customers").delete().match({ id }).select();
-  if (error) return console.log(error);
+  const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
+  const { data: deletedCustomer, error } = await supabase
+    .from("customers")
+    .delete()
+    .eq("id", customer.id)
+    .select();
+
+  if ((adminErr, error)) return console.log({ adminErr, error });
+  // if (error || aErr) return console.log({ error, aErr });
 
   console.log("removeCustomer", {
     deletedCustomer,
+    // deletedUser,
+    user,
     removedAppointments,
     removedAvailability,
     updatedProfessionalAvails,
