@@ -1,4 +1,4 @@
-import { supabase, channel, supabaseAdmin } from "./supabaseClient";
+import { supabase, channel, /** supabaseAdmin */} from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY } from "./constants";
 
 const insertStaff = async ({ email, category }) => {
@@ -245,7 +245,7 @@ const removeCustomer = async customer => {
   }
 
   // 4. delete the damn customer!
-  const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
+  // const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
   const { data: deletedCustomer, error } = await supabase
     .from("customers")
     .delete()

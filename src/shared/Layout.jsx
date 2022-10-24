@@ -28,7 +28,7 @@ export default function Layout() {
         </main>
       </Show>
 
-      <pre class="text-xs">{JSON.stringify(userStore, null, 2)}</pre>
+      {/* <pre class="text-xs">{JSON.stringify(userStore, null, 2)}</pre> */}
     </>
   );
 }
