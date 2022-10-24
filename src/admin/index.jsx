@@ -8,7 +8,10 @@ import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
 import { createEffect, onMount } from "solid-js";
 import { setUserStore, userStore } from "../lib/userStore";
+<<<<<<< HEAD
 import { supabase, getSupabaseAdmin } from "../lib/supabaseClient";
+=======
+>>>>>>> a95f835 (calling some netlify funcs on login mount)
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -30,6 +33,7 @@ export default function Admin() {
     },
   ];
 
+<<<<<<< HEAD
   createEffect(async () => {
     //   // DEV
     //   // const res = await fetch("/.netlify/functions/hello");
@@ -83,6 +87,21 @@ export default function Admin() {
   //     console.log(err);
   //   }
   // });
+=======
+  onMount(async () => {
+    const res = await fetch("/.netlify/functions/hello");
+    const data = await res.json();
+
+    console.log({ data });
+  });
+
+  createEffect(async () => {
+    const res = await fetch("/.netlify/functions/adminList2");
+    const data = await res.json();
+
+    console.log({ data });
+  });
+>>>>>>> a95f835 (calling some netlify funcs on login mount)
 
   return (
     <div data-component="Admin">
