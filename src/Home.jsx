@@ -5,7 +5,6 @@ import Header from "./shared/Header";
 export default function Home() {
   return (
     <div>
-      <Header />
       <Hero />
       <div class="mt-8 flex justify-center w-[100%]">
         <Link href="/login">

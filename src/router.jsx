@@ -80,13 +80,13 @@ export default function Router() {
 
   return (
     <Routes>
-      <Route path="/" component={Home} />
+      <Route path="" component={Layout}>
+        <Route path="/" component={Home} />
 
-      <Route path="/login" component={Login} />
-      <Route path="/signup" component={Signup} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
 
-      <Route path="" component={Protected}>
-        <Route path="/admin" component={Layout}>
+        <Route path="/admin" component={Protected}>
           <Route path="/" component={Admin} />
           <Route path="/customers" component={Customers} />
           <Route path="/customers/:id" component={Customer} />
@@ -96,16 +96,16 @@ export default function Router() {
           <Route path="/requests" component={AppointmentRequests} />
         </Route>
 
-        <Route path="/customer" component={Layout}>
+        <Route path="/customer" component={Protected}>
           <Route path="/:id" component={Customer} />
         </Route>
 
-        <Route path="/professional" component={Layout}>
+        <Route path="/professional" component={Protected}>
           <Route path="/:id" component={Professional} />
         </Route>
-      </Route>
 
-      <Route path="/**" component={NotFound} />
+        <Route path="/**" component={NotFound} />
+      </Route>
     </Routes>
   );
 }
