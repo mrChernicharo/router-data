@@ -20,23 +20,23 @@ const navLinks = () => {
   const id = userStore.user.id;
   const linkSchema = {
     admin: [
-      { name: "Home", title: "Home", href: "/admin", current: true },
-      { name: "Profissionais", title: "Profissionais", href: "/admin/professionals", current: false },
-      { name: "Clientes", title: "Clientes", href: "/admin/customers", current: false },
-      { name: "Membros", title: "Membros", href: "/admin/staff", current: false },
-      { name: "Requisições", title: "Requisições", href: "/admin/requests", current: false },
+      { name: "Home", title: "Home", href: "/admin" },
+      { name: "Profissionais", title: "Profissionais", href: "/admin/professionals" },
+      { name: "Clientes", title: "Clientes", href: "/admin/customers" },
+      { name: "Membros", title: "Membros", href: "/admin/staff" },
+      { name: "Requisições", title: "Requisições", href: "/admin/requests" },
     ],
     customer: [
-      { name: "Home", title: "Home", href: `/customer/${id}`, current: true },
-      { name: "Appointments", title: "Consultas", href: "#", current: false },
-      { name: "Calendar", title: "Calendário", href: "#", current: false },
+      { name: "Home", title: "Home", href: `/customer/${id}` },
+      { name: "Appointments", title: "Consultas", href: "#" },
+      { name: "Calendar", title: "Calendário", href: "#" },
     ],
     professional: [
-      { name: "Home", title: "Home", href: `/professional/${id}`, current: true },
-      { name: "Appointments", title: "Consultas", href: "#", current: false },
-      { name: "Patients", title: "Pacientes", href: "#", current: false },
-      { name: "History", title: "Histórico", href: "#", current: false },
-      { name: "Calendar", title: "Calendário", href: "#", current: false },
+      { name: "Home", title: "Home", href: `/professional/${id}` },
+      { name: "Appointments", title: "Consultas", href: "#" },
+      { name: "Patients", title: "Pacientes", href: "#" },
+      { name: "History", title: "Histórico", href: "#" },
+      { name: "Calendar", title: "Calendário", href: "#" },
     ],
   };
 
@@ -52,6 +52,7 @@ export default function Nav() {
 
   const [menuOpen, setMenuOpen] = createSignal(false);
   const [userMenuOpen, setUserMenuOpen] = createSignal(false);
+  const [active, setActive] = createSignal("Home");
 
   async function handleSignOut(e, item) {
     console.log(e, item);
@@ -79,12 +80,13 @@ export default function Nav() {
                         key={item.name}
                         href={item.href}
                         class={classss(
-                          item.current
+                          item.name === active()
                             ? "bg-gray-900 text-white"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "px-3 py-2 rounded-md text-sm font-medium"
                         )}
-                        aria-current={item.current ? "page" : undefined}
+                        aria-current={item.name === active() ? "page" : undefined}
+                        onClick={e => setActive(item.name)}
                       >
                         {item.name}
                       </a>
@@ -115,7 +117,7 @@ export default function Nav() {
                               onClick={e => handleSignOut(e, item)}
                               href={item.href}
                               class={classss(
-                                // active ? "bg-gray-100" : "",
+                                item.name === active() ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               )}
                             >
@@ -161,12 +163,13 @@ export default function Nav() {
                   <a
                     href={item.href}
                     class={classss(
-                      item.current
+                      item.name === active()
                         ? "bg-gray-900 text-white"
                         : "text-gray-300 hover:bg-gray-700 hover:text-white",
                       "block px-3 py-2 rounded-md text-base font-medium"
                     )}
-                    aria-current={item.current ? "page" : undefined}
+                    aria-current={item.name === active() ? "page" : undefined}
+                    onClick={e => setActive(item.name)}
                   >
                     {item.name}
                   </a>

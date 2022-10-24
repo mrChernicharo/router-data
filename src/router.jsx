@@ -3,6 +3,8 @@ import { supabase } from "./lib/supabaseClient";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { Routes, Route, Navigate, Outlet, useNavigate } from "solid-app-router";
 
+import { getStorageData, setStorageData } from "./lib/helpers";
+
 import Home from "./Home";
 import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
@@ -25,15 +27,9 @@ const Professional = lazy(() => import("./professional/Professional"));
 export default function Router() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const Protected = () => {
-    return (
-      <Show when={userStore.session?.user?.id} fallback={<Navigate href="/login" />}>
-        <Outlet />
-      </Show>
-    );
-  };
 
   const updateAuthState = async session => {
+    console.log("updateAuthState");
     if (session) {
       const { data, error } = await supabase.from("staff").select("*").eq("email", session.user.email);
       const staff = data[0] ?? null;
@@ -54,9 +50,10 @@ export default function Router() {
 
       setUserStore("user", user);
       setUserStore("session", { ...session, user });
+      setStorageData("user", user);
+      setStorageData("session", { ...session, user });
 
       queryClient.cancelQueries({ queryKey: ["admin"] });
-      console.log("redirect!", { userStore });
 
       const redirects = {
         admin: "/admin",
@@ -68,15 +65,33 @@ export default function Router() {
     } else {
       setUserStore("session", null);
       setUserStore("user", null);
+      setStorageData("session", null);
+      setStorageData("user", null);
     }
   };
 
   onMount(async () => {
-    const { session } = await fetchAuthState();
-    // console.log(session);
-    updateAuthState(session);
+    const storedSession = getStorageData("session");
+    const storedUser = getStorageData("user");
+
+    if (storedSession) {
+      console.log("use localStorage!");
+      setUserStore("user", storedUser);
+      setUserStore("session", storedSession);
+    } else {
+      const { session } = await fetchAuthState();
+      updateAuthState(session);
+    }
     supabase.auth.onAuthStateChange(async (e, session) => updateAuthState(session));
   });
+
+  const Protected = () => {
+    return (
+      <Show when={userStore.user?.id} fallback={<Navigate href="/login" />}>
+        <Outlet />
+      </Show>
+    );
+  };
 
   return (
     <Routes>
