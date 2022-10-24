@@ -73,10 +73,8 @@ AppointmentsHistory
 
 
 
+use netlify lambda function to run updates on auth.users...our service_role can't be exposed
 fix channel events reaction in Professional component
-user category based nav links
-user category based back btns
-put userData into localStorage
 
 
 
