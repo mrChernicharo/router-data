@@ -244,7 +244,7 @@ const removeCustomer = async customer => {
     updatedProfessionalAvails = avaliData;
   }
 
-  // 4. delete the damn customer!
+  // 4. delete the damn customer with admin service_role!
   const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
   const { data: deletedCustomer, error } = await supabase
     .from("customers")
