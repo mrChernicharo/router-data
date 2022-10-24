@@ -6,8 +6,8 @@ import Loading from "../shared/Loading";
 import Calendar from "../shared/Calendar";
 import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
-import { createEffect } from "solid-js";
-import { setUserStore } from "../lib/userStore";
+import { createEffect, onMount } from "solid-js";
+import { setUserStore, userStore } from "../lib/userStore";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -28,6 +28,20 @@ export default function Admin() {
       description: "customers waiting",
     },
   ];
+
+  onMount(async () => {
+    const res = await fetch("/.netlify/functions/hello");
+    const data = await res.json();
+
+    console.log({ data });
+  });
+
+  createEffect(async () => {
+    const res = await fetch("/.netlify/functions/adminList2");
+    const data = await res.json();
+
+    console.log({ data });
+  });
 
   return (
     <div data-component="Admin">
@@ -55,7 +69,7 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
+      <pre>{JSON.stringify(userStore, null, 1)}</pre>
     </div>
   );
 }
