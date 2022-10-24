@@ -20,28 +20,6 @@ export default function Login() {
   const [password, setPassword] = createSignal("");
   const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
 
-  /////////////////************************//////////////////************************/
-  // const [cId, setCId] = createSignal("");
-  // const [pId, setPId] = createSignal("");
-  // // const data = useRouteData();
-  // const query = createQuery(() => ["admin"], fetchLoginFakeData, {
-  //   refetchOnWindowFocus: true,
-  //   refetchOnMount: true,
-  //   // cacheTime: 0,
-  //   // staleTime: 0,
-  // });
-
-  // createEffect(() => {
-  //   if (!query.isLoading && query?.data?.customers?.length && query?.data?.professionals?.length) {
-  //     setPId(query?.data.professionals[0].id);
-  //     setCId(query?.data.customers[0].id);
-  //   } else {
-  //     setPId("");
-  //     setCId("");
-  //   }
-  // });
-  //////////////////////////////////************************//////////////////************************/
-
   async function handleSubmit(e) {
     e.preventDefault();
     if (!emailInputRef.validity.valid || !passwordInputRef.value) return;
