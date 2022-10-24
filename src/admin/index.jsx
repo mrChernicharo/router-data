@@ -6,8 +6,9 @@ import Loading from "../shared/Loading";
 import Calendar from "../shared/Calendar";
 import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
-import { createEffect } from "solid-js";
+import { createEffect, onMount } from "solid-js";
 import { setUserStore } from "../lib/userStore";
+import { supabase, supabaseAdmin } from "../lib/supabaseClient";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -28,6 +29,12 @@ export default function Admin() {
       description: "customers waiting",
     },
   ];
+
+  onMount(async () => {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+
+    console.log({ data });
+  });
 
   return (
     <div data-component="Admin">
