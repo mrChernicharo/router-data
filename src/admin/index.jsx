@@ -57,18 +57,18 @@ export default function Admin() {
 
   // console.log(import.meta.env.VITE_SUPABASE_KEY);
 
-  // createEffect(async () => {
-  //   // DEV
-  //   // const res = await fetch("/.netlify/functions/adminList2");
-  //   // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
+  createEffect(async () => {
+    // DEV
+    // const res = await fetch("/.netlify/functions/adminList2");
+    // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
 
-  //   // PROD
-  //   const res = await fetch(
-  //     "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
-  //   );
-  //   const data = await res.json();
-  //   console.log({ data });
-  // });
+    // PROD
+    const res = await fetch(
+      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
+    );
+    const data = await res.json();
+    console.log({ data });
+  });
 
   createEffect(async () => {
     try {
