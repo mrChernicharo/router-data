@@ -31,53 +31,61 @@ export default function Admin() {
   ];
 
   createEffect(async () => {
-    // DEV
-    // const res = await fetch("/.netlify/functions/hello");
-    // const res = await fetch("http://localhost:9999/.netlify/functions/hello-world");
+    //   // DEV
+    //   // const res = await fetch("/.netlify/functions/hello");
+    //   // const res = await fetch("http://localhost:9999/.netlify/functions/hello-world");
 
-    // PROD
-    const data = await fetch(
-      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/hello-world"
-    ).then(async res => await res.json());
-    console.log({ data });
-  });
+    //   // PROD
+    // "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/hello-world",
 
-  createEffect(async () => {
-    // DEV
-    // const res = await fetch("/.netlify/functions/adminList2");
-    // const res = await fetch("http://localhost:9999/.netlify/functions/chuck-norris");
+    console.log(userStore.session);
 
-    // PROD
-    const res = await fetch(
-      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/chuck-norris"
-    );
+    const res = await fetch("http://localhost:9999/.netlify/functions/delete-customer", {
+      method: "POST",
+      body: JSON.stringify({ message: "Atlantic", name: "Ruuuui", action: "delete this crap!" }),
+    });
+    // .then(async res => await res.json())
+    // .catch(console.log);
     const data = await res.json();
-    console.log({ data });
+    console.log({ res, data });
   });
 
-  // console.log(import.meta.env.VITE_SUPABASE_KEY);
+  // createEffect(async () => {
+  //   // DEV
+  //   // const res = await fetch("/.netlify/functions/adminList2");
+  //   // const res = await fetch("http://localhost:9999/.netlify/functions/chuck-norris");
 
-  createEffect(async () => {
-    // DEV
-    // const res = await fetch("/.netlify/functions/adminList2");
-    // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
+  //   // PROD
+  //   const res = await fetch(
+  //     "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/chuck-norris"
+  //   );
+  //   const data = await res.json();
+  //   console.log({ data });
+  // });
 
-    // PROD
-    const res = await fetch(
-      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
-    );
-    const data = await res.json();
-    console.log({ data });
-  });
+  // // console.log(import.meta.env.VITE_SUPABASE_KEY);
 
-  createEffect(async () => {
-    try {
-      const { data, error } = await getSupabaseAdmin().auth.admin.listUsers();
-      console.log({ data });
-    } catch (err) {
-      console.log(err);
-    }
-  });
+  // createEffect(async () => {
+  //   // DEV
+  //   // const res = await fetch("/.netlify/functions/adminList2");
+  //   // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
+
+  //   // PROD
+  //   const res = await fetch(
+  //     "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
+  //   );
+  //   const data = await res.json();
+  //   console.log({ data });
+  // });
+
+  // createEffect(async () => {
+  //   try {
+  //     const { data, error } = await getSupabaseAdmin().auth.admin.listUsers();
+  //     console.log({ data });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // });
 
   return (
     <div data-component="Admin">

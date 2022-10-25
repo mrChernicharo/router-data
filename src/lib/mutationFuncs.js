@@ -245,14 +245,22 @@ const removeCustomer = async customer => {
   }
 
   // 4. delete the damn customer!
+    //   const res = await fetch(
+    //   "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch",
+    //   { body: JSON.stringify(customer) }
+    // );
+    // const data = await res.json();
+    // console.log({ data });
   // const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
-  const { data: deletedCustomer, error } = await supabase
-    .from("customers")
-    .delete()
-    .eq("id", customer.id)
-    .select();
+  // const { data: deletedCustomer, error } = await supabase
+  //   .from("customers")
+  //   .delete()
+  //   .eq("id", customer.id)
+  //   .select();
 
-  if (error) return console.log({ error });
+
+
+  // if (error) return console.log({ error });
   // if (error || aErr) return console.log({ error, aErr });
 
   console.log("removeCustomer", {
