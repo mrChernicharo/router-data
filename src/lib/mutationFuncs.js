@@ -252,7 +252,7 @@ const removeCustomer = async customer => {
     .eq("id", customer.id)
     .select();
 
-  if ((adminErr, error)) return console.log({ adminErr, error });
+  if (( error)) return console.log({ adminErr });
   // if (error || aErr) return console.log({ error, aErr });
 
   console.log("removeCustomer", {

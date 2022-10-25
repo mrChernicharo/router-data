@@ -12,7 +12,10 @@ const handler = async function (event, context) {
     //   serviceRoleKey: VITE_SERVICE_ROLE,
     //   serviceRole: VITE_SERVICE_ROLE,
     // });
+    
     const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY, VITE_ANON_PUB);
+
+    // const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SUPABASE_KEY, VITE_SERVICE_ROLE, VITE_ANON_PUB);
     // const supabaseAdmin = createClient(VITE_PROJECT_URL,  VITE_SERVICE_ROLE, {
     //   auth: {
     //     storageKey: VITE_SUPABASE_KEY
@@ -24,6 +27,10 @@ const handler = async function (event, context) {
 
     // works!
     const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+
+    
+    // DOESN'T WORK: normal client with auth.users 
+    // const {data, error} = await supabase.from('auth.users').select('*');
 
     // this works!
     // const { data: d, error: e } = await supabaseAdmin.auth.admin.eUser({

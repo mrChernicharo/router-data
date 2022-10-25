@@ -8,7 +8,7 @@ import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
 import { createEffect, onMount } from "solid-js";
 import { setUserStore, userStore } from "../lib/userStore";
-import { supabase /**supabaseAdmin*/ } from "../lib/supabaseClient";
+import { supabase, getSupabaseAdmin } from "../lib/supabaseClient";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -57,26 +57,27 @@ export default function Admin() {
 
   // console.log(import.meta.env.VITE_SUPABASE_KEY);
 
-  createEffect(async () => {
-    // DEV
-    // const res = await fetch("/.netlify/functions/adminList2");
-    // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
-
-    // PROD
-    const res = await fetch(
-      "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
-    );
-    const data = await res.json();
-    console.log({ data });
-  });
-
   // createEffect(async () => {
+  //   // DEV
   //   // const res = await fetch("/.netlify/functions/adminList2");
-  //   const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
+  //   // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
 
+  //   // PROD
+  //   const res = await fetch(
+  //     "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
+  //   );
   //   const data = await res.json();
   //   console.log({ data });
   // });
+
+  createEffect(async () => {
+    try {
+      const { data, error } = await getSupabaseAdmin().auth.admin.listUsers();
+      console.log({ data });
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
   return (
     <div data-component="Admin">
