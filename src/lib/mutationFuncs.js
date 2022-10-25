@@ -244,44 +244,50 @@ const removeCustomer = async customer => {
     updatedProfessionalAvails = avaliData;
   }
 
+  //5. delete user from auth.users
+  
+  // const res = await fetch("http://localhost:9999/.netlify/functions/delete-customer", {
+    const res = await fetch("https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/delete-customer", {
+    method: "POST",
+    body: JSON.stringify({ customer }),
+  });
+  
   // 4. delete the damn customer!
-    //   const res = await fetch(
-    //   "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch",
-    //   { body: JSON.stringify(customer) }
-    // );
-    // const data = await res.json();
-    // console.log({ data });
   // const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
-  // const { data: deletedCustomer, error } = await supabase
-  //   .from("customers")
-  //   .delete()
-  //   .eq("id", customer.id)
-  //   .select();
+  const { data: deletedCustomer, error } = await supabase
+    .from("customers")
+    .delete()
+    .eq("id", customer.id)
+    .select();
 
+
+
+  const data = await res.json();
+  console.log({ res, data, deletedCustomer });
 
 
   // if (error) return console.log({ error });
   // if (error || aErr) return console.log({ error, aErr });
 
-  console.log("removeCustomer", {
-    deletedCustomer,
-    // deletedUser,
-    user,
-    removedAppointments,
-    removedAvailability,
-    updatedProfessionalAvails,
-    availsToPatch,
-    days,
-    professionalIds,
-    times,
-  });
+  // console.log("removeCustomer", {
+  //   deletedCustomer,
+  //   // deletedUser,
+  //   user,
+  //   removedAppointments,
+  //   removedAvailability,
+  //   updatedProfessionalAvails,
+  //   availsToPatch,
+  //   days,
+  //   professionalIds,
+  //   times,
+  // });
 
   channel.send({
     type: "broadcast",
     event: "customer_removed",
   });
 
-  return deletedCustomer[0];
+  // return deletedCustomer[0];
 };
 
 const createAppointmentOffers = async (customerId, offers) => {

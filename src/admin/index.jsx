@@ -34,20 +34,17 @@ export default function Admin() {
     //   // DEV
     //   // const res = await fetch("/.netlify/functions/hello");
     //   // const res = await fetch("http://localhost:9999/.netlify/functions/hello-world");
-
     //   // PROD
     // "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/hello-world",
-
-    console.log(userStore.session);
-
-    const res = await fetch("http://localhost:9999/.netlify/functions/delete-customer", {
-      method: "POST",
-      body: JSON.stringify({ message: "Atlantic", name: "Ruuuui", action: "delete this crap!" }),
-    });
-    // .then(async res => await res.json())
-    // .catch(console.log);
-    const data = await res.json();
-    console.log({ res, data });
+    // console.log(userStore.session);
+    // const res = await fetch("http://localhost:9999/.netlify/functions/delete-customer", {
+    //   method: "POST",
+    //   body: JSON.stringify({ message: "Atlantic", name: "Ruuuui", action: "delete this crap!" }),
+    // });
+    // // .then(async res => await res.json())
+    // // .catch(console.log);
+    // const data = await res.json();
+    // console.log({ res, data });
   });
 
   // createEffect(async () => {
