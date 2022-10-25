@@ -1,5 +1,5 @@
-import { supabase, channel, /** supabaseAdmin */} from "./supabaseClient";
-import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY } from "./constants";
+import { supabase, channel /** supabaseAdmin */ } from "./supabaseClient";
+import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY, LAMBDA_URL } from "./constants";
 
 const insertStaff = async ({ email, category }) => {
   console.log("insertStaff", { email, category });
@@ -244,30 +244,23 @@ const removeCustomer = async customer => {
     updatedProfessionalAvails = avaliData;
   }
 
-  //5. delete user from auth.users
-  
-  // const res = await fetch("http://localhost:9999/.netlify/functions/delete-customer", {
-    const res = await fetch("https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/delete-customer", {
+  // 5. delete user from auth.users
+  const res = await fetch(`${LAMBDA_URL()}/delete-customer`, {
     method: "POST",
     body: JSON.stringify({ customer }),
   });
-  
+
   // 4. delete the damn customer!
-  // const { data: user, error: adminErr } = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
   const { data: deletedCustomer, error } = await supabase
     .from("customers")
     .delete()
     .eq("id", customer.id)
     .select();
 
-
-
   const data = await res.json();
   console.log({ res, data, deletedCustomer });
 
-
-  // if (error) return console.log({ error });
-  // if (error || aErr) return console.log({ error, aErr });
+  if (error) return console.log({ error });
 
   // console.log("removeCustomer", {
   //   deletedCustomer,
