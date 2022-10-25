@@ -12,7 +12,7 @@ const handler = async function (event, context) {
     //   serviceRoleKey: VITE_SERVICE_ROLE,
     //   serviceRole: VITE_SERVICE_ROLE,
     // });
-    const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY);
+    const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY, VITE_ANON_PUB);
     // const supabaseAdmin = createClient(VITE_PROJECT_URL,  VITE_SERVICE_ROLE, {
     //   auth: {
     //     storageKey: VITE_SUPABASE_KEY
@@ -22,7 +22,21 @@ const handler = async function (event, context) {
     // const supabaseAdmin = createClient(VITE_PROJECT_URL, { apiKey: VITE_SUPABASE_KEY, service_role: VITE_SERVICE_ROLE });
     
 
+    // works!
     const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+
+    // this works!
+    // const { data: d, error: e } = await supabaseAdmin.auth.admin.eUser({
+    //   email: 'tom@tom.com',
+    //   password: '123123'
+    // })
+
+    // const { data: del, error: err } = await supabaseAdmin.auth.admin.deleteUser('4d52e6e9-06ae-4fc3-bf22-b24582e4bfcc')
+
+
+    // just not in prod
+    
+    // '502fd897-5eed-42dd-9278-fa8f1d4cdcb1'
 
 
     return {
