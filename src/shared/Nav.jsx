@@ -62,7 +62,7 @@ export default function Nav() {
     return true;
   };
 
-  async function handleSignOut(e, item) {
+  async function handleUserMenuClick(e, item) {
     console.log(e, item);
     if (item.name == "sign out") {
       await supabase.auth.signOut();
@@ -73,6 +73,8 @@ export default function Nav() {
         status: "info",
       });
     }
+
+    setUserMenuOpen(false);
   }
 
   return (
@@ -96,7 +98,9 @@ export default function Nav() {
                           "px-3 py-2 rounded-md text-sm font-medium"
                         )}
                         aria-current={item.title === active() ? "page" : undefined}
-                        onClick={e => setActive(item.title)}
+                        onClick={e => {
+                          setActive(item.title);
+                        }}
                       >
                         {item.name === "Requests" &&
                           /** userStore.user.category === "admin" && */
@@ -128,7 +132,7 @@ export default function Nav() {
                         {item => (
                           <div>
                             <a
-                              onClick={e => handleSignOut(e, item)}
+                              onClick={e => handleUserMenuClick(e, item)}
                               href={item.href}
                               class={classss(
                                 item.name === active() ? "bg-gray-100" : "",
@@ -184,7 +188,10 @@ export default function Nav() {
                       "block px-3 py-2 rounded-md text-base font-medium"
                     )}
                     aria-current={item.title === active() ? "page" : undefined}
-                    onClick={e => setActive(item.title)}
+                    onClick={e => {
+                      setActive(item.title);
+                      setMenuOpen(false);
+                    }}
                   >
                     {item.name === "Requests" &&
                       /** userStore.user.category === "admin" && */
@@ -219,7 +226,7 @@ export default function Nav() {
                     <a
                       href={item.href}
                       class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                      onClick={e => handleSignOut(e, item)}
+                      onClick={e => handleUserMenuClick(e, item)}
                     >
                       <span class="flex items-center gap-2">
                         {item.icon} {item.title}
