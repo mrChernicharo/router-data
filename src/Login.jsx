@@ -11,6 +11,7 @@ import { addToast, ToastContainer } from "./shared/Toast";
 
 import Header from "./shared/Header";
 import { userStore } from "./lib/userStore";
+import { FiLock } from "solid-icons/fi";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -90,10 +91,11 @@ export default function Login() {
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <AiFillLock
+                  <FiLock />
+                  {/* <AiFillLock
                     class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
                     aria-hidden="true"
-                  />
+                  /> */}
                 </span>
                 Entrar
               </button>
