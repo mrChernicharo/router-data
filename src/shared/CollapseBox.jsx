@@ -1,5 +1,5 @@
 import { FaSolidChevronRight, FaSolidChevronDown, FaSolidX } from "solid-icons/fa";
-import { FiX } from "solid-icons/fi";
+import { FiChevronDown, FiX } from "solid-icons/fi";
 import { Show, createSignal } from "solid-js";
 
 export default function CollapseBox(props) {
@@ -11,7 +11,7 @@ export default function CollapseBox(props) {
         when={isOpen()}
         fallback={
           <button class="btn btn-ghost absolute right-0 -bottom-[0.66rem]" onClick={e => setIsOpen(true)}>
-            <FaSolidChevronDown />
+            <FiChevronDown />
           </button>
         }
       >
@@ -19,7 +19,7 @@ export default function CollapseBox(props) {
           class="btn btn-ghost absolute right-0 -top-[2.15rem] bottom-auto"
           onClick={e => setIsOpen(false)}
         >
-          <FiX size={20} />
+          <FaSolidX />
         </button>
         {props.children}
       </Show>

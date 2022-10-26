@@ -1,9 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_PROJECT_URL;
-const supabaseAnonKey = import.meta.env.VITE_ANON_PUB;
+const { VITE_PROJECT_URL, VITE_ANON_PUB, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY } = import.meta.env;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(VITE_PROJECT_URL, VITE_ANON_PUB, {
   global: {},
   auth: {},
   db: {},
@@ -16,5 +15,12 @@ channel.subscribe(status => {
   console.log({ status });
 });
 
+export const getSupabaseAdmin = () => {
+  try {
+    const client = () => createClient(VITE_PROJECT_URL, VITE_SERVICE_ROLE);
 
-// export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    return client();
+  } catch (err) {
+    return err;
+  }
+};

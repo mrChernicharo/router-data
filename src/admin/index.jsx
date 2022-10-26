@@ -8,6 +8,7 @@ import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
 import { createEffect, onMount } from "solid-js";
 import { setUserStore, userStore } from "../lib/userStore";
+import { supabase, getSupabaseAdmin } from "../lib/supabaseClient";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {

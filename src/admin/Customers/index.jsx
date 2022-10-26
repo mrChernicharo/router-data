@@ -72,7 +72,8 @@ export default function Customers() {
             <div class="d-grid input-group mb-3">
               <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
-                  Procurar <FiSearch />
+                  Procurar
+                  {/* <FiSearch /> */}
                 </div>
                 <input
                   type="text"
@@ -94,7 +95,8 @@ export default function Customers() {
 
               <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
-                  Email <FiMail />
+                  Email
+                  {/* <FiMail /> */}
                 </div>
                 <input
                   ref={inputRef}
@@ -130,7 +132,7 @@ export default function Customers() {
                 </Link>
                 <div class="flex items-center pr-2">
                   <button class="btn btn-ghost text-error" onClick={e => handleRemove(customer)}>
-                    <FiTrash size={22} />
+                    {/* <FiTrash size={22} /> */}
                   </button>
                 </div>
               </div>
