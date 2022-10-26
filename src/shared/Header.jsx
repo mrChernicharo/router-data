@@ -1,6 +1,6 @@
 import { s } from "../lib/styles";
 // import { supabase } from "../lib/supabaseClient";
-import { FaSolidArrowLeft, FaSolidChevronLeft } from "solid-icons/fa";
+import { FiChevronLeft } from "solid-icons/fi";
 import { APP_NAME } from "../lib/constants";
 
 import { useLocation, Link } from "solid-app-router";
@@ -98,7 +98,7 @@ export default function Header(props) {
         <Show when={showBackLink()}>
           <Link href={backLink()}>
             <button>
-              <FaSolidChevronLeft class="mr-1" />
+              <FiChevronLeft />
             </button>
           </Link>
         </Show>

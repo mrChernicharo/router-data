@@ -8,10 +8,7 @@ import { fetchAdminData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
 import { createEffect, onMount } from "solid-js";
 import { setUserStore, userStore } from "../lib/userStore";
-<<<<<<< HEAD
 import { supabase, getSupabaseAdmin } from "../lib/supabaseClient";
-=======
->>>>>>> a95f835 (calling some netlify funcs on login mount)
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -32,76 +29,6 @@ export default function Admin() {
       description: "customers waiting",
     },
   ];
-
-<<<<<<< HEAD
-  createEffect(async () => {
-    //   // DEV
-    //   // const res = await fetch("/.netlify/functions/hello");
-    //   // const res = await fetch("http://localhost:9999/.netlify/functions/hello-world");
-    //   // PROD
-    // "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/hello-world",
-    // console.log(userStore.session);
-    // const res = await fetch("http://localhost:9999/.netlify/functions/delete-customer", {
-    //   method: "POST",
-    //   body: JSON.stringify({ message: "Atlantic", name: "Ruuuui", action: "delete this crap!" }),
-    // });
-    // // .then(async res => await res.json())
-    // // .catch(console.log);
-    // const data = await res.json();
-    // console.log({ res, data });
-  });
-
-  // createEffect(async () => {
-  //   // DEV
-  //   // const res = await fetch("/.netlify/functions/adminList2");
-  //   // const res = await fetch("http://localhost:9999/.netlify/functions/chuck-norris");
-
-  //   // PROD
-  //   const res = await fetch(
-  //     "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/chuck-norris"
-  //   );
-  //   const data = await res.json();
-  //   console.log({ data });
-  // });
-
-  // // console.log(import.meta.env.VITE_SUPABASE_KEY);
-
-  // createEffect(async () => {
-  //   // DEV
-  //   // const res = await fetch("/.netlify/functions/adminList2");
-  //   // const res = await fetch("http://localhost:9999/.netlify/functions/auth-fetch");
-
-  //   // PROD
-  //   const res = await fetch(
-  //     "https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions/auth-fetch"
-  //   );
-  //   const data = await res.json();
-  //   console.log({ data });
-  // });
-
-  // createEffect(async () => {
-  //   try {
-  //     const { data, error } = await getSupabaseAdmin().auth.admin.listUsers();
-  //     console.log({ data });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // });
-=======
-  onMount(async () => {
-    const res = await fetch("/.netlify/functions/hello");
-    const data = await res.json();
-
-    console.log({ data });
-  });
-
-  createEffect(async () => {
-    const res = await fetch("/.netlify/functions/adminList2");
-    const data = await res.json();
-
-    console.log({ data });
-  });
->>>>>>> a95f835 (calling some netlify funcs on login mount)
 
   return (
     <div data-component="Admin">
