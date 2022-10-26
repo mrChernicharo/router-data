@@ -4,7 +4,6 @@ import Header from "./Header";
 
 import Nav from "./Nav";
 import { ToastContainer } from "./Toast";
-import { FiMenu } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
 import { userStore } from "../lib/userStore";
 

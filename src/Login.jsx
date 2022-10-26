@@ -91,11 +91,10 @@ export default function Login() {
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <FiLock />
-                  {/* <AiFillLock
+                  <AiFillLock
                     class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
                     aria-hidden="true"
-                  /> */}
+                  />
                 </span>
                 Entrar
               </button>

@@ -1170,11 +1170,6 @@ quick-lru@^5.1.1:
   resolved "https://registry.npmjs.org/quick-lru/-/quick-lru-5.1.1.tgz"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
-react-icons@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.6.0.tgz#f83eda179af5d02c047449a20b702c858653d397"
-  integrity sha512-rR/L9m9340yO8yv1QT1QurxWQvWpbNHqVX0fzMln2HEb9TEIrQRGsqiNFQfiv9/JEUbyHmHPlNTB2LWm2Ttz0g==
-
 read-cache@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/read-cache/-/read-cache-1.0.0.tgz"
@@ -1236,7 +1231,7 @@ solid-app-router@^0.4.2:
 
 solid-icons@^1.0.2:
   version "1.0.2"
-  resolved "https://registry.npmjs.org/solid-icons/-/solid-icons-1.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/solid-icons/-/solid-icons-1.0.2.tgz#91712c2f3e9da101c46219d6a69ada71f1b73a45"
   integrity sha512-Pockp4vkCFFW+uubuRpb50pqKZNzjLhUUDm5VPpcZJWSgDw7fOxnMLcO1fC2bK8l+kYbJOr52y+pB5fnoZXg3Q==
 
 solid-js@^1.5.1:
