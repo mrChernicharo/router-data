@@ -3,7 +3,7 @@ import { useRouteData, Link } from "solid-app-router";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 import { channel } from "../../lib/supabaseClient";
 
-import { fetchStaffData } from "../../lib/fetchFuncs";
+import { fetchCustomersData, fetchStaffData } from "../../lib/fetchFuncs";
 import { insertStaff, insertProfessional, removeStaff } from "../../lib/mutationFuncs";
 
 import { s } from "../../lib/styles";
@@ -24,6 +24,7 @@ export default function Staff() {
   let inputRef, selectRef;
 
   const query = createQuery(() => ["staff"], fetchStaffData);
+  const customersQuery = createQuery(() => ["customers"], fetchCustomersData);
   const queryClient = useQueryClient();
   const insertMutation = createMutation(["staff"], newStaff => insertStaff(newStaff));
   const removeMutation = createMutation(["staff"], person => removeStaff(person));
@@ -38,8 +39,15 @@ export default function Staff() {
       email: inputRef.value,
       category: selectRef.value,
     };
+    const customers = customersQuery.data.customers;
 
-    console.log({ staff });
+    if (customers.some(c => c.email === staff.email))
+      return addToast({
+        status: "danger",
+        duration: 10_000,
+        title: "Já Existe um cliente cadastrado para esse email!",
+        message: `Para liberar a criação de um novo membro com esse endereço de email, o Admin precisa deletar antes o paciente ${staff.email}.`,
+      });
 
     insertMutation.mutate(staff, {
       onSuccess: (data, variables, context) => {
