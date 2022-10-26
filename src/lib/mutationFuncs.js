@@ -245,7 +245,7 @@ const removeCustomer = async customer => {
   }
 
   // 5. delete user from auth.users
-  const res = await fetch(`${LAMBDA_URL()}/delete-customer`, {
+  const res = await fetch(`${LAMBDA_URL}/delete-customer`, {
     method: "POST",
     body: JSON.stringify({ customer }),
   });

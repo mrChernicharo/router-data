@@ -15,10 +15,13 @@ import { FiLock } from "solid-icons/fi";
 
 export default function Login() {
   const navigate = useNavigate();
+
   let emailInputRef;
   let passwordInputRef;
+
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
+
   const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
 
   async function handleSubmit(e) {

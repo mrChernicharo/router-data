@@ -6,10 +6,6 @@ import { addToast } from "./shared/Toast";
 import { translateError } from "./lib/helpers";
 import { supabase } from "./lib/supabaseClient";
 
-// import process from "process";
-const isDev = () => import.meta.env.MODE === "development";
-const envMode = () => import.meta.env.MODE;
-
 function App() {
   return (
     <ErrorBoundary
@@ -20,19 +16,6 @@ function App() {
     >
       <QueryClientProvider client={queryClient}>
         <Router />
-        <pre>
-          {JSON.stringify(
-            {
-              isDev: isDev(),
-              mode: envMode(),
-              dev: import.meta.env.DEV,
-              prod: import.meta.env.PROD,
-              // env: import.meta.env,
-            },
-            null,
-            1
-          )}
-        </pre>
       </QueryClientProvider>
     </ErrorBoundary>
   );
