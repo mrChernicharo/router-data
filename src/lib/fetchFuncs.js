@@ -1,3 +1,4 @@
+import { DBDateToDateStr } from "./helpers";
 import { supabase } from "./supabaseClient";
 
 // ************ HELPERS ************
@@ -157,7 +158,9 @@ const fetchCustomerData = async id => {
 
   const customer = data[0];
   if (!customer) throw new Error('Customer missing')
-
+  
+  customer.date_of_birth = DBDateToDateStr(customer.date_of_birth)
+  
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);
     const { professionals } = await fetchProfessionalsId(professionalsIds);
@@ -182,7 +185,7 @@ const fetchCustomerData = async id => {
 
     customer.offers = offers;
   }
-
+  
   console.log("fetchCustomerData", { customer });
 
   return { customer };

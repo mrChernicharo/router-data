@@ -3,10 +3,10 @@ import { createStore } from "solid-js/store";
 import { setUserStore, userStore } from "../lib/userStore";
 import { FiChevronLeft, FiChevronRight, FiCheck } from "solid-icons/fi";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { updateCustomer } from "../lib/mutationFuncs";
+import { updateCustomer, updatePersonAvailability } from "../lib/mutationFuncs";
 
 import AvailabilityTable from "../shared/AvailabilityTable";
-import { useParams, useRouteData } from "solid-app-router";
+import { Navigate, useParams, useRouteData, useRoutes, useNavigate } from "solid-app-router";
 import { t } from "../lib/tranlations";
 import {
   dateToWeekday,
@@ -19,15 +19,21 @@ import {
 import { handleDateInput, normalizeDateStr } from "../lib/dateInputHelpers";
 import { isDate } from "date-fns";
 import Loading from "../shared/Loading";
+import { addToast } from "../shared/Toast";
 
 export default function CustomerRegisterForm(props) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const params = useParams();
   const { customer } = queryClient.getQueryData(["customer", params.id]) ?? {};
   const updateMutation = createMutation(["customer", params.id], values => updateCustomer(params.id, values));
+  const availabilityMutation = createMutation(["customer_availability", params.id], newAvailability =>
+    updatePersonAvailability(customer, "customer", newAvailability)
+  );
 
   const [currStep, setCurrStep] = createSignal(1);
   const [formStore, setFormStore] = createStore({});
+  const isCustomer = () => userStore.user.category === "customer";
 
   const next = () => currStep() < FormComponents.length && setCurrStep(prev => prev + 1);
   const back = () => currStep() > 1 && setCurrStep(prev => prev - 1);
@@ -51,10 +57,11 @@ export default function CustomerRegisterForm(props) {
   };
 
   onMount(() => {
+    console.log("onMount", { customer });
     setFormStore({
       first_name: customer?.first_name ?? "",
       last_name: customer?.last_name ?? "",
-      date_of_birth: customer?.date_of_birth ? DBDateToDateStr(customer.date_of_birth) : "",
+      date_of_birth: customer?.date_of_birth ?? "",
       phone: customer?.phone ?? "",
       availability: customer?.availability || [],
     });
@@ -69,6 +76,21 @@ export default function CustomerRegisterForm(props) {
 
   function handleSubmit() {
     console.log("handleSubmit", { formStore, customer });
+
+    availabilityMutation.mutate(formStore.availability, {
+      onSuccess: (data, variables, context) => {
+        console.log({ data, variables });
+
+        addToast({
+          message: "Dados Cadastrados com sucesso!",
+          status: "success",
+        });
+
+        const back = isCustomer() ? `/customer/${params.id}` : `/admin/customers/${params.id}`;
+
+        navigate(back);
+      },
+    });
   }
 
   const WizardShell = props => {
@@ -96,11 +118,9 @@ export default function CustomerRegisterForm(props) {
               onClick={e => {
                 const isSame = {
                   1:
-                    formStore.first_name === userStore.user.first_name &&
-                    formStore.last_name === userStore.user.last_name,
-                  2:
-                    formStore.date_of_birth === userStore.user.date_of_birth &&
-                    formStore.phone === userStore.user.phone,
+                    formStore.first_name === customer.first_name &&
+                    formStore.last_name === customer.last_name,
+                  2: formStore.date_of_birth === customer.date_of_birth && formStore.phone === customer.phone,
                 };
 
                 const updateData = {
@@ -108,26 +128,25 @@ export default function CustomerRegisterForm(props) {
                   2: {
                     phone: formStore.phone,
                     date_of_birth: formStore.date_of_birth,
-                    // date_of_birth: ISODateStrFromDateAndTime(formStore.date_of_birth, "00:00"),
                   },
                   3: null,
                   4: null,
                 };
 
-                // prevent request send if data is the same or unnecessary
-                if (isSame[currStep()] || !updateData[currStep()]) return next();
+                const noNeedToUpdate = isSame[currStep()] || !updateData[currStep()];
+
+                if (noNeedToUpdate) return next();
 
                 updateMutation.mutate(updateData[currStep()], {
                   onSuccess: (data, variables, context) => {
                     if (currStep() === 1) {
-                      setUserStore("user", "first_name", formStore.first_name);
-                      setUserStore("user", "last_name", formStore.last_name);
+                      // setUserStore("user", "first_name", formStore.first_name);
+                      // setUserStore("user", "last_name", formStore.last_name);
                     }
                     if (currStep() === 2) {
-                      setUserStore("user", "phone", formStore.phone);
-                      setUserStore("user", "date_of_birth", formStore.date_of_birth);
+                      // setUserStore("user", "phone", formStore.phone);
+                      // setUserStore("user", "date_of_birth", formStore.date_of_birth);
                     }
-
                     next();
                   },
                 });
@@ -249,7 +268,7 @@ export default function CustomerRegisterForm(props) {
       embedded
       open
       role="customer"
-      person={userStore.user}
+      person={customer}
       availability={customer?.availability ?? []}
       onChange={values => setFormStore("availability", values)}
     />,
@@ -263,8 +282,8 @@ export default function CustomerRegisterForm(props) {
 
       <WizardShell>{FormComponents[currComponentIdx()]}</WizardShell>
 
-      <pre>{JSON.stringify(formStore, null, 2)}</pre>
-      <pre>{JSON.stringify(userStore, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(formStore, null, 2)}</pre>*/}
+      {/*<pre>{JSON.stringify(userStore, null, 2)}</pre> */}
     </div>
   );
 }

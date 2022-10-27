@@ -3,7 +3,7 @@ import { supabase } from "./lib/supabaseClient";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { Routes, Route, Navigate, Outlet, useNavigate, useLocation } from "solid-app-router";
 
-import { getStorageData, setStorageData } from "./lib/helpers";
+import { getStorageData, setStorageData, DBDateToDateStr } from "./lib/helpers";
 
 import Home from "./Home";
 import NotFound from "./NotFound";
@@ -30,6 +30,8 @@ const AuthStateHandler = () => {
   const queryClient = useQueryClient();
 
   const updateAuthState = async session => {
+    /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
+
     console.log("updateAuthState");
 
     if (!session) {
@@ -53,10 +55,16 @@ const AuthStateHandler = () => {
       .eq("email", session.user.email);
     personData = personD[0];
 
-    const user = { ...session.user, ...personData, category: staff?.category ?? "customer" };
+    const user = {
+      ...session.user,
+      ...personData,
+      ...(personData?.date_of_birth && { date_of_birth: DBDateToDateStr(personData.date_of_birth) }),
+      category: staff?.category ?? "customer",
+    };
+    delete session.user; // session.user is deleted to prevent us from maintaining the same user data nested withing session
 
     setUserStore("user", user);
-    setUserStore("session", { ...session, user });
+    setUserStore("session", session);
 
     queryClient.cancelQueries({ queryKey: ["admin"] });
 
