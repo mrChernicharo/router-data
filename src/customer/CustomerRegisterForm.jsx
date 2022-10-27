@@ -8,6 +8,8 @@ import AvailabilityTable from "../shared/AvailabilityTable";
 import { useParams, useRouteData } from "solid-app-router";
 import { t } from "../lib/tranlations";
 import { dateToWeekday } from "../lib/helpers";
+import { handleDateInput, normalizeDateStr } from "../lib/dateInputHelpers";
+import { isDate } from "date-fns";
 
 export default function CustomerRegisterForm(props) {
   const queryClient = useQueryClient();
@@ -20,7 +22,7 @@ export default function CustomerRegisterForm(props) {
     lastName: "",
     dateOfBirth: "",
     phone: "",
-    availability: customer.availability,
+    availability: customer?.availability || [],
   });
 
   const next = () => currStep() < FormComponents.length && setCurrStep(prev => prev + 1);
@@ -33,7 +35,7 @@ export default function CustomerRegisterForm(props) {
   const isNextStepDisabled = () => {
     const disablingRequirements = {
       1: !formStore.firstName || !formStore.lastName,
-      2: !formStore.dateOfBirth || !formStore.phone,
+      2: !formStore.dateOfBirth || !formStore.phone || !isDate(normalizeDateStr(formStore.dateOfBirth)),
       3: formStore.availability.length < 3,
     };
 
@@ -63,7 +65,14 @@ export default function CustomerRegisterForm(props) {
               </button>
             }
           >
-            <button class="btn btn-ghost text-accent" onClick={next} disabled={isNextStepDisabled()}>
+            <button
+              class="btn btn-ghost text-accent"
+              disabled={isNextStepDisabled()}
+              onClick={e => {
+                // updateCustomer
+                next();
+              }}
+            >
               Próximo <FiChevronRight />
             </button>
           </Show>
@@ -99,16 +108,24 @@ export default function CustomerRegisterForm(props) {
   };
 
   const SecondForm = props => {
+    let dateInputRef;
     return (
       <div>
         <label class="label">
           <span class="label-text">Data de nascimento</span>
         </label>
         <input
+          ref={dateInputRef}
           type="text"
           class="input w-full max-w-xs"
           value={formStore.dateOfBirth ?? ""}
-          onChange={e => setFormStore("dateOfBirth", e.currentTarget.value)}
+          onInput={e => {
+            handleDateInput(e);
+
+            // if (isDate(normalizeDateStr(dateInputRef.value)))
+
+            setFormStore("dateOfBirth", dateInputRef.value);
+          }}
         />
 
         <label class="label">
