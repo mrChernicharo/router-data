@@ -63,11 +63,11 @@ function Toast(props) {
     <div
       ref={toastRef}
       style={{
-        border: "1px solid",
         width: "fit-content",
         bottom: "100px",
         left: "50%",
-        padding: ".5rem",
+        padding: "1rem",
+        "border-radius": "10px",
         transform: "translateX(-50%)",
         "z-index": "1000000",
         background: colors[props.status] ? colors[props.status] : colors.default,
@@ -84,3 +84,12 @@ function Toast(props) {
 }
 
 export { ToastContainer, addToast };
+
+// width: fit-content;
+// bottom: 100px;
+// left: 50%;
+
+// transform: translateX(-50%);
+// z-index: 1000000;
+// animation: 100s ease 0s 1 normal forwards running render-toaster;
+// background: rgb(238, 238, 238);
