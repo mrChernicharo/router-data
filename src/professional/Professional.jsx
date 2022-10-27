@@ -1,5 +1,7 @@
 import { createQuery } from "@tanstack/solid-query";
 import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
+
+import { channel } from "../lib/supabaseClient";
 import { addMinutes, isPast, subDays } from "date-fns";
 import AppointmentList from "../shared/AppointmentList";
 import CollapseBox from "../shared/CollapseBox";
@@ -8,7 +10,6 @@ import AvailabilityTable from "../shared/AvailabilityTable";
 
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
-import { createEffect } from "solid-js";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { imageUrl } from "../lib/constants";
 import ListItem from "../shared/ListItem";
@@ -36,10 +37,10 @@ export default function Professional() {
       return { id, name, email };
     });
 
-  // channel.on("broadcast", { event: `${userId()}::appointments` }, () => {
-  //   console.log({ event: `${userId()}::appointments` });
-  //   query.refetch();
-  // });
+  channel.on("broadcast", { event: `${userId()}::appointments` }, () => {
+    console.log({ event: `${userId()}::appointments` });
+    query.refetch();
+  });
 
   return (
     <div data-component="Professional">

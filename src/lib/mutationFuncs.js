@@ -323,6 +323,11 @@ const confirmOffer = async offer => {
     throw new Error(error.message);
   }
 
+  channel.send({
+    type: "broadcast",
+    event: `${offer.professional_id}::appointments`,
+  })
+
   return { appointment };
 };
 

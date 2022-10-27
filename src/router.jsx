@@ -24,7 +24,7 @@ const AppointmentRequests = lazy(() => import("./admin/Requests"));
 const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
-export default function Router() {
+const AuthStateHandler = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -74,6 +74,10 @@ export default function Router() {
     supabase.auth.onAuthStateChange(async (e, session) => updateAuthState(session));
   });
 
+  return <></>;
+};
+
+export default function Router() {
   const Protected = () => {
     return (
       <Show when={userStore.user?.id} fallback={<Navigate href="/login" />}>
@@ -110,6 +114,8 @@ export default function Router() {
 
         <Route path="/**" component={NotFound} />
       </Route>
+
+      <AuthStateHandler />
     </Routes>
   );
 }
