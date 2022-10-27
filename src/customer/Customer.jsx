@@ -41,7 +41,7 @@ export default function Customer() {
   const hasAvailability = () => query.data.customer.availability.length;
 
   createEffect(() => {
-    console.log(query.data);
+    // console.log(query.data);
     // setUserStore()
   });
 

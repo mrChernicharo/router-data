@@ -71,7 +71,6 @@ export default function Nav() {
       addToast({
         message: "até a próxima!",
         status: "info",
-        duration: 100_000,
       });
     }
 

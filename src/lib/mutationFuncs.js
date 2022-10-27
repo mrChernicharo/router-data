@@ -1,6 +1,6 @@
 import { supabase, channel /** supabaseAdmin */ } from "./supabaseClient";
 import { DEFAULT_PROFESSIONAL_AVAILABILITY, LAMBDA_URL } from "./constants";
-import { FULL_WEEK_AVAILABILITY } from "./helpers";
+import { FULL_WEEK_AVAILABILITY, dateStrToDBDate } from "./helpers";
 
 const insertStaff = async ({ email, category }) => {
   console.log("insertStaff", { email, category });
@@ -167,8 +167,7 @@ const removeProfessional = async id => {
 };
 
 const insertCustomer = async person => {
-
-  const isAdminCreated = !person.auth_id
+  const isAdminCreated = !person.auth_id;
   console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
 
   if (isAdminCreated) {
@@ -287,6 +286,21 @@ const removeCustomer = async customer => {
   // return deletedCustomer[0];
 };
 
+const updateCustomer = async (id, values) => {
+  console.log("updateCustomer", { id, values });
+  const { data, error } = await supabase
+    .from("customers")
+    .update({
+      ...values,
+      ...(values.date_of_birth && { date_of_birth: dateStrToDBDate(values.date_of_birth) }),
+    })
+    .eq("id", id);
+  if (error) return error;
+
+  console.log("updateCustomer", { data, error });
+  return data;
+};
+
 const createAppointmentOffers = async (customerId, offers) => {
   // if (!offers.length) {
   //   return console.log("createAppointmentOffers with no offers! Abort it", { offers, customerId });
@@ -330,7 +344,7 @@ const confirmOffer = async offer => {
   channel.send({
     type: "broadcast",
     event: `${offer.professional_id}::appointments`,
-  })
+  });
 
   return { appointment };
 };
@@ -412,5 +426,6 @@ export {
   createAppointmentOffers,
   updatePersonAvailability,
   createUser,
+  updateCustomer,
   confirmOffer,
 };

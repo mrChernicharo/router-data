@@ -18,7 +18,6 @@ export const timeStrToMinutes = timeStr => {
   // console.log({ timeStr, hours, mins, totalMinutes });
   return totalMinutes;
 };
-
 export const timeMinutesToStr = minutes =>
   `${parseInt(minutes / 60) < 10 ? `0${parseInt(minutes / 60)}` : parseInt(minutes / 60)}:${
     minutes % 60 > 0 ? minutes % 60 : `${minutes % 60}0`
@@ -73,6 +72,16 @@ export const ISODateStrFromDateAndTime = (dateStr, time) => {
   ).toISOString();
 };
 
+export const dateStrToDBDate = dateStr => {
+  const [d, m, y] = dateStr.split("/");
+  return `${y}-${m}-${d}`;
+};
+
+export const DBDateToDateStr = dbDate => {
+  const [y, m, d] = dbDate.split("-");
+  return `${d}/${m}/${y}`;
+}
+
 export const classss = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
@@ -84,7 +93,7 @@ export const translateError = message => {
     'duplicate key value violates unique constraint "customers_email_key"':
       "Já existe um usuário cadastrado com esse email",
     "Email not confirmed": "Você precisa ir no seu email e clicar no link para ativar a sua conta",
-    "Cannot read properties of null (reading 'id')": "Deu Ruin aqui pai!"
+    "Cannot read properties of null (reading 'id')": "Deu Ruin aqui pai!",
   };
 
   return translations[message] ? translations[message] : message;
@@ -93,3 +102,18 @@ export const translateError = message => {
 export const getStorageData = key => JSON.parse(localStorage.getItem(key));
 
 export const setStorageData = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+export const organizeAvailabilities = availabilities => {
+  if (!availabilities?.length) return;
+  const avObj = {};
+
+  availabilities.forEach(av => {
+    if (!avObj[av.day]) avObj[av.day] = [];
+
+    avObj[av.day].push(av);
+  });
+
+  // console.log("organizeAvailabilities", [...availabilities], avObj);
+
+  return avObj;
+};

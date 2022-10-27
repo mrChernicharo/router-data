@@ -1,7 +1,7 @@
 const TERMS = {
-  firstName: "Nome",
-  lastName: "Sobrenome",
-  dateOfBirth: "Data de nascimento",
+  first_name: "Nome",
+  last_name: "Sobrenome",
+  date_of_birth: "Data de nascimento",
   phone: "Telefone",
   monday: "Segunda-feira",
   tuesday: "Terça-feira",
