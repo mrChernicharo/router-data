@@ -11,7 +11,7 @@ function App() {
     <ErrorBoundary
       fallback={err => {
         console.log(err);
-        addToast({ message: translateError(err.message), status: "danger", duration: 3500 });
+        addToast({ message: translateError(err.message), status: "danger", duration: 10000 });
       }}
     >
       <QueryClientProvider client={queryClient}>

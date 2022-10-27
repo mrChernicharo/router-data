@@ -83,6 +83,7 @@ export const translateError = message => {
     'duplicate key value violates unique constraint "customers_email_key"':
       "Já existe um usuário cadastrado com esse email",
     "Email not confirmed": "Você precisa ir no seu email e clicar no link para ativar a sua conta",
+    "Cannot read properties of null (reading 'id')": "Deu Ruin aqui pai!"
   };
 
   return translations[message] ? translations[message] : message;

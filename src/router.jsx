@@ -1,7 +1,7 @@
 import { lazy, createEffect, onMount, batch } from "solid-js";
 import { supabase } from "./lib/supabaseClient";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
-import { Routes, Route, Navigate, Outlet, useNavigate } from "solid-app-router";
+import { Routes, Route, Navigate, Outlet, useNavigate, useLocation } from "solid-app-router";
 
 import { getStorageData, setStorageData } from "./lib/helpers";
 
@@ -11,6 +11,7 @@ import Layout from "./shared/Layout";
 import { setUserStore, userStore } from "./lib/userStore";
 import { fetchAuthState } from "./lib/fetchFuncs";
 import { addToast } from "./shared/Toast";
+import CustomerRegisterForm from "./customer/CustomerRegisterForm";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -106,6 +107,7 @@ export default function Router() {
 
         <Route path="/customer" component={Protected}>
           <Route path="/:id" component={Customer} />
+          <Route path="/:id/form" component={CustomerRegisterForm} />
         </Route>
 
         <Route path="/professional" component={Protected}>

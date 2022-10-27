@@ -60,9 +60,11 @@ export default function Customer() {
 
             <p>Vamos começar?</p>
 
-            <button class="btn btn-accent" type="button">
-              Aperte o botão para começar
-            </button>
+            <Link href={`/customer/${query.data.customer.id}/form`}>
+              <button class="btn btn-accent" type="button">
+                Aperte o botão para começar
+              </button>
+            </Link>
           </div>
 
           {/* B */}
