@@ -50,9 +50,10 @@ export default function Professional() {
 
         <AvailabilityTable
           role="professional"
+          canEdit={!isAdmin()}
+          collapsable
           person={query.data.professional}
           availability={query.data.professional.availability}
-          canEdit={!isAdmin()}
         />
 
         <AppointmentsCalendar

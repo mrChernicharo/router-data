@@ -9,7 +9,7 @@ import { createEffect } from "solid-js";
 import AppointmentList from "../shared/AppointmentList";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
-import { userStore } from "../lib/userStore";
+import { setUserStore, userStore } from "../lib/userStore";
 
 export default function Customer() {
   const queryClient = useQueryClient();
@@ -39,6 +39,11 @@ export default function Customer() {
   const hasAppointment = () => query.data?.customer.appointments.length;
   const hasFilledBasicInfo = () => true;
   const hasAvailability = () => query.data.customer.availability.length;
+
+  createEffect(() => {
+    console.log(query.data);
+    // setUserStore()
+  });
 
   return (
     <div data-component="Customer">
@@ -132,6 +137,7 @@ export default function Customer() {
         <AvailabilityTable
           role="customer"
           canEdit
+          collapsable
           person={query.data.customer}
           availability={query.data.customer.availability}
         />
