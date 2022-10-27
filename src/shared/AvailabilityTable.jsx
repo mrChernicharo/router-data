@@ -17,7 +17,8 @@ export default function AvailabilityTable(props) {
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
   const isBusy = (day, hour) =>
     props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
-  const isBlocked = (day, hour) => day == 0 || (day == 6 && timeStrToMinutes(hour) > 900);
+  const isBlocked = (day, hour) =>
+    day == 0 || (day == 6 && timeStrToMinutes(hour) > 900) || isBusy(day, hour);
   const hasAppointment = () => props.availability?.filter(av => av.status === "0").length > 0;
 
   function handleAvailabilityUpdate(e) {
