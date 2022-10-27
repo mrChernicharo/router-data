@@ -1,8 +1,9 @@
 import { ALL_TIMES, STR_NUM_WEEKDAYS, SATURDAY_MAX_HOUR } from "./constants";
+import { t } from "./tranlations";
 
 export const dateToWeekday = n => {
   const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-  return weekdays[n];
+  return t(weekdays[n]);
 };
 export const weekdayToDate = weekday => {
   return ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].findIndex(

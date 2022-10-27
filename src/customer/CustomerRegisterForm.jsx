@@ -6,23 +6,42 @@ import { useQueryClient } from "@tanstack/solid-query";
 
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { useParams, useRouteData } from "solid-app-router";
+import { t } from "../lib/tranlations";
+import { dateToWeekday } from "../lib/helpers";
 
 export default function CustomerRegisterForm(props) {
-  // const availability = useRouteData()
-  const [currStep, setCurrStep] = createSignal(1);
-  const [formStore, setFormStore] = createStore({});
-
   const queryClient = useQueryClient();
   const params = useParams();
-
   const { customer } = queryClient.getQueryData(["customer", params.id]) ?? {};
 
-  onMount(() => {
-    console.log({ customer, av: customer?.availability });
+  const [currStep, setCurrStep] = createSignal(1);
+  const [formStore, setFormStore] = createStore({
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    phone: "",
+    availability: customer.availability,
   });
 
+  const next = () => currStep() < FormComponents.length && setCurrStep(prev => prev + 1);
+  const back = () => currStep() > 1 && setCurrStep(prev => prev - 1);
+  const isLastStep = () => currStep() === FormComponents.length;
+  const isFirstStep = () => currStep() === 1;
+  const currComponentIdx = () => currStep() - 1;
+  // const goTo = step => setCurrStep(step);
+
+  const isNextStepDisabled = () => {
+    const disablingRequirements = {
+      1: !formStore.firstName || !formStore.lastName,
+      2: !formStore.dateOfBirth || !formStore.phone,
+      3: formStore.availability.length < 3,
+    };
+
+    return disablingRequirements[currStep()];
+  };
+
   function handleSubmit() {
-    console.log({ formStore, customer });
+    console.log("handleSubmit", { formStore, customer });
   }
 
   const WizardShell = props => {
@@ -32,7 +51,7 @@ export default function CustomerRegisterForm(props) {
         <div class="border flex justify-end">
           <Show when={!isFirstStep()}>
             <button class="btn btn-ghost" onClick={back}>
-              <FiChevronLeft /> Back
+              <FiChevronLeft /> Voltar
             </button>
           </Show>
 
@@ -40,12 +59,12 @@ export default function CustomerRegisterForm(props) {
             when={!isLastStep()}
             fallback={
               <button class="btn btn-accent" onClick={handleSubmit}>
-                <FiCheck /> Finish
+                <FiCheck class="mr-2 text-lg" /> Confirmar!
               </button>
             }
           >
-            <button class="btn btn-ghost" onClick={next}>
-              Next <FiChevronRight />
+            <button class="btn btn-ghost text-accent" onClick={next} disabled={isNextStepDisabled()}>
+              Próximo <FiChevronRight />
             </button>
           </Show>
         </div>
@@ -108,24 +127,27 @@ export default function CustomerRegisterForm(props) {
   const Confirmation = props => {
     return (
       <div>
-        <h2>Confirmação</h2>
+        <h2 class="text-2xl font-bold">Confirmação</h2>
 
         <p>Confirme se seus dados estão corretos</p>
 
-        <For each={Object.entries(formStore)}>
+        <For each={Object.entries(formStore).filter(([k, v]) => k !== "availability")}>
           {([key, value]) => (
             <div>
               <div>
-                {key}:{value}
+                {t(key)}:{value}
               </div>
             </div>
           )}
         </For>
 
-        <For each={customer?.availability ?? []}>
+        <div class="divider"></div>
+
+        <div>Disponibilidade</div>
+        <For each={formStore.availability ?? []}>
           {av => (
             <div>
-              <div>{av.day}</div>
+              <div>{dateToWeekday(av.day)}</div>
               <div>{av.time}</div>
             </div>
           )}
@@ -138,21 +160,16 @@ export default function CustomerRegisterForm(props) {
     <FirstForm />,
     <SecondForm />,
     <AvailabilityTable
-      role="customer"
       canEdit
+      embedded
+      open
+      role="customer"
       person={userStore.user}
       availability={customer?.availability ?? []}
-      open
+      onChange={values => setFormStore("availability", values)}
     />,
     <Confirmation />,
   ];
-
-  const next = () => currStep() < FormComponents.length && setCurrStep(prev => prev + 1);
-  const back = () => currStep() > 1 && setCurrStep(prev => prev - 1);
-  const isLastStep = () => currStep() === FormComponents.length;
-  const isFirstStep = () => currStep() === 1;
-  const goTo = step => setCurrStep(step);
-  const currComponentIdx = () => currStep() - 1;
 
   return (
     <div>

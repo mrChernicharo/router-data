@@ -7,6 +7,7 @@ import { s } from "../lib/styles";
 import { addToast } from "./Toast";
 import ListItem from "./ListItem";
 import Loading from "./Loading";
+import { createEffect, onMount } from "solid-js";
 
 const AvailabilityTableWrapper = props => (
   <div data-component="AvailabilityTableWrapper">
@@ -23,6 +24,7 @@ const AvailabilityTableWrapper = props => (
 );
 
 export default function AvailabilityTable(props) {
+  let formRef;
   const queryClient = useQueryClient();
   const updateMutation = createMutation(["customer", props.person.id], availability =>
     updatePersonAvailability(props.person, props.role, availability)
@@ -35,16 +37,19 @@ export default function AvailabilityTable(props) {
     day == 0 || (day == 6 && timeStrToMinutes(hour) > 900) || isBusy(day, hour);
   const hasAppointment = () => props.availability?.filter(av => av.status === "0").length > 0;
 
+  const parseTimeBlocks = checkboxes =>
+    checkboxes.map(d => ({
+      ...d.dataset,
+      [`${props.role}_id`]: props.person.id,
+      status: "1",
+    }));
+
   function handleAvailabilityUpdate(e) {
     e.preventDefault();
 
     const selectedCheckboxes = [...e.currentTarget].filter(d => d.checked);
 
-    const selectedTimeBlocks = selectedCheckboxes.map(d => ({
-      ...d.dataset,
-      [`${props.role}_id`]: props.person.id,
-      status: "1",
-    }));
+    const selectedTimeBlocks = parseTimeBlocks(selectedCheckboxes);
 
     updateMutation.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
@@ -85,7 +90,7 @@ export default function AvailabilityTable(props) {
           )}
         </div>
 
-        <form onSubmit={handleAvailabilityUpdate}>
+        <form ref={formRef} onSubmit={handleAvailabilityUpdate}>
           <div class="max-w-[800px] mx-auto  mt-6">
             {/* THEAD */}
             <div class="sticky top-0 grid grid-cols-8  border-b-[1px] border-t-[1px] bg-base-100">
@@ -106,7 +111,8 @@ export default function AvailabilityTable(props) {
                   <div
                     class={classss(
                       "grid grid-cols-8",
-                      /**"border-b-[1px]", */ idx() % 2 === 0 && "bg-base-200"
+                      idx() % 2 === 0 && "bg-base-200"
+                      /**"border-b-[1px]", */
                     )}
                   >
                     <div class="text-xs font-bold flex items-center">{time}</div>
@@ -126,6 +132,9 @@ export default function AvailabilityTable(props) {
                               disabled={isBlocked(weekday, time)}
                               data-day={weekday}
                               data-time={time}
+                              onChange={e => {
+                                props.onChange(parseTimeBlocks([...formRef].filter(input => input.checked)));
+                              }}
                             />
                           </label>
                         </div>
@@ -137,14 +146,16 @@ export default function AvailabilityTable(props) {
             </div>
           </div>
 
-          <div class="mt-5 mb-5 flex justify-center">
-            <button class="btn btn-accent w-full sm:w-[30rem]">
-              <span>Confirmar Disponibilidade</span>
-              <Show when={updateMutation.isLoading}>
-                <Loading classes="ml-1" />
-              </Show>
-            </button>
-          </div>
+          <Show when={!props.embedded} fallback={<></>}>
+            <div class="mt-5 mb-5 flex justify-center">
+              <button class="btn btn-accent w-full sm:w-[30rem]">
+                <span>Confirmar Disponibilidade</span>
+                <Show when={updateMutation.isLoading}>
+                  <Loading classes="ml-1" />
+                </Show>
+              </button>
+            </div>
+          </Show>
         </form>
       </AvailabilityTableWrapper>
     </div>
