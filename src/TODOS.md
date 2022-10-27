@@ -16,19 +16,25 @@ how availability updates affect appointments?
 
 
 
-appointments
-    automatic creation for 4 weeks in the future ? ... nope
-    we can show appointments in advance at the calendar and that should be all
+APPOINTMENTS RULES
+    FUTURE APPOINTMENTS
+        automatic creation for 4 weeks in the future ? ... NOPE!
+        we can show appointments in advance at the calendar and that should be all
 
-    reschedule / remarcar
-        patches existing appointment's time/day
+    RESCHEDULING
+        reschedules should only be allowed if (appointment datetime  - now) > 48
+        
+        rescheduled appointment should be labeled as postponed
 
-        customer
-        professional
-            can offer all slots from all days except slots where I have appointment
+        we gotta patch existing appointment's time/day for professional & customer
+
+        CUSTOMER ASKED RESCHEDULE
+        
+        PROFESSIONAL ASKED RESCHEDULE
+            can offer all slots from all days except slots where prof has appointment
 
             if slot in customer.availability
-                highlight it (as a better suggestion)
+                highlight it only (as a better suggestion)
 
     cancel / desmarcar
         marks appointment as deleted
@@ -38,3 +44,12 @@ appointments
         kills future appointments
 
 
+
+
+=====================
+
+FIXES UP NEXT
+    Check updates and reactivity in 
+        - ProfessionalPage
+        - Requests Badge (Nav)
+        - Requests Badges

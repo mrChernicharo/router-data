@@ -68,54 +68,6 @@ export default function Router() {
     navigate(redirects[user.category]);
   };
 
-  // const updateAuthState = async session => {
-  //   console.log("updateAuthState");
-
-  //   if (!session) {
-  //     setUserStore("session", null);
-  //     setUserStore("user", null);
-  //     console.log("NO user data, return");
-  //     return;
-  //   }
-  //   const { data, error } = await supabase.from("staff").select("*").eq("email", session.user.email);
-  //   const staff = data[0] ?? null;
-
-  //   console.log({ error });
-
-  //   let user;
-  //   if (staff) {
-  //     const { data, error } = await supabase
-  //       .from("professionals")
-  //       .select("*")
-  //       .eq("email", session.user.email);
-
-  //     console.log({ error });
-
-  //     user = { ...data[0], ...session.user, category: staff.category };
-  //   } else {
-  //     const { data, error } = await supabase.from("customers").select("*").eq("email", session.user.email);
-
-  //     console.log({ error });
-
-  //     user = { ...data[0], ...session.user, category: "customer" };
-  //   }
-
-  //   setUserStore("user", user);
-  //   setUserStore("session", { ...session, user });
-
-  //   queryClient.cancelQueries({ queryKey: ["admin"] });
-
-  //   const redirects = {
-  //     admin: "/admin",
-  //     customer: `/customer/${user.id}`,
-  //     professional: `/professional/${user.id}`,
-  //   };
-
-  //   console.log("have user data, redirecting...", user);
-
-  //   navigate(redirects[user.category]);
-  // };
-
   onMount(async () => {
     const { session } = await fetchAuthState();
     updateAuthState(session);
