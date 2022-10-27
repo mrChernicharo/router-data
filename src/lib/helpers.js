@@ -1,4 +1,4 @@
-import { ALL_TIMES } from "./constants";
+import { ALL_TIMES, STR_NUM_WEEKDAYS, SATURDAY_MAX_HOUR } from "./constants";
 
 export const dateToWeekday = n => {
   const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
@@ -31,6 +31,15 @@ export const getWorkingHours = ({ min, max }) => {
 };
 
 export const WORKING_HOURS = getWorkingHours({ min: "08:00", max: "20:00" });
+
+export const FULL_WEEK_AVAILABILITY = STR_NUM_WEEKDAYS.map(weekday => (weekday === "0" ? null : weekday))
+  .filter(Boolean)
+  .map(weekday =>
+    weekday === "6"
+      ? getWorkingHours({ min: "08:00", max: SATURDAY_MAX_HOUR }).map(hour => ({ day: weekday, time: hour }))
+      : getWorkingHours({ min: "08:00", max: "20:00" }).map(hour => ({ day: weekday, time: hour }))
+  )
+  .flat(2);
 
 export const getClosestDate = day => {
   const getDiffFromNextSameWeekday = weekday => {

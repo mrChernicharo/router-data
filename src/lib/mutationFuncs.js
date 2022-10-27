@@ -1,5 +1,6 @@
 import { supabase, channel /** supabaseAdmin */ } from "./supabaseClient";
-import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY, LAMBDA_URL } from "./constants";
+import { DEFAULT_PROFESSIONAL_AVAILABILITY, LAMBDA_URL } from "./constants";
+import { FULL_WEEK_AVAILABILITY } from "./helpers";
 
 const insertStaff = async ({ email, category }) => {
   console.log("insertStaff", { email, category });
@@ -166,10 +167,12 @@ const removeProfessional = async id => {
 };
 
 const insertCustomer = async person => {
-  console.log(person.auth_id ? "Customer Signup" : "Admin Created Customer");
 
-  if (!person.auth_id) {
-    const { data: authData } = await supabase.auth.signUp({ ...person, password: "chernicharo:admin" });
+  const isAdminCreated = !person.auth_id
+  console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
+
+  if (isAdminCreated) {
+    const { data: authData } = await supabase.auth.signUp({ ...person, password: "12345678" });
     person.auth_id = authData.user.id;
   }
 
@@ -177,7 +180,8 @@ const insertCustomer = async person => {
   if (error) return error;
 
   const customer = data[0];
-  const customerAvailability = DEFAULT_CUSTOMER_AVAILABILITY.map(o => ({
+
+  const customerAvailability = (isAdminCreated ? FULL_WEEK_AVAILABILITY : []).map(o => ({
     ...o,
     customer_id: customer.id,
     status: "1",
@@ -187,7 +191,7 @@ const insertCustomer = async person => {
     .from("customer_availability")
     .insert(customerAvailability)
     .select();
-  if (err2) return console.log(err2);
+  if (err2) return err2;
 
   console.log("addCustomer", { customer, availability });
 
