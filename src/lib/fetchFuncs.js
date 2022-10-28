@@ -1,3 +1,4 @@
+import { LAMBDA_URL } from "./constants";
 import { DBDateToDateStr } from "./helpers";
 import { supabase } from "./supabaseClient";
 
@@ -26,7 +27,6 @@ const fetchAuthState = async () => {
   return authData;
 };
 
-
 // ************ PAGE FETCHERS ************
 
 const fetchLoginFakeData = async () => {
@@ -36,7 +36,7 @@ const fetchLoginFakeData = async () => {
 
   if (cError || pError) return console.log({ cError, pError });
 
-  console.log({ customers, professionals });
+  console.log('fetchLoginFakeData',{ customers, professionals });
 
   return { customers, professionals };
 };
@@ -54,6 +54,8 @@ const fetchStaffData = async () => {
   const { data, error: sError } = await supabase.from("vw_staff_page").select("*");
   if (sError) return console.log({ sError });
 
+  const { registeredEmails } = await fetch(`${LAMBDA_URL}/get-registered-users`).then(async res => await res.json());
+
   const staff = [];
   for (const d of data) {
     const { professional_email, professional_id, category, staff_email, staff_id, staff_name } = d;
@@ -70,12 +72,12 @@ const fetchStaffData = async () => {
       id: staff_id,
       email: staff_email,
       category,
-      isRegistered: !!professional,
-      professional,
+      isRegistered: registeredEmails.includes(staff_email),
+      professional
     });
   }
 
-  console.log("fetchStaffData", { staff });
+  console.log("fetchStaffData", { staff, registeredEmails });
   return { staff };
 };
 
@@ -149,18 +151,15 @@ const fetchCustomerData = async id => {
     )
     .eq("id", id);
 
-  const { data: offers, error: oErr } = await supabase
-    .from("appointment_offers")
-    .select("*")
-    .eq("customer_id", id);
+  const { data: offers, error: oErr } = await supabase.from("appointment_offers").select("*").eq("customer_id", id);
 
   if (error || oErr) return console.log({ error, oErr });
 
   const customer = data[0];
-  if (!customer) throw new Error('Customer missing')
-  
-  customer.date_of_birth = DBDateToDateStr(customer.date_of_birth)
-  
+  if (!customer) throw new Error("Customer missing");
+
+  customer.date_of_birth = DBDateToDateStr(customer.date_of_birth);
+
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);
     const { professionals } = await fetchProfessionalsId(professionalsIds);
@@ -185,7 +184,7 @@ const fetchCustomerData = async id => {
 
     customer.offers = offers;
   }
-  
+
   console.log("fetchCustomerData", { customer });
 
   return { customer };

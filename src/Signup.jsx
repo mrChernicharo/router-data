@@ -3,7 +3,7 @@ import { useRouteData, Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
-import { translateError } from "./lib/helpers";
+import { translateError } from "./lib/translations";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 
@@ -39,6 +39,7 @@ export default function Signup() {
     const { data: authData, error: authErr } = await supabase.auth.signUp(credentials);
     if (authErr) {
       setIsLoading(false);
+      console.log({ authErr });
       return addToast({ message: translateError(authErr.message), status: "danger" });
     }
 
@@ -47,9 +48,10 @@ export default function Signup() {
 
     setIsLoading(false);
 
-    if (!res || res.code) {
+    if (!res || res?.code) {
+      console.log({ res });
       return addToast({
-        message: res.code ? translateError(res.message) : "Erro ao criar sua conta",
+        message: res?.code ? translateError(res?.message) : "Erro ao criar sua conta",
         status: "danger",
         duration: 4000,
       });
@@ -140,10 +142,7 @@ export default function Signup() {
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <AiFillLock
-                    class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                    aria-hidden="true"
-                  />
+                  <AiFillLock class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
                 <div class="flex items-center">
                   <span>Criar conta</span> {isLoading() && <Loading small classes="ml-2" />}

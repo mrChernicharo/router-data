@@ -1,5 +1,5 @@
 import { ALL_TIMES, STR_NUM_WEEKDAYS, SATURDAY_MAX_HOUR } from "./constants";
-import { t } from "./tranlations";
+import { t } from "./translations";
 
 export const dateToWeekday = n => {
   const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
@@ -25,9 +25,7 @@ export const timeMinutesToStr = minutes =>
 
 export const getWorkingHours = ({ min, max }) => {
   const allTimesInMinutes = ALL_TIMES.map(timeStrToMinutes);
-  return allTimesInMinutes
-    .filter(t => t >= timeStrToMinutes(min) && t <= timeStrToMinutes(max))
-    .map(timeMinutesToStr);
+  return allTimesInMinutes.filter(t => t >= timeStrToMinutes(min) && t <= timeStrToMinutes(max)).map(timeMinutesToStr);
 };
 
 export const WORKING_HOURS = getWorkingHours({ min: "08:00", max: "20:00" });
@@ -66,9 +64,7 @@ export const getClosestDate = day => {
 
 export const ISODateStrFromDateAndTime = (dateStr, time) => {
   return new Date(
-    new Date(dateStr).getTime() +
-      timeStrToMinutes(time) * 60 * 1000 -
-      new Date(dateStr).getTimezoneOffset() * 60 * 1000
+    new Date(dateStr).getTime() + timeStrToMinutes(time) * 60 * 1000 - new Date(dateStr).getTimezoneOffset() * 60 * 1000
   ).toISOString();
 };
 
@@ -80,24 +76,13 @@ export const dateStrToDBDate = dateStr => {
 export const DBDateToDateStr = dbDate => {
   const [y, m, d] = dbDate.split("-");
   return `${d}/${m}/${y}`;
-}
+};
 
 export const classss = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
 
-export const translateError = message => {
-  const translations = {
-    "Rate limit exceeded": "Limite de tentativas excedido. Espere alguns minutos e tente novamente.",
-    "Invalid login credentials": "Credenciais inválidas. Verifique se Email e Senha estão corretos",
-    'duplicate key value violates unique constraint "customers_email_key"':
-      "Já existe um usuário cadastrado com esse email",
-    "Email not confirmed": "Você precisa ir no seu email e clicar no link para ativar a sua conta",
-    "Cannot read properties of null (reading 'id')": "Deu Ruin aqui pai!",
-  };
 
-  return translations[message] ? translations[message] : message;
-};
 
 export const getStorageData = key => JSON.parse(localStorage.getItem(key));
 

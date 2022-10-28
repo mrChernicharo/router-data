@@ -3,7 +3,7 @@ import { useRouteData, Link, useNavigate } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
-import { translateError } from "./lib/helpers";
+import { translateError } from "./lib/translations";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 
@@ -91,10 +91,7 @@ export default function Login() {
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <AiFillLock
-                    class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                    aria-hidden="true"
-                  />
+                  <AiFillLock class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
                 Entrar
               </button>

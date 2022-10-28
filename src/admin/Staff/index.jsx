@@ -33,7 +33,18 @@ export default function Staff() {
   const handleInsert = async e => {
     e.preventDefault();
 
-    if (!inputRef.validity.valid) return console.log("invalid email!");
+    if (!selectRef.value)
+      return addToast({
+        status: "danger",
+        duration: 2000,
+        message: `O campo 'Categoria' não pode ficar vazio`,
+      });
+    if (!inputRef.value || !inputRef.validity.valid)
+      return addToast({
+        status: "danger",
+        duration: 2000,
+        message: `Email inválido. Por favor verifique se não há erros`,
+      });
 
     const staff = {
       email: inputRef.value,
@@ -102,10 +113,9 @@ export default function Staff() {
           <form onSubmit={handleInsert}>
             <div class="">
               <label class="block w-full label-text ">Categoria</label>
-              <select ref={selectRef} class="">
-                <For each={CATEGORIES}>
-                  {category => <option value={category.value}>{category.name}</option>}
-                </For>
+              <select ref={selectRef} class="select select-bordered">
+                <option value=""></option>
+                <For each={CATEGORIES}>{category => <option value={category.value}>{category.name}</option>}</For>
               </select>
             </div>
             <div class="input-group mb-3">
@@ -140,47 +150,36 @@ export default function Staff() {
             <div>
               <ListItem>
                 <div class="flex hover:bg-base-100">
-                  <div
-                    style={{ ...s.listHighlight, background: person.isRegistered ? "#18e697" : "#bbb" }}
-                  ></div>
+                  <div style={{ ...s.listHighlight, background: person?.isRegistered ? "#18e697" : "#bbb" }}></div>
 
                   <div class="w-[100%] p-2">
                     <div>{person.email}</div>
                     <div>{person.category}</div>
-                    {person.isRegistered && (
-                      <div class="text-base-300">professional id: {person.professional.id}</div>
+                    {person?.isRegistered && (
+                      <div class="text-base-300">professional id: {person?.professional?.id}</div>
                     )}
                   </div>
                   {/* </Link> */}
 
-                  <div class="flex items-center">
-                    {/* <Show when={!person.isRegistered}>
+                  <Show when={person.category !== "admin"}>
+                    <div class="flex items-center">
                       <button
-                        class="btn btn-ghost text-success"
+                        class="btn btn-ghost text-error mr-2"
                         type="button"
-                        title="registrar profissional"
-                        onClick={e => handleProfessionalRegister(person)}
+                        title="remover profissional"
+                        onClick={e => handleStaffRemove(person)}
                       >
-                        <FiPlus size={20} />
+                        <FiTrash size={20} />
                       </button>
-                    </Show> */}
-
-                    <button
-                      class="btn btn-ghost text-error mr-2"
-                      type="button"
-                      title="remover profissional"
-                      onClick={e => handleStaffRemove(person)}
-                    >
-                      <FiTrash size={20} />
-                    </button>
-                  </div>
+                    </div>
+                  </Show>
                 </div>
               </ListItem>
             </div>
           )}
         </For>
       </ul>
-      {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
+      <pre>{JSON.stringify(query, null, 2)}</pre>
     </div>
   );
 }

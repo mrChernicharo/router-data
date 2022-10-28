@@ -7,7 +7,7 @@ import { updateCustomer, updatePersonAvailability } from "../lib/mutationFuncs";
 
 import AvailabilityTable from "../shared/AvailabilityTable";
 import { Navigate, useParams, useRouteData, useRoutes, useNavigate } from "solid-app-router";
-import { t } from "../lib/tranlations";
+import { t } from "../lib/translations";
 import {
   dateToWeekday,
   organizeAvailabilities,
@@ -122,9 +122,7 @@ export default function CustomerRegisterForm(props) {
               disabled={isNextStepDisabled()}
               onClick={e => {
                 const isSame = {
-                  1:
-                    formStore.first_name === customer.first_name &&
-                    formStore.last_name === customer.last_name,
+                  1: formStore.first_name === customer.first_name && formStore.last_name === customer.last_name,
                   2: formStore.date_of_birth === customer.date_of_birth && formStore.phone === customer.phone,
                 };
 

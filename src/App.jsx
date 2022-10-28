@@ -3,7 +3,7 @@ import Router from "./router";
 import { createQuery, QueryClientProvider, useQueryClient } from "@tanstack/solid-query";
 import { queryClient } from "./lib/queryClient";
 import { addToast } from "./shared/Toast";
-import { translateError } from "./lib/helpers";
+import { translateError } from "./lib/translations";
 import { supabase } from "./lib/supabaseClient";
 
 function App() {

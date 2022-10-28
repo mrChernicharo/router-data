@@ -38,14 +38,19 @@ const removeStaff = async person => {
   return { entry };
 };
 
-const createUser = async info => {
-  const { email, username, auth_id } = info;
+const createUser = async credentials => {
+  const { email, username, auth_id } = credentials;
+  console.log({ credentials });
 
   const { data: staffData, error: sErr } = await supabase.from("staff").select("*").eq("email", email);
+  if (sErr) {
+    console.log(sErr);
+    return sErr;
+  }
 
   const staff = staffData[0] ?? null;
 
-  console.log("createUser", { info, staff });
+  console.log("createUser", { credentials, staff });
 
   if (staff) {
     if (staff.category === "professional") {
@@ -140,11 +145,7 @@ const removeProfessional = async id => {
   }
 
   // 4. delete professional!
-  const { data: deletedProfessional, error } = await supabase
-    .from("professionals")
-    .delete()
-    .match({ id })
-    .select();
+  const { data: deletedProfessional, error } = await supabase.from("professionals").delete().match({ id }).select();
   if (error) return console.log(error);
 
   console.log({
@@ -254,11 +255,7 @@ const removeCustomer = async customer => {
   });
 
   // 4. delete the damn customer!
-  const { data: deletedCustomer, error } = await supabase
-    .from("customers")
-    .delete()
-    .eq("id", customer.id)
-    .select();
+  const { data: deletedCustomer, error } = await supabase.from("customers").delete().eq("id", customer.id).select();
 
   const data = await res.json();
   console.log({ res, data, deletedCustomer });
