@@ -30,9 +30,9 @@ const fetchAuthState = async () => {
 // ************ PAGE FETCHERS ************
 
 const fetchLoginFakeData = async () => {
-  const { data: customers, error: cError } = await supabase.from("customers").select("id, name");
+  const { data: customers, error: cError } = await supabase.from("customers").select("id, first_name");
 
-  const { data: professionals, error: pError } = await supabase.from("professionals").select("id, name");
+  const { data: professionals, error: pError } = await supabase.from("professionals").select("id, first_name");
 
   if (cError || pError) return console.log({ cError, pError });
 
@@ -158,7 +158,7 @@ const fetchCustomerData = async id => {
   const customer = data[0];
   if (!customer) throw new Error("Customer missing");
 
-  customer.date_of_birth = DBDateToDateStr(customer.date_of_birth);
+  customer.date_of_birth = customer.date_of_birth ? DBDateToDateStr(customer.date_of_birth) : '';
 
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);

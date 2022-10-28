@@ -39,7 +39,7 @@ const removeStaff = async person => {
 };
 
 const createUser = async credentials => {
-  const { email, username, auth_id } = credentials;
+  const { email, auth_id } = credentials;
   console.log({ credentials });
 
   const { data: staffData, error: sErr } = await supabase.from("staff").select("*").eq("email", email);
@@ -54,18 +54,18 @@ const createUser = async credentials => {
 
   if (staff) {
     if (staff.category === "professional") {
-      const newProf = await insertProfessional({ name: username, email, auth_id });
+      const newProf = await insertProfessional({ email, auth_id });
       return newProf;
     }
     // professional | manager | admin
   } else {
     // customer
-    const newCustomer = await insertCustomer({ name: username, email, auth_id });
+    const newCustomer = await insertCustomer({ email, auth_id });
     return newCustomer;
   }
 };
 
-const insertProfessional = async ({ name, email, auth_id }) => {
+const insertProfessional = async ({  email, auth_id }) => {
   // console.log(auth_id ? "Professional Signup" : "Admin Created Professional");
 
   // if (!auth_id) {
@@ -73,7 +73,7 @@ const insertProfessional = async ({ name, email, auth_id }) => {
   //   auth_id = authData.user.id;
   // }
 
-  const { data, error } = await supabase.from("professionals").insert([{ name, email, auth_id }]).select();
+  const { data, error } = await supabase.from("professionals").insert([{ email, auth_id }]).select();
   if (error) return console.log(error);
 
   const professionalAvailability = DEFAULT_PROFESSIONAL_AVAILABILITY.map(o => ({

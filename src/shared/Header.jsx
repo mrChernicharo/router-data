@@ -97,7 +97,7 @@ export default function Header(props) {
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
 
         <Show when={userStore.user}>
-          <div>{userStore.user.category === "admin" ? userStore.user.email : userStore.user.name}</div>
+          <div>{userStore.user.category === "admin" ? userStore.user.email : userStore.user.first_name}</div>
           <div>{userStore.user.category}</div>
         </Show>
 

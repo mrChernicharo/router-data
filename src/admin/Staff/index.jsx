@@ -155,7 +155,7 @@ export default function Staff() {
                   <div class="w-[100%] p-2">
                     <div>{person.email}</div>
                     <div>{person.category}</div>
-                    {person?.isRegistered && (
+                    {person?.professional && person.isRegistered && (
                       <div class="text-base-300">professional id: {person?.professional?.id}</div>
                     )}
                   </div>

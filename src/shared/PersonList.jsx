@@ -9,13 +9,9 @@ export default function PersonList(props) {
         {person => (
           <li class="list-group-item">
             <div class="flex">
-              <Link
-                class="w-100 text-decoration-none"
-                style={{ color: "#000" }}
-                href={`${props.url}/${person.id}`}
-              >
+              <Link class="w-100 text-decoration-none" style={{ color: "#000" }} href={`${props.url}/${person.id}`}>
                 <div>{person.id}</div>
-                <div>{person.name}</div>
+                <div>{person.first_name}</div>
                 <div>{person.email}</div>
               </Link>
               <div class="flex align-items-center">

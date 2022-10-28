@@ -48,7 +48,7 @@ export default function Customer() {
   return (
     <div data-component="Customer">
       <Show when={query.data} fallback={<Loading />}>
-        <h1 class="font-bold text-5xl">{query.data.customer.name}</h1>
+        <h1 class="font-bold text-5xl">{query.data.customer.first_name}</h1>
         <div class="mb-5 text-info">{query.data.customer.email}</div>
 
         <div class="main-panel">
@@ -59,8 +59,8 @@ export default function Customer() {
             <p>É muito simples marcar uma consulta na aqui na laços!</p>
 
             <p class="">
-              Basta responder algumas perguntas pra gente te conhecer melhor que rapidinho a gente acha o
-              profissional ideal para você!
+              Basta responder algumas perguntas pra gente te conhecer melhor que rapidinho a gente acha o profissional
+              ideal para você!
             </p>
 
             <p>Vamos começar?</p>
@@ -90,9 +90,7 @@ export default function Customer() {
 
             <p>Entraremos em contato com você logo logo!</p>
 
-            <p>
-              Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.
-            </p>
+            <p>Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.</p>
 
             <p>Obrigado por confiar na Laços!</p>
           </div>
@@ -102,8 +100,8 @@ export default function Customer() {
             <p>Temos o prazer de oferecer essas opções de consultas para você</p>
 
             <p>
-              Agora é só escolher e o melhor horário e apertar o botão para confirmar seu primeiro atendimento
-              e iniciar seu tratamento na Clínica Laços!
+              Agora é só escolher e o melhor horário e apertar o botão para confirmar seu primeiro atendimento e iniciar
+              seu tratamento na Clínica Laços!
             </p>
           </div>
         </div>

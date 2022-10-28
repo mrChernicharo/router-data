@@ -25,9 +25,7 @@ export default function AppointmentsCalendar(props) {
 
             <div class="">
               <Show when={selectedDate()}>
-                <h3 class="pt-6 pb-2 font-semibold text-lg">
-                  {`Consultas do dia ${format(selectedDate(), "d")}`}
-                </h3>
+                <h3 class="pt-6 pb-2 font-semibold text-lg">{`Consultas do dia ${format(selectedDate(), "d")}`}</h3>
 
                 <div>
                   {!appointmentsInDay().length && <div class="text-info">Sem consultas nesse dia</div>}
@@ -35,7 +33,7 @@ export default function AppointmentsCalendar(props) {
                     {appointment => (
                       <ListItem>
                         <div class="p-2">
-                          <div>{appointment[person()].name}</div>
+                          <div>{appointment[person()].first_name}</div>
                           <div>{appointment.time}</div>
                         </div>
                       </ListItem>
@@ -58,7 +56,7 @@ export default function AppointmentsCalendar(props) {
       <button class="btn btn-ghost">month</button>
 
       <div>{props.person.id}</div>
-      <div>{props.person.name}</div>
+      <div>{props.person.first_name}</div>
       <div>{props.person.email}</div>
      
     */

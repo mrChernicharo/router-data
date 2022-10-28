@@ -29,13 +29,13 @@ export default function Professional() {
     appointments.filter(app => isPast(addMinutes(new Date(app.datetime), 30)));
 
   const getPatients = appointments =>
-    [
-      ...new Set(appointments.map(app => `${app.customer.id}::${app.customer.name}::${app.customer.email}`)),
-    ].map(p => {
-      const info = p.split("::");
-      const [id, name, email] = [info[0], info[1], info[2]];
-      return { id, name, email };
-    });
+    [...new Set(appointments.map(app => `${app.customer.id}::${app.customer.first_name}::${app.customer.email}`))].map(
+      p => {
+        const info = p.split("::");
+        const [id, first_name, email] = [info[0], info[1], info[2]];
+        return { id, first_name, email };
+      }
+    );
 
   channel.on("broadcast", { event: `${userId()}::appointments` }, () => {
     console.log({ event: `${userId()}::appointments` });
@@ -45,7 +45,7 @@ export default function Professional() {
   return (
     <div data-component="Professional">
       <Show when={query.data?.professional} fallback={<Loading />}>
-        <h1 class="font-bold text-5xl">{query.data.professional.name}</h1>
+        <h1 class="font-bold text-5xl">{query.data.professional.first_name}</h1>
         <div class="mb-5">{query.data.professional.email}</div>
 
         <AvailabilityTable
@@ -75,7 +75,7 @@ export default function Professional() {
                     <div class="flex items-center p-4">
                       <img src={imageUrl} alt="" class="h-10 w-10 flex-none rounded-full" />
                       <div class="ml-4 flex-auto">
-                        <div class="font-medium">{patient.name}</div>
+                        <div class="font-medium">{patient.first_name}</div>
                         <div class="mt-1 text-slate-700">{patient.email}</div>
                       </div>
                     </div>

@@ -16,15 +16,11 @@ import Loading from "./shared/Loading";
 export default function Signup() {
   let emailInputRef;
   let passwordInputRef;
-  let usernameInputRef;
   const [email, setEmail] = createSignal("felipe.chernicharo@gmail.com");
   const [password, setPassword] = createSignal("123123");
-  const [username, setUsername] = createSignal("Felipe");
   const [isLoading, setIsLoading] = createSignal(false);
 
-  const isDisabled = createMemo(
-    () => !email() || !password() || !username() || (emailInputRef && !emailInputRef.validity.valid)
-  );
+  const isDisabled = createMemo(() => !email() || !password() || (emailInputRef && !emailInputRef.validity.valid));
 
   // const registerMutation = createMutation(["staff"], person => insertProfessional(person));
 
@@ -34,7 +30,7 @@ export default function Signup() {
 
     setIsLoading(true);
 
-    const credentials = { email: email(), password: password(), username: username() };
+    const credentials = { email: email(), password: password() };
 
     const { data: authData, error: authErr } = await supabase.auth.signUp(credentials);
     if (authErr) {
@@ -120,25 +116,7 @@ export default function Signup() {
                 />
               </div>
             </div>
-            <div class="rounded-md shadow-sm">
-              <div>
-                <label for="username" class="text-sm">
-                  Como devemos de chamar?
-                </label>
-                <input
-                  ref={usernameInputRef}
-                  id="username"
-                  name="username"
-                  type="text"
-                  // use:formControl={[email, setEmail]}
-                  value={username()}
-                  onInput={e => setUsername(e.currentTarget.value)}
-                  required
-                  class="input input-bordered input-primary w-full max-w-md bg-white"
-                  placeholder="Nome"
-                />
-              </div>
-            </div>
+
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
