@@ -51,7 +51,7 @@ APPOINTMENTS RULES
 FIXES UP NEXT
     Check updates and reactivity in 
         - ProfessionalPage                                                          OK ✅
-        - Requests Badge (Nav)                                                      open
+        - Requests Badge (Nav)                                                      pending
         - Requests Page > Unattended Customer > Availability Matches                Partially OK gotta update UI (remove customer) once appointment is created
 
 
@@ -59,21 +59,10 @@ FIXES UP NEXT
 
 NEXT UP
 
-CUSTOMERS JOURNEY
+CUSTOMER REGISTER
+    
 
 signup
     - customer created (how are we handling default availability?)
         start it blank if real customer X default filled if admin
 
-login
-
-basic info form
-
-availability form
-
-confirmation 
-
-
-
-
-profile info (optional?...)

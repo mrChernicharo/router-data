@@ -38,9 +38,6 @@ export default function Login() {
 
   return (
     <div>
-      {/* <Header /> */}
-      {/* <ToastContainer /> */}
-
       <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
           <div>
@@ -104,44 +101,7 @@ export default function Login() {
             </div>
           </form>
         </div>
-
-        {/* <button class="btn" type="button" onClick={async e => await supabase.auth.signOut()}>
-          logout
-        </button> */}
       </div>
-
-      {/* <div class="flex justify-center my-6">
-        <Show when={!query.isLoading} fallback={<div>Loading...</div>}>
-          <Show when={query.data?.customers}>
-            <select
-              class="capitalize"
-              value={query.data?.customers.length && query.data?.customers[0].id}
-              onChange={e => setCId(e.currentTarget.value)}
-            >
-              <For each={query.data?.customers}>
-                {customer => <option value={customer.id}>{customer.name}</option>}
-              </For>
-            </select>
-          </Show>
-
-          <Show when={query.data?.professionals}>
-            <select
-              class="capitalize"
-              value={query.data?.professionals.length && query.data?.professionals[0].id}
-              onChange={e => setPId(e.currentTarget.value)}
-            >
-              <For each={query.data?.professionals}>
-                {professional => <option value={professional.id}>{professional.name}</option>}
-              </For>
-            </select>
-          </Show>
-        </Show>
-      </div> */}
-
-      {/* <div class="flex justify-between px-24 capitalize">
-        <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>cliente </Link>|{" "}
-        <Link href={`/professional/${pId()}`}>profissional </Link>
-      </div> */}
     </div>
   );
 }

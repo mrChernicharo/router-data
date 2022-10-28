@@ -37,7 +37,7 @@ export default function Customer() {
 
   const hasOffers = () => query.data?.customer.offers.length;
   const hasAppointment = () => query.data?.customer.appointments.length;
-  const hasFilledBasicInfo = () => true;
+  const hasFilledBasicInfo = () => query.data.customer;
   const hasAvailability = () => query.data.customer.availability.length;
 
   createEffect(() => {

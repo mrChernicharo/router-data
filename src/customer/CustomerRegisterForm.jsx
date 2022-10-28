@@ -72,9 +72,8 @@ export default function CustomerRegisterForm(props) {
     organizeAvailabilities(formStore.availability ?? []);
   });
 
-  // function updateCustomerData(data) {}
-
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
     console.log("handleSubmit", { formStore, customer });
 
     availabilityMutation.mutate(formStore.availability, {
@@ -89,6 +88,12 @@ export default function CustomerRegisterForm(props) {
         const back = isCustomer() ? `/customer/${params.id}` : `/admin/customers/${params.id}`;
 
         navigate(back);
+      },
+      onError: err => {
+        addToast({
+          message: err.message,
+          status: "danger",
+        });
       },
     });
   }
