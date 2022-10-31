@@ -142,14 +142,6 @@ export default function CustomerRegisterForm(props) {
 
                 updateMutation.mutate(updateData[currStep()], {
                   onSuccess: (data, variables, context) => {
-                    if (currStep() === 1) {
-                      // setUserStore("user", "first_name", formStore.first_name);
-                      // setUserStore("user", "last_name", formStore.last_name);
-                    }
-                    if (currStep() === 2) {
-                      // setUserStore("user", "phone", formStore.phone);
-                      // setUserStore("user", "date_of_birth", formStore.date_of_birth);
-                    }
                     next();
                   },
                 });

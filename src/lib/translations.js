@@ -30,6 +30,7 @@ export const translateError = message => {
     "For security purposes, you can only request this after 32 seconds.": "Por questões de segurança...",
     "Email not confirmed": "Você precisa ir no seu email e clicar no link para ativar a sua conta",
     "Cannot read properties of null (reading 'id')": "Deu Ruin aqui pai!",
+    "Failed to fetch": "Falha de conexão"
   };
 
   return translations[message] ? translations[message] : message;
