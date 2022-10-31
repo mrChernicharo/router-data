@@ -14,7 +14,11 @@ export default function Header(props) {
   const [backLink, setBackLink] = createSignal("/login");
 
   createEffect(() => {
-    // console.log(location.pathname);
+    console.log("ROUTER LOG", location.pathname);
+  });
+
+  createEffect(() => {
+    console.log("header", location.pathname, userStore?.user?.id);
 
     switch (true) {
       case /\/login/.test(location.pathname):
@@ -24,6 +28,10 @@ export default function Header(props) {
       case /\/signup/.test(location.pathname):
         setPageTitle("Criar Conta");
         setBackLink("/");
+        break;
+      case /\/customer\/.+\/form/.test(location.pathname):
+        setPageTitle("Iniciar Tratamento");
+        userStore?.user?.id && setBackLink(`/customer/${userStore?.user?.id}`);
         break;
       case /\/customer\/.+/.test(location.pathname):
         setPageTitle("Cliente");
@@ -89,7 +97,7 @@ export default function Header(props) {
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
 
         <Show when={userStore.user}>
-          <div>{userStore.user.category === "admin" ? userStore.user.email : userStore.user.name}</div>
+          <div>{userStore.user.category === "admin" ? userStore.user.email : userStore.user.first_name}</div>
           <div>{userStore.user.category}</div>
         </Show>
 

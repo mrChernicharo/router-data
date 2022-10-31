@@ -19,7 +19,7 @@ export default function Professionals() {
 
   function handleRemove(person) {
     console.log("handleRemove", person);
-    if (!confirm(`certeza que você quer deletar ${person.name}?`)) return;
+    if (!confirm(`certeza que você quer deletar ${person.first_name}?`)) return;
 
     removeMutation.mutate(person.id, {
       onSuccess: (data, variables, context) => {
@@ -50,7 +50,7 @@ export default function Professionals() {
                   style={{ color: "#000" }}
                   href={`${`/admin/professionals`}/${professional.id}`}
                 >
-                  <p class="text-xl font-bold">{professional.name}</p>
+                  <p class="text-xl font-bold">{professional.first_name}</p>
                   <p class="text-sm text-base-300">{professional.id}</p>
                   <p>{professional.email}</p>
                 </Link>

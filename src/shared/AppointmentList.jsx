@@ -14,7 +14,7 @@ export default function AppointmentList(props) {
                   <img src={imageUrl} alt="" class="h-10 w-10 flex-none rounded-full" />
                   <div class="ml-4 flex-auto">
                     <div class="font-medium">
-                      {appointment[props.role === "customer" ? "professional" : "customer"].name}
+                      {appointment[props.role === "customer" ? "professional" : "customer"].first_name}
                     </div>
                     <div class="mt-1 text-slate-700">
                       {appointment[props.role === "customer" ? "professional" : "customer"].email}

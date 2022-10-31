@@ -9,6 +9,7 @@ import { FaSolidChevronRight } from "solid-icons/fa";
 import { createEffect, onMount } from "solid-js";
 import { setUserStore, userStore } from "../lib/userStore";
 import { supabase, getSupabaseAdmin } from "../lib/supabaseClient";
+import { LAMBDA_URL } from "../lib/constants";
 
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
@@ -30,18 +31,18 @@ export default function Admin() {
     },
   ];
 
-  onMount(async () => {
-    const res = await fetch("/.netlify/functions/hello");
-    const data = await res.json();
+  createEffect(async () => {
+    const res = await fetch(`${LAMBDA_URL}/chuck-norris`);
+    const chuckFn = await res.json();
 
-    console.log({ data });
+    console.log({ chuckFn });
   });
 
   createEffect(async () => {
-    const res = await fetch("/.netlify/functions/adminList2");
-    const data = await res.json();
+    const res = await fetch(`${LAMBDA_URL}/hello-world`);
+    const helloFn = await res.json();
 
-    console.log({ data });
+    console.log({ helloFn });
   });
 
   return (
@@ -70,7 +71,7 @@ export default function Admin() {
         </div>
       </div>
 
-      <pre>{JSON.stringify(userStore, null, 1)}</pre>
+      {/* <pre>{JSON.stringify(userStore, null, 1)}</pre> */}
     </div>
   );
 }

@@ -69,7 +69,7 @@ export default function AppointmentOffers(props) {
                   onClick={e => (offer.id === offerId() ? setOfferId("") : setOfferId(offer.id))}
                 >
                   <div class="relative">
-                    <div>{offer.professional.name}</div>
+                    <div>{offer.professional.first_name}</div>
                     <div>{offer.professional.email}</div>
                     <div>{dateToWeekday(offer.day)}</div>
                     <div>

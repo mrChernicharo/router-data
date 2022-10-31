@@ -4,7 +4,9 @@ const { VITE_PROJECT_URL, VITE_ANON_PUB, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY } 
 
 export const supabase = createClient(VITE_PROJECT_URL, VITE_ANON_PUB, {
   global: {},
-  auth: {},
+  auth: {
+    persistSession: true
+  },
   db: {},
   realtime: {},
 });

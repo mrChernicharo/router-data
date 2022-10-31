@@ -24,7 +24,7 @@ export default function Customers() {
     if (!inputRef.validity.valid) return console.log("invalid email!");
 
     const customer = {
-      name: inputRef.value.split("@")[0],
+      first_name: inputRef.value.split("@")[0],
       email: inputRef.value,
     };
 
@@ -38,12 +38,12 @@ export default function Customers() {
 
   function handleRemove(customer) {
     console.log("handleRemove", customer);
-    if (!confirm(`certeza que você quer deletar ${customer.name}?`)) return;
+    if (!confirm(`certeza que você quer deletar ${customer.first_name}?`)) return;
 
     removeMutation.mutate(customer, {
       onSuccess: (data, variables, context) => {
         addToast({
-          message: `${customer.name} deletado com sucesso`,
+          message: `${customer.first_name} deletado com sucesso`,
           status: "danger",
         });
         query.refetch();
@@ -52,7 +52,7 @@ export default function Customers() {
   }
 
   const filteredCustomers = createMemo(() =>
-    query.data?.customers.filter(d => (filter() ? d.name.toLowerCase().includes(filter().toLowerCase()) : d))
+    query.data?.customers.filter(d => (filter() ? d.first_name.toLowerCase().includes(filter().toLowerCase()) : d))
   );
 
   channel.on("broadcast", { event: "customer_added" }, () => {
@@ -126,7 +126,7 @@ export default function Customers() {
             <ListItem>
               <div class="flex justify-between p-4 hover:bg-base-100">
                 <Link class="w-[100%] text-decoration-none" href={`${`/admin/customers`}/${customer.id}`}>
-                  <p class="text-xl font-bold">{customer.name}</p>
+                  <p class="text-xl font-bold">{customer.first_name}</p>
                   <p class="text-sm text-base-300">{customer.id}</p>
                   <p>{customer.email}</p>
                 </Link>

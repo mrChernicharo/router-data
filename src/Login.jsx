@@ -3,7 +3,7 @@ import { useRouteData, Link, useNavigate } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
-import { translateError } from "./lib/helpers";
+import { translateError } from "./lib/translations";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 
@@ -15,10 +15,13 @@ import { FiLock } from "solid-icons/fi";
 
 export default function Login() {
   const navigate = useNavigate();
+
   let emailInputRef;
   let passwordInputRef;
+
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
+
   const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
 
   async function handleSubmit(e) {
@@ -35,9 +38,6 @@ export default function Login() {
 
   return (
     <div>
-      {/* <Header /> */}
-      {/* <ToastContainer /> */}
-
       <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
           <div>
@@ -91,55 +91,14 @@ export default function Login() {
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <FiLock />
-                  {/* <AiFillLock
-                    class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                    aria-hidden="true"
-                  /> */}
+                  <AiFillLock class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
                 Entrar
               </button>
             </div>
           </form>
         </div>
-
-        {/* <button class="btn" type="button" onClick={async e => await supabase.auth.signOut()}>
-          logout
-        </button> */}
       </div>
-
-      {/* <div class="flex justify-center my-6">
-        <Show when={!query.isLoading} fallback={<div>Loading...</div>}>
-          <Show when={query.data?.customers}>
-            <select
-              class="capitalize"
-              value={query.data?.customers.length && query.data?.customers[0].id}
-              onChange={e => setCId(e.currentTarget.value)}
-            >
-              <For each={query.data?.customers}>
-                {customer => <option value={customer.id}>{customer.name}</option>}
-              </For>
-            </select>
-          </Show>
-
-          <Show when={query.data?.professionals}>
-            <select
-              class="capitalize"
-              value={query.data?.professionals.length && query.data?.professionals[0].id}
-              onChange={e => setPId(e.currentTarget.value)}
-            >
-              <For each={query.data?.professionals}>
-                {professional => <option value={professional.id}>{professional.name}</option>}
-              </For>
-            </select>
-          </Show>
-        </Show>
-      </div> */}
-
-      {/* <div class="flex justify-between px-24 capitalize">
-        <Link href="/admin">admin </Link>| <Link href={`/customer/${cId()}`}>cliente </Link>|{" "}
-        <Link href={`/professional/${pId()}`}>profissional </Link>
-      </div> */}
     </div>
   );
 }

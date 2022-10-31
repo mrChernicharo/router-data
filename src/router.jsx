@@ -1,9 +1,9 @@
 import { lazy, createEffect, onMount, batch } from "solid-js";
 import { supabase } from "./lib/supabaseClient";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
-import { Routes, Route, Navigate, Outlet, useNavigate } from "solid-app-router";
+import { Routes, Route, Navigate, Outlet, useNavigate, useLocation } from "solid-app-router";
 
-import { getStorageData, setStorageData } from "./lib/helpers";
+import { getStorageData, setStorageData, DBDateToDateStr } from "./lib/helpers";
 
 import Home from "./Home";
 import NotFound from "./NotFound";
@@ -11,6 +11,7 @@ import Layout from "./shared/Layout";
 import { setUserStore, userStore } from "./lib/userStore";
 import { fetchAuthState } from "./lib/fetchFuncs";
 import { addToast } from "./shared/Toast";
+import CustomerRegisterForm from "./customer/CustomerRegisterForm";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -24,67 +25,68 @@ const AppointmentRequests = lazy(() => import("./admin/Requests"));
 const Customer = lazy(() => import("./customer/Customer"));
 const Professional = lazy(() => import("./professional/Professional"));
 
-export default function Router() {
+const AuthStateHandler = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const updateAuthState = async session => {
+    /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
+
     console.log("updateAuthState");
-    if (session) {
-      const { data, error } = await supabase.from("staff").select("*").eq("email", session.user.email);
-      const staff = data[0] ?? null;
 
-      let personData;
-      if (staff) {
-        const { data, error } = await supabase
-          .from("professionals")
-          .select("*")
-          .eq("email", session.user.email);
-        personData = data[0];
-      } else {
-        const { data, error } = await supabase.from("customers").select("*").eq("email", session.user.email);
-        personData = data[0];
-      }
-
-      const user = { ...session.user, ...personData, category: staff?.category ?? "customer" };
-
-      setUserStore("user", user);
-      setUserStore("session", { ...session, user });
-      setStorageData("user", user);
-      setStorageData("session", { ...session, user });
-
-      queryClient.cancelQueries({ queryKey: ["admin"] });
-
-      const redirects = {
-        admin: "/admin",
-        customer: `/customer/${user.id}`,
-        professional: `/professional/${user.id}`,
-      };
-
-      navigate(redirects[user.category]);
-    } else {
+    if (!session) {
       setUserStore("session", null);
       setUserStore("user", null);
-      setStorageData("session", null);
-      setStorageData("user", null);
+      return;
     }
+
+    const { data: staffData, error } = await supabase
+      .from("staff")
+      .select("*")
+      .eq("email", session.user.email);
+    const staff = staffData[0] ?? null;
+
+    let personData;
+    let table = staff ? "professionals" : "customers";
+
+    const { data: personD, error: err } = await supabase
+      .from(table)
+      .select("*")
+      .eq("email", session.user.email);
+    personData = personD[0];
+
+    const user = {
+      ...session.user,
+      ...personData,
+      ...(personData?.date_of_birth && { date_of_birth: DBDateToDateStr(personData.date_of_birth) }),
+      category: staff?.category ?? "customer",
+    };
+    delete session.user; // session.user is deleted to prevent us from maintaining the same user data nested withing session
+
+    setUserStore("user", user);
+    setUserStore("session", session);
+
+    queryClient.cancelQueries({ queryKey: ["admin"] });
+
+    const redirects = {
+      admin: "/admin",
+      customer: `/customer/${user.id}`,
+      professional: `/professional/${user.id}`,
+    };
+
+    navigate(redirects[user.category]);
   };
 
   onMount(async () => {
-    const storedSession = getStorageData("session");
-    const storedUser = getStorageData("user");
-
-    if (storedSession) {
-      console.log("use localStorage!");
-      setUserStore("user", storedUser);
-      setUserStore("session", storedSession);
-    } else {
-      const { session } = await fetchAuthState();
-      updateAuthState(session);
-    }
+    const { session } = await fetchAuthState();
+    updateAuthState(session);
     supabase.auth.onAuthStateChange(async (e, session) => updateAuthState(session));
   });
 
+  return <></>;
+};
+
+export default function Router() {
   const Protected = () => {
     return (
       <Show when={userStore.user?.id} fallback={<Navigate href="/login" />}>
@@ -113,6 +115,7 @@ export default function Router() {
 
         <Route path="/customer" component={Protected}>
           <Route path="/:id" component={Customer} />
+          <Route path="/:id/form" component={CustomerRegisterForm} />
         </Route>
 
         <Route path="/professional" component={Protected}>
@@ -121,6 +124,8 @@ export default function Router() {
 
         <Route path="/**" component={NotFound} />
       </Route>
+
+      <AuthStateHandler />
     </Routes>
   );
 }

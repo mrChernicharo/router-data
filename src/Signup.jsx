@@ -3,7 +3,7 @@ import { useRouteData, Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
-import { translateError } from "./lib/helpers";
+import { translateError } from "./lib/translations";
 
 import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 
@@ -16,15 +16,11 @@ import Loading from "./shared/Loading";
 export default function Signup() {
   let emailInputRef;
   let passwordInputRef;
-  let usernameInputRef;
   const [email, setEmail] = createSignal("felipe.chernicharo@gmail.com");
   const [password, setPassword] = createSignal("123123");
-  const [username, setUsername] = createSignal("Felipe");
   const [isLoading, setIsLoading] = createSignal(false);
 
-  const isDisabled = createMemo(
-    () => !email() || !password() || !username() || (emailInputRef && !emailInputRef.validity.valid)
-  );
+  const isDisabled = createMemo(() => !email() || !password() || (emailInputRef && !emailInputRef.validity.valid));
 
   // const registerMutation = createMutation(["staff"], person => insertProfessional(person));
 
@@ -34,11 +30,12 @@ export default function Signup() {
 
     setIsLoading(true);
 
-    const credentials = { email: email(), password: password(), username: username() };
+    const credentials = { email: email(), password: password() };
 
     const { data: authData, error: authErr } = await supabase.auth.signUp(credentials);
     if (authErr) {
       setIsLoading(false);
+      console.log({ authErr });
       return addToast({ message: translateError(authErr.message), status: "danger" });
     }
 
@@ -47,9 +44,10 @@ export default function Signup() {
 
     setIsLoading(false);
 
-    if (!res || res.code) {
+    if (!res || res?.code) {
+      console.log({ res });
       return addToast({
-        message: res.code ? translateError(res.message) : "Erro ao criar sua conta",
+        message: res?.code ? translateError(res?.message) : "Erro ao criar sua conta",
         status: "danger",
         duration: 4000,
       });
@@ -118,32 +116,11 @@ export default function Signup() {
                 />
               </div>
             </div>
-            <div class="rounded-md shadow-sm">
-              <div>
-                <label for="username" class="text-sm">
-                  Como devemos de chamar?
-                </label>
-                <input
-                  ref={usernameInputRef}
-                  id="username"
-                  name="username"
-                  type="text"
-                  // use:formControl={[email, setEmail]}
-                  value={username()}
-                  onInput={e => setUsername(e.currentTarget.value)}
-                  required
-                  class="input input-bordered input-primary w-full max-w-md bg-white"
-                  placeholder="Nome"
-                />
-              </div>
-            </div>
+
             <div class="pt-6">
               <button disabled={isDisabled()} class="btn btn-primary relative w-full">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <AiFillLock
-                    class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                    aria-hidden="true"
-                  />
+                  <AiFillLock class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
                 <div class="flex items-center">
                   <span>Criar conta</span> {isLoading() && <Loading small classes="ml-2" />}

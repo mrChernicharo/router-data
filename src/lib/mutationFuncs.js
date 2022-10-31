@@ -1,5 +1,6 @@
 import { supabase, channel /** supabaseAdmin */ } from "./supabaseClient";
-import { DEFAULT_PROFESSIONAL_AVAILABILITY, DEFAULT_CUSTOMER_AVAILABILITY, LAMBDA_URL } from "./constants";
+import { DEFAULT_PROFESSIONAL_AVAILABILITY, LAMBDA_URL } from "./constants";
+import { FULL_WEEK_AVAILABILITY, dateStrToDBDate } from "./helpers";
 
 const insertStaff = async ({ email, category }) => {
   console.log("insertStaff", { email, category });
@@ -37,29 +38,34 @@ const removeStaff = async person => {
   return { entry };
 };
 
-const createUser = async info => {
-  const { email, username, auth_id } = info;
+const createUser = async credentials => {
+  const { email, auth_id } = credentials;
+  console.log({ credentials });
 
   const { data: staffData, error: sErr } = await supabase.from("staff").select("*").eq("email", email);
+  if (sErr) {
+    console.log(sErr);
+    return sErr;
+  }
 
   const staff = staffData[0] ?? null;
 
-  console.log("createUser", { info, staff });
+  console.log("createUser", { credentials, staff });
 
   if (staff) {
     if (staff.category === "professional") {
-      const newProf = await insertProfessional({ name: username, email, auth_id });
+      const newProf = await insertProfessional({ email, auth_id });
       return newProf;
     }
     // professional | manager | admin
   } else {
     // customer
-    const newCustomer = await insertCustomer({ name: username, email, auth_id });
+    const newCustomer = await insertCustomer({ email, auth_id });
     return newCustomer;
   }
 };
 
-const insertProfessional = async ({ name, email, auth_id }) => {
+const insertProfessional = async ({  email, auth_id }) => {
   // console.log(auth_id ? "Professional Signup" : "Admin Created Professional");
 
   // if (!auth_id) {
@@ -67,7 +73,7 @@ const insertProfessional = async ({ name, email, auth_id }) => {
   //   auth_id = authData.user.id;
   // }
 
-  const { data, error } = await supabase.from("professionals").insert([{ name, email, auth_id }]).select();
+  const { data, error } = await supabase.from("professionals").insert([{ email, auth_id }]).select();
   if (error) return console.log(error);
 
   const professionalAvailability = DEFAULT_PROFESSIONAL_AVAILABILITY.map(o => ({
@@ -139,11 +145,7 @@ const removeProfessional = async id => {
   }
 
   // 4. delete professional!
-  const { data: deletedProfessional, error } = await supabase
-    .from("professionals")
-    .delete()
-    .match({ id })
-    .select();
+  const { data: deletedProfessional, error } = await supabase.from("professionals").delete().match({ id }).select();
   if (error) return console.log(error);
 
   console.log({
@@ -166,10 +168,11 @@ const removeProfessional = async id => {
 };
 
 const insertCustomer = async person => {
-  console.log(person.auth_id ? "Customer Signup" : "Admin Created Customer");
+  const isAdminCreated = !person.auth_id;
+  console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
 
-  if (!person.auth_id) {
-    const { data: authData } = await supabase.auth.signUp({ ...person, password: "chernicharo:admin" });
+  if (isAdminCreated) {
+    const { data: authData } = await supabase.auth.signUp({ ...person, password: "12345678" });
     person.auth_id = authData.user.id;
   }
 
@@ -177,7 +180,8 @@ const insertCustomer = async person => {
   if (error) return error;
 
   const customer = data[0];
-  const customerAvailability = DEFAULT_CUSTOMER_AVAILABILITY.map(o => ({
+
+  const customerAvailability = (isAdminCreated ? FULL_WEEK_AVAILABILITY : []).map(o => ({
     ...o,
     customer_id: customer.id,
     status: "1",
@@ -187,7 +191,7 @@ const insertCustomer = async person => {
     .from("customer_availability")
     .insert(customerAvailability)
     .select();
-  if (err2) return console.log(err2);
+  if (err2) return err2;
 
   console.log("addCustomer", { customer, availability });
 
@@ -245,17 +249,13 @@ const removeCustomer = async customer => {
   }
 
   // 5. delete user from auth.users
-  const res = await fetch(`${LAMBDA_URL()}/delete-customer`, {
+  const res = await fetch(`${LAMBDA_URL}/delete-customer`, {
     method: "POST",
     body: JSON.stringify({ customer }),
   });
 
   // 4. delete the damn customer!
-  const { data: deletedCustomer, error } = await supabase
-    .from("customers")
-    .delete()
-    .eq("id", customer.id)
-    .select();
+  const { data: deletedCustomer, error } = await supabase.from("customers").delete().eq("id", customer.id).select();
 
   const data = await res.json();
   console.log({ res, data, deletedCustomer });
@@ -281,6 +281,21 @@ const removeCustomer = async customer => {
   });
 
   // return deletedCustomer[0];
+};
+
+const updateCustomer = async (id, values) => {
+  console.log("updateCustomer", { id, values });
+  const { data, error } = await supabase
+    .from("customers")
+    .update({
+      ...values,
+      ...(values.date_of_birth && { date_of_birth: dateStrToDBDate(values.date_of_birth) }),
+    })
+    .eq("id", id);
+  if (error) return error;
+
+  console.log("updateCustomer", { data, error });
+  return data;
 };
 
 const createAppointmentOffers = async (customerId, offers) => {
@@ -322,6 +337,11 @@ const confirmOffer = async offer => {
     console.log({ error });
     throw new Error(error.message);
   }
+
+  channel.send({
+    type: "broadcast",
+    event: `${offer.professional_id}::appointments`,
+  });
 
   return { appointment };
 };
@@ -403,5 +423,6 @@ export {
   createAppointmentOffers,
   updatePersonAvailability,
   createUser,
+  updateCustomer,
   confirmOffer,
 };
