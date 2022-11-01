@@ -14,16 +14,16 @@ import { setUserStore, userStore } from "../lib/userStore";
 function NewCustomer(props) {
   return (
     <div data-component="NewCustomer" class="border m-2 p-2">
-      <h3>Boas vindas! 🎉</h3>
+      <h3 class="font-bold text-4xl">Boas vindas! 🎉</h3>
 
-      <p>É muito simples marcar uma consulta na aqui na laços!</p>
+      <p class="my-2">É muito simples marcar uma consulta na aqui na laços!</p>
 
-      <p class="">
-        Basta responder algumas perguntas pra gente te conhecer melhor que rapidinho a gente acha o profissional ideal
-        para você!
+      <p class="my-2">
+        Basta nos dizer algumas informações pra gente te conhecer melhor que rapidinho a gente acha o
+        profissional ideal para você!
       </p>
 
-      <p>Vamos começar?</p>
+      <p class="my-2">Vamos começar?</p>
 
       <Link href={`/customer/${props.customerId}/form`}>
         <button class="btn btn-accent" type="button">
@@ -39,7 +39,7 @@ function RegisteringCustomer(props) {
     <div data-component="RegisteringCustomer" class="border m-2 p-2">
       <h1>Quase lá!</h1>
 
-      <p class="">Faltam apenas alguns clicks para começar o seu tratamento</p>
+      <p class="my-2">Faltam apenas alguns clicks para começar o seu tratamento</p>
 
       <Link href={`/customer/${props.customerId}/form`}>
         <button class="btn btn-accent" type="button">
@@ -53,28 +53,27 @@ function RegisteringCustomer(props) {
 function RegisteredCustomer(props) {
   return (
     <div data-component="RegisteredCustomer" class="border m-2 p-2">
-      <h1>Cadastro Realizado!</h1>
-      <h3>Muito bem! 🎉</h3>
+      <h1 class="font-bold text-2xl">Cadastro Realizado! 🎉</h1>
 
-      <p>Entraremos em contato com você logo logo!</p>
+      <p class="my-2">Entraremos em contato com você logo logo!</p>
 
-      <p>Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.</p>
+      <p class="my-2">
+        Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.
+      </p>
 
-      <p>Obrigado por confiar na Laços!</p>
+      <p class="my-2">Obrigado por confiar na Laços!</p>
     </div>
   );
 }
 
 function CustomerOffers(props) {
   return (
-    <div data-component="CustomerOffers" class="border m-2 p-2">
-      <p>Temos o prazer de oferecer essas opções de consultas para você</p>
-
-      <p>
-        Agora é só escolher e o melhor horário e apertar o botão para confirmar seu primeiro atendimento e iniciar seu
-        tratamento na Clínica Laços!
-      </p>
-      <AppointmentOffers customer={props.customer} offers={props.customer.offers} onAccepted={props.onAccepted} />
+    <div data-component="CustomerOffers" class="border m-2">
+      <AppointmentOffers
+        customer={props.customer}
+        offers={props.customer.offers}
+        onAccepted={props.onAccepted}
+      />
     </div>
   );
 }
@@ -85,7 +84,8 @@ export default function Customer() {
   const params = useParams();
   const query = createQuery(
     () => ["customer", params.id],
-    () => fetchCustomerData(params.id)
+    () => fetchCustomerData(params.id),
+    { refetchOnMount: true }
   );
 
   channel.on("broadcast", { event: `${userStore.user.id}::appointment_offers_updated` }, () => {
@@ -105,7 +105,7 @@ export default function Customer() {
 
   const isNewCustomer = () => !query.data.customer.first_name;
   const hasStartedRegister = () => query.data.customer.first_name && !query.data.customer.availability.length;
-  const hasAvailability = () => query.data.customer.availability.length;
+  const isRegistered = () => query.data.customer.first_name && query.data.customer.availability.length;
   const hasOffers = () => query.data?.customer.offers.length;
   const hasAppointment = () => query.data?.customer.appointments.length;
 
@@ -132,7 +132,7 @@ export default function Customer() {
           </Show>
 
           {/* C */}
-          <Show when={hasAvailability() && !hasOffers() && !hasAppointment()}>
+          <Show when={isRegistered() && !hasOffers() && !hasAppointment()}>
             <RegisteredCustomer />
           </Show>
 
@@ -142,6 +142,7 @@ export default function Customer() {
               customer={query.data.customer}
               onAccepted={val => {
                 console.log("appointment created!", { val });
+                // queryClient.invalidateQueries(["customer", params.id]);
                 query.refetch();
               }}
             />

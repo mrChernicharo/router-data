@@ -78,7 +78,7 @@ export default function CustomerRegisterForm(props) {
 
     availabilityMutation.mutate(formStore.availability, {
       onSuccess: (data, variables, context) => {
-        console.log({ data, variables });
+        queryClient.invalidateQueries(["customer", params.id]);
 
         addToast({
           message: "Dados Cadastrados com sucesso!",
@@ -122,7 +122,9 @@ export default function CustomerRegisterForm(props) {
               disabled={isNextStepDisabled()}
               onClick={e => {
                 const isSame = {
-                  1: formStore.first_name === customer.first_name && formStore.last_name === customer.last_name,
+                  1:
+                    formStore.first_name === customer.first_name &&
+                    formStore.last_name === customer.last_name,
                   2: formStore.date_of_birth === customer.date_of_birth && formStore.phone === customer.phone,
                 };
 
