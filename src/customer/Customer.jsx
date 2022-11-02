@@ -19,8 +19,8 @@ function NewCustomer(props) {
       <p class="my-2">É muito simples marcar uma consulta na aqui na laços!</p>
 
       <p class="my-2">
-        Basta nos dizer algumas informações pra gente te conhecer melhor que rapidinho a gente acha o
-        profissional ideal para você!
+        Basta nos dizer algumas informações pra gente te conhecer melhor que rapidinho a gente acha o profissional ideal
+        para você!
       </p>
 
       <p class="my-2">Vamos começar?</p>
@@ -62,6 +62,12 @@ function RegisteredCustomer(props) {
       </p>
 
       <p class="my-2">Obrigado por confiar na Laços!</p>
+
+      <Link href={`/customer/${props.customerId}/form`}>
+        <button class="btn btn-accent" type="button">
+          Alterar dados
+        </button>
+      </Link>
     </div>
   );
 }
@@ -69,11 +75,7 @@ function RegisteredCustomer(props) {
 function CustomerOffers(props) {
   return (
     <div data-component="CustomerOffers" class="border m-2">
-      <AppointmentOffers
-        customer={props.customer}
-        offers={props.customer.offers}
-        onAccepted={props.onAccepted}
-      />
+      <AppointmentOffers customer={props.customer} offers={props.customer.offers} onAccepted={props.onAccepted} />
     </div>
   );
 }
@@ -133,7 +135,7 @@ export default function Customer() {
 
           {/* C */}
           <Show when={isRegistered() && !hasOffers() && !hasAppointment()}>
-            <RegisteredCustomer />
+            <RegisteredCustomer customerId={query.data.customer.id} />
           </Show>
 
           {/* D */}
@@ -143,6 +145,10 @@ export default function Customer() {
               onAccepted={val => {
                 console.log("appointment created!", { val });
                 // queryClient.invalidateQueries(["customer", params.id]);
+                channel.send({
+                  type: "broadcast",
+                  event: "new_appointment_created",
+                });
                 query.refetch();
               }}
             />

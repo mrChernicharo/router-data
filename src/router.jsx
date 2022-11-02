@@ -1,4 +1,4 @@
-import { lazy, createEffect, onMount, batch } from "solid-js";
+import { lazy, createEffect, onMount, batch, createSignal } from "solid-js";
 import { supabase } from "./lib/supabaseClient";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { Routes, Route, Navigate, Outlet, useNavigate, useLocation } from "solid-app-router";
@@ -11,7 +11,8 @@ import Layout from "./shared/Layout";
 import { setUserStore, userStore } from "./lib/userStore";
 import { fetchAuthState } from "./lib/fetchFuncs";
 import { addToast } from "./shared/Toast";
-import CustomerRegisterForm from "./customer/CustomerRegisterForm";
+import AuthStateHandler from "./shared/AuthStateHandler";
+import Loading from "./shared/Loading";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -23,73 +24,14 @@ const Customers = lazy(() => import("./admin/Customers"));
 const AppointmentRequests = lazy(() => import("./admin/Requests"));
 
 const Customer = lazy(() => import("./customer/Customer"));
+const CustomerRegisterForm = lazy(() => import("./customer/CustomerRegisterForm"));
+
 const Professional = lazy(() => import("./professional/Professional"));
-
-const AuthStateHandler = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const updateAuthState = async session => {
-    /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
-
-    console.log("updateAuthState");
-
-    if (!session) {
-      setUserStore("session", null);
-      setUserStore("user", null);
-      return;
-    }
-
-    const { data: staffData, error } = await supabase
-      .from("staff")
-      .select("*")
-      .eq("email", session.user.email);
-    const staff = staffData[0] ?? null;
-
-    let personData;
-    let table = staff ? "professionals" : "customers";
-
-    const { data: personD, error: err } = await supabase
-      .from(table)
-      .select("*")
-      .eq("email", session.user.email);
-    personData = personD[0];
-
-    const user = {
-      ...session.user,
-      ...personData,
-      ...(personData?.date_of_birth && { date_of_birth: DBDateToDateStr(personData.date_of_birth) }),
-      category: staff?.category ?? "customer",
-    };
-    delete session.user; // session.user is deleted to prevent us from maintaining the same user data nested withing session
-
-    setUserStore("user", user);
-    setUserStore("session", session);
-
-    queryClient.cancelQueries({ queryKey: ["admin"] });
-
-    const redirects = {
-      admin: "/admin",
-      customer: `/customer/${user.id}`,
-      professional: `/professional/${user.id}`,
-    };
-
-    navigate(redirects[user.category]);
-  };
-
-  onMount(async () => {
-    const { session } = await fetchAuthState();
-    updateAuthState(session);
-    supabase.auth.onAuthStateChange(async (e, session) => updateAuthState(session));
-  });
-
-  return <></>;
-};
 
 export default function Router() {
   const Protected = () => {
     return (
-      <Show when={userStore.user?.id} fallback={<Navigate href="/login" />}>
+      <Show when={userStore.user?.id} fallback={userStore.user ? <Loading /> : <Navigate href="/login" />}>
         <Outlet />
       </Show>
     );
@@ -124,8 +66,6 @@ export default function Router() {
 
         <Route path="/**" component={NotFound} />
       </Route>
-
-      <AuthStateHandler />
     </Routes>
   );
 }

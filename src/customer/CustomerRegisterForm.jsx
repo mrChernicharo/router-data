@@ -122,18 +122,13 @@ export default function CustomerRegisterForm(props) {
               disabled={isNextStepDisabled()}
               onClick={e => {
                 const isSame = {
-                  1:
-                    formStore.first_name === customer.first_name &&
-                    formStore.last_name === customer.last_name,
+                  1: formStore.first_name === customer.first_name && formStore.last_name === customer.last_name,
                   2: formStore.date_of_birth === customer.date_of_birth && formStore.phone === customer.phone,
                 };
 
                 const updateData = {
                   1: { first_name: formStore.first_name, last_name: formStore.last_name },
-                  2: {
-                    phone: formStore.phone,
-                    date_of_birth: formStore.date_of_birth,
-                  },
+                  2: { phone: formStore.phone, date_of_birth: formStore.date_of_birth },
                   3: null,
                   4: null,
                 };
@@ -260,15 +255,18 @@ export default function CustomerRegisterForm(props) {
   const FormComponents = [
     <FirstForm />,
     <SecondForm />,
-    <AvailabilityTable
-      canEdit
-      embedded
-      open
-      role="customer"
-      person={customer}
-      availability={customer?.availability ?? []}
-      onChange={values => setFormStore("availability", values)}
-    />,
+
+    <>
+      <AvailabilityTable
+        canEdit
+        embedded
+        open
+        role="customer"
+        person={customer}
+        availability={customer?.availability ?? []}
+        onChange={values => setFormStore("availability", values)}
+      />
+    </>,
     <Confirmation />,
   ];
 

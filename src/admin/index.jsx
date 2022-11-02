@@ -14,7 +14,7 @@ import { LAMBDA_URL } from "../lib/constants";
 export default function Admin() {
   const query = createQuery(() => ["admin"], fetchAdminData, {
     refetchOnWindowFocus: true,
-    refetchOnMount: false,
+    refetchOnMount: true,
     cacheTime: 20_000,
     staleTime: 10_000,
   });
@@ -30,20 +30,6 @@ export default function Admin() {
       description: "customers waiting",
     },
   ];
-
-  createEffect(async () => {
-    const res = await fetch(`${LAMBDA_URL}/chuck-norris`);
-    const chuckFn = await res.json();
-
-    console.log({ chuckFn });
-  });
-
-  createEffect(async () => {
-    const res = await fetch(`${LAMBDA_URL}/hello-world`);
-    const helloFn = await res.json();
-
-    console.log({ helloFn });
-  });
 
   return (
     <div data-component="Admin">

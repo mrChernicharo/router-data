@@ -1,4 +1,4 @@
-import { createMemo, createSignal } from "solid-js";
+import { createEffect, createMemo, createSignal } from "solid-js";
 import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser, FiX } from "solid-icons/fi";
 import { classss } from "../lib/helpers";
 import { FaSolidChevronDown } from "solid-icons/fa";
@@ -6,7 +6,8 @@ import { supabase } from "../lib/supabaseClient";
 import { addToast } from "./Toast";
 import { userStore } from "../lib/userStore";
 import Badge from "./Badge";
-import { useQueryClient } from "@tanstack/solid-query";
+import { createQuery, useQueryClient } from "@tanstack/solid-query";
+import { fetchAdminData } from "../lib/fetchFuncs";
 // import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
@@ -46,7 +47,8 @@ const navLinks = () => {
 };
 
 export default function Nav() {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
+  const query = createQuery(() => ["admin"], fetchAdminData);
 
   const userNavigation = [
     { name: "profile", title: "Perfil", href: "#", icon: <FiUser /> },
@@ -58,8 +60,8 @@ export default function Nav() {
   const [userMenuOpen, setUserMenuOpen] = createSignal(false);
   const [active, setActive] = createSignal("Home");
 
-  const showBadge = async () => {
-    return true;
+  const showBadge = () => {
+    return query?.data?.unattended_count > 0;
   };
 
   async function handleUserMenuClick(e, item) {
@@ -68,6 +70,7 @@ export default function Nav() {
       await supabase.auth.signOut();
       setMenuOpen(false);
       setUserMenuOpen(false);
+
       addToast({
         message: "até a próxima!",
         status: "info",
@@ -76,6 +79,10 @@ export default function Nav() {
 
     setUserMenuOpen(false);
   }
+
+  // createEffect(async () => {
+  //   console.log({ query });
+  // });
 
   return (
     <Show when={userStore.user}>

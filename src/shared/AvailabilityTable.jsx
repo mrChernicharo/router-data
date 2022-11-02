@@ -14,11 +14,7 @@ const AvailabilityTableWrapper = props => (
     <ListItem classes="p-4">
       <h4 class="font-bold text-xl">Disponibilidade</h4>
 
-      {props.collapsable ? (
-        <CollapseBox open={props.open}>{props.children}</CollapseBox>
-      ) : (
-        <div>{props.children}</div>
-      )}
+      {props.collapsable ? <CollapseBox open={props.open}>{props.children}</CollapseBox> : <div>{props.children}</div>}
     </ListItem>
   </div>
 );
@@ -31,10 +27,8 @@ export default function AvailabilityTable(props) {
   );
 
   const isChecked = (day, hour) => props.availability.find(av => av.time === hour && av.day === day);
-  const isBusy = (day, hour) =>
-    props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
-  const isBlocked = (day, hour) =>
-    day == 0 || (day == 6 && timeStrToMinutes(hour) > 900) || isBusy(day, hour);
+  const isBusy = (day, hour) => props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
+  const isBlocked = (day, hour) => day == 0 || (day == 6 && timeStrToMinutes(hour) > 900) || isBusy(day, hour);
   const hasAppointment = () => props.availability?.filter(av => av.status === "0").length > 0;
 
   const parseTimeBlocks = checkboxes =>
@@ -119,10 +113,7 @@ export default function AvailabilityTable(props) {
                     <For each={STR_NUM_WEEKDAYS}>
                       {weekday => (
                         <div
-                          class={classss(
-                            "p-[0.125rem] hover:bg-slate-200",
-                            isBusy(weekday, time) ? "bg-warning" : ""
-                          )}
+                          class={classss("p-[0.125rem] hover:bg-slate-200", isBusy(weekday, time) ? "bg-warning" : "")}
                         >
                           <label class="w-full flex justify-center items-center">
                             <input
