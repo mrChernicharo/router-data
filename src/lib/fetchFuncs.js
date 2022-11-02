@@ -210,6 +210,8 @@ const fetchProfessionalData = async id => {
   if (error) return console.log({ error });
 
   const professional = data[0];
+  professional.date_of_birth = professional.date_of_birth ? DBDateToDateStr(professional.date_of_birth) : '';
+
 
   if (!professional?.appointments?.length) return { professional };
 

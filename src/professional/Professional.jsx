@@ -21,14 +21,14 @@ function NewProfessional(props) {
     <div data-component="NewProfessional" class="border m-2 p-2">
       <h3 class="font-bold text-4xl">Boas vindas! 🎉</h3>
 
-      <p class="my-2">É muito simples marcar uma consulta na aqui na laços!</p>
+      <p class="my-2">Estamos muito contentes de ter você no nosso time!</p>
 
       <p class="my-2">
-        Basta nos dizer algumas informações pra gente te conhecer melhor que rapidinho a gente acha o profissional ideal
-        para você!
+        Precisamos agora que você informe alguns dados seus e em poucos minutos você já estará apto(a) a começar a
+        atender!
       </p>
 
-      <p class="my-2">Vamos começar?</p>
+      <p class="my-2">Vamos Lá?</p>
 
       <Link href={`/professional/${props.professionalId}/form`}>
         <button class="btn btn-accent" type="button">
@@ -44,7 +44,9 @@ function RegisteringProfessional(props) {
     <div data-component="RegisteringProfessional" class="border m-2 p-2">
       <h1>Quase lá!</h1>
 
-      <p class="my-2">Faltam apenas alguns clicks para começar o seu tratamento</p>
+      <p class="my-2">Faltam apenas alguns clicks para finalizar seu cadastro</p>
+
+      <p class="my-2">Aperte o botão para continuar</p>
 
       <Link href={`/professional/${props.professionalId}/form`}>
         <button class="btn btn-accent" type="button">
@@ -58,15 +60,13 @@ function RegisteringProfessional(props) {
 function RegisteredProfessional(props) {
   return (
     <div data-component="RegisteredProfessional" class="border m-2 p-2">
-      <h1 class="font-bold text-2xl">Cadastro Realizado! 🎉</h1>
+      <h1 class="font-bold text-2xl">Cadastro Finalizado! 🎉</h1>
 
-      <p class="my-2">Entraremos em contato com você logo logo!</p>
+      <p class="my-2">Agora você é oficialmente parte da Clínica Laços! Parabéns!</p>
 
-      <p class="my-2">
-        Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.
-      </p>
+      <p class="my-2">Suas informações estão devidamente cadastradas no nosso sistema.</p>
 
-      <p class="my-2">Obrigado por confiar na Laços!</p>
+      <p class="my-2">Agora é só ficar de olho no app que os seus novos pacientes vão aparecer!</p>
 
       <Link href={`/professional/${props.professionalId}/form`}>
         <button class="btn btn-accent" type="button">
@@ -89,7 +89,6 @@ export default function Professional() {
   const isNewProfessional = () => !query.data.professional.first_name;
   const hasStartedRegister = () => query.data.professional.first_name && !query.data.professional.availability.length;
   const isRegistered = () => query.data.professional.first_name && query.data.professional.availability.length;
-  // const hasOffers = () => query.data?.professional.offers.length;
   const hasAppointment = () => query.data?.professional.appointments.length;
 
   channel.on("broadcast", { event: `${userStore.user.id}::appointments` }, () => {

@@ -12,6 +12,8 @@ export const SATURDAY_MAX_HOUR = '15:00'
 
 export const STR_NUM_WEEKDAYS = ["0", "1", "2", "3", "4", "5", "6"];
 
+export const CUSTOMER_MINIMUM_AVAILABILITY_SLOTS = 3
+export const PROFESSIONAL_MINIMUM_AVAILABILITY_SLOTS = 6
 
 export const DEFAULT_PROFESSIONAL_AVAILABILITY = [
   { professional_id: "", day: 1, time: "09:30" },

@@ -287,8 +287,9 @@ export default function RegisterForm(props) {
 
   return (
     <div>
-      <h1>Register Form</h1>
-      <div>{`0${currStep()}`}</div>
+      <div>
+        {`0${currStep()}`}/{`0${FormComponents.length}`}
+      </div>
 
       <WizardShell>{FormComponents[currComponentIdx()]}</WizardShell>
 

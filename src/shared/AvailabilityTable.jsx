@@ -1,5 +1,9 @@
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { STR_NUM_WEEKDAYS } from "../lib/constants";
+import {
+  STR_NUM_WEEKDAYS,
+  CUSTOMER_MINIMUM_AVAILABILITY_SLOTS,
+  PROFESSIONAL_MINIMUM_AVAILABILITY_SLOTS,
+} from "../lib/constants";
 import { WORKING_HOURS, dateToWeekday, classss, timeStrToMinutes } from "../lib/helpers";
 import { updatePersonAvailability } from "../lib/mutationFuncs";
 import CollapseBox from "../shared/CollapseBox";
@@ -8,6 +12,7 @@ import { addToast } from "./Toast";
 import ListItem from "./ListItem";
 import Loading from "./Loading";
 import { createEffect, onMount } from "solid-js";
+import { userStore } from "../lib/userStore";
 
 const AvailabilityTableWrapper = props => (
   <div data-component="AvailabilityTableWrapper">
@@ -30,6 +35,11 @@ export default function AvailabilityTable(props) {
   const isBusy = (day, hour) => props.availability.find(av => av.time === hour && av.day === day)?.status === "0";
   const isBlocked = (day, hour) => day == 0 || (day == 6 && timeStrToMinutes(hour) > 900) || isBusy(day, hour);
   const hasAppointment = () => props.availability?.filter(av => av.status === "0").length > 0;
+
+  const MIN =
+    userStore.user.category === "customer"
+      ? CUSTOMER_MINIMUM_AVAILABILITY_SLOTS
+      : PROFESSIONAL_MINIMUM_AVAILABILITY_SLOTS;
 
   const parseTimeBlocks = checkboxes =>
     checkboxes.map(d => ({
@@ -57,7 +67,11 @@ export default function AvailabilityTable(props) {
   return (
     <div data-component="AvailabilityTable">
       <AvailabilityTableWrapper open={props.open} collapsable={props.collapsable}>
-        <p class="">Clique nas caixinhas dos horários em que você tem disponibilidade</p>
+        <p class="my-2">Clique nas caixinhas dos horários em que você tem disponibilidade</p>
+
+        <p class="font-bold my-2">Precisamos de no mínimo {MIN} horários</p>
+
+        <p class="my-2">Mas quanto mais, melhor!</p>
 
         <div class="pointer-events-none pr-5">
           <h4 class="font-bold text-right">Legenda</h4>
