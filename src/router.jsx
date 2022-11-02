@@ -1,18 +1,13 @@
 import { lazy, createEffect, onMount, batch, createSignal } from "solid-js";
 import { supabase } from "./lib/supabaseClient";
-import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { Routes, Route, Navigate, Outlet, useNavigate, useLocation } from "solid-app-router";
-
-import { getStorageData, setStorageData, DBDateToDateStr } from "./lib/helpers";
 
 import Home from "./Home";
 import NotFound from "./NotFound";
 import Layout from "./shared/Layout";
-import { setUserStore, userStore } from "./lib/userStore";
-import { fetchAuthState } from "./lib/fetchFuncs";
-import { addToast } from "./shared/Toast";
-import AuthStateHandler from "./shared/AuthStateHandler";
+import { userStore } from "./lib/userStore";
 import Loading from "./shared/Loading";
+import AppointmentsHistory from "./shared/AppointmentsHIstory";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -58,11 +53,13 @@ export default function Router() {
         <Route path="/customer" component={Protected}>
           <Route path="/:id" component={Customer} />
           <Route path="/:id/form" component={RegisterForm} />
+          <Route path="/:id/history" component={AppointmentsHistory} />
         </Route>
 
         <Route path="/professional" component={Protected}>
           <Route path="/:id" component={Professional} />
           <Route path="/:id/form" component={RegisterForm} />
+          <Route path="/:id/history" component={AppointmentsHistory} />
         </Route>
 
         <Route path="/**" component={NotFound} />

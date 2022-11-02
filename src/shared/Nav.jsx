@@ -31,14 +31,14 @@ const navLinks = () => {
     ],
     customer: [
       { name: "Home", title: "Home", href: `/customer/${id}` },
-      { name: "Appointments", title: "Consultas", href: "#" },
+      { name: "Appointments", title: "Histórico", href: `/customer/${id}/history` },
       { name: "Calendar", title: "Calendário", href: "#" },
     ],
     professional: [
       { name: "Home", title: "Home", href: `/professional/${id}` },
       { name: "Appointments", title: "Consultas", href: "#" },
       { name: "Patients", title: "Pacientes", href: "#" },
-      { name: "History", title: "Histórico", href: "#" },
+      { name: "History", title: "Histórico", href: `/professional/${id}/history` },
       { name: "Calendar", title: "Calendário", href: "#" },
     ],
   };

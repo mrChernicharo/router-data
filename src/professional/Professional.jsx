@@ -96,9 +96,6 @@ export default function Professional() {
     query.refetch();
   });
 
-  const getHistoryAppointments = appointments =>
-    appointments.filter(app => isPast(addMinutes(new Date(app.datetime), 30)));
-
   const getPatients = appointments =>
     [...new Set(appointments.map(app => `${app.customer.id}::${app.customer.first_name}::${app.customer.email}`))].map(
       p => {
@@ -170,19 +167,6 @@ export default function Professional() {
                   </ListItem>
                 )}
               </For>
-            </ul>
-          </CollapseBox>
-        </ListItem> */}
-
-        {/* <ListItem classes="p-4">
-          <h4 class="font-bold text-xl">Appointment History</h4>
-          <div>total: {getHistoryAppointments(query.data.professional.appointments).length} appointments</div>
-          <CollapseBox>
-            <ul>
-              <AppointmentList
-                role="professional"
-                appointments={getHistoryAppointments(query.data.professional.appointments)}
-              />
             </ul>
           </CollapseBox>
         </ListItem> */}
