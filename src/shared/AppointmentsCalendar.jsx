@@ -3,6 +3,7 @@ import CollapseBox from "./CollapseBox";
 import ListItem from "./ListItem";
 import Calendar from "./Calendar";
 import { isSameDay, format } from "date-fns";
+import { dateToWeekday } from "../lib/helpers";
 
 export default function AppointmentsCalendar(props) {
   const [selectedDate, setSelectedDate] = createSignal(null);
@@ -10,6 +11,9 @@ export default function AppointmentsCalendar(props) {
     props.person.appointments.filter(app => isSameDay(new Date(app.datetime), selectedDate()))
   );
   const person = createMemo(() => (props.role === "customer" ? "professional" : "customer"));
+
+  const dayAppointmentsText = () =>
+    selectedDate() ? `${dateToWeekday(selectedDate().getDay())} dia ${format(selectedDate(), "d")}` : "";
 
   return (
     <div data-component="AppointmentsCalendar">
@@ -24,7 +28,7 @@ export default function AppointmentsCalendar(props) {
 
           <div class="">
             <Show when={selectedDate()}>
-              <h3 class="pt-6 pb-2 font-semibold text-lg">{`Consultas do dia ${format(selectedDate(), "d")}`}</h3>
+              <h3 class="pt-6 pb-2 font-semibold text-lg">{dayAppointmentsText()}</h3>
 
               <div>
                 {!appointmentsInDay().length && <div class="text-info">Sem consultas nesse dia</div>}
@@ -32,7 +36,11 @@ export default function AppointmentsCalendar(props) {
                   {appointment => (
                     <ListItem>
                       <div class="p-2">
-                        <div>{appointment[person()].first_name}</div>
+                        <div>
+                          <p class="text-lg">
+                            {appointment[person()].first_name} {appointment[person()].last_name}
+                          </p>
+                        </div>
                         <div>{appointment.time}</div>
                       </div>
                     </ListItem>
@@ -46,16 +54,4 @@ export default function AppointmentsCalendar(props) {
       {/* <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre> */}
     </div>
   );
-}
-
-{
-  /* <button class="btn btn-ghost">day</button>
-      <button class="btn btn-ghost">week</button>
-      <button class="btn btn-ghost">month</button>
-
-      <div>{props.person.id}</div>
-      <div>{props.person.first_name}</div>
-      <div>{props.person.email}</div>
-     
-    */
 }

@@ -31,7 +31,7 @@ const navLinks = () => {
     customer: [
       { name: "Home", title: "Home", href: `/customer/${id}` },
       { name: "Appointments", title: "Histórico", href: `/customer/${id}/history` },
-      { name: "Calendar", title: "Calendário", href: "#" },
+      { name: "Calendar", title: "Calendário", href: `/customer/${id}/calendar` },
     ],
     professional: [
       { name: "Home", title: "Home", href: `/professional/${id}` },
