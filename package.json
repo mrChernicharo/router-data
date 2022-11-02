@@ -5,7 +5,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && echo '/* /index.html  200' | cat > dist/_redirects ",
     "serve": "vite preview",
     "dev:fns": "netlify functions:serve"
   },
