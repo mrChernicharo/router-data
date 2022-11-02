@@ -4,7 +4,7 @@ import { createQuery } from "@tanstack/solid-query";
 import Badge from "../shared/Badge";
 import Loading from "../shared/Loading";
 import Calendar from "../shared/Calendar";
-import { fetchAdminData } from "../lib/fetchFuncs";
+import { fetchAdminData, fetchAdminRequestsData } from "../lib/fetchFuncs";
 import { FaSolidChevronRight } from "solid-icons/fa";
 import { createEffect, onMount } from "solid-js";
 import { setUserStore, userStore } from "../lib/userStore";
@@ -12,7 +12,7 @@ import { supabase, getSupabaseAdmin } from "../lib/supabaseClient";
 import { LAMBDA_URL } from "../lib/constants";
 
 export default function Admin() {
-  const query = createQuery(() => ["admin"], fetchAdminData, {
+  const adminQuery = createQuery(() => ["admin"], fetchAdminData, {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     cacheTime: 20_000,
@@ -26,7 +26,7 @@ export default function Admin() {
     { title: "Total Users", value: data?.total_users_count, description: "total users" },
     {
       title: "Unattended Customers",
-      value: query.data?.unattended_count,
+      value: data?.unattended_count,
       description: "customers waiting",
     },
   ];
@@ -36,7 +36,7 @@ export default function Admin() {
       {/* Stats Cards */}
       <Suspense fallback={<Loading />}>
         <div class="flex gap-2 flex-wrap justify-center">
-          <For each={infoCards(query.data)}>
+          <For each={infoCards(adminQuery.data)}>
             {card => (
               <div class="stats shadow">
                 <div class="stat place-items-center bg-white">

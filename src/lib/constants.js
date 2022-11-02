@@ -43,5 +43,5 @@ export const ALL_TIMES = ['00:00', '00:30',
 
 export const DEFAULT_SLOT = { day: "1", start: "10:00", end: "16:00" };
 
-export const LAMBDA_URL =  import.meta.env.DEV ? `http://localhost:9999/.netlify/functions` : `https://paulin-contrib--lambent-vacherin-760b11.netlify.app/.netlify/functions`
+export const LAMBDA_URL =  import.meta.env.DEV ? `http://localhost:9999/.netlify/functions` : `${location.origin}/.netlify/functions`
 

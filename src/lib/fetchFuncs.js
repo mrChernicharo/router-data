@@ -82,9 +82,13 @@ const fetchStaffData = async () => {
 };
 
 const fetchAdminRequestsData = async () => {
-  const { data: customers, error } = await supabase.from("vw_appointment_request_page").select("*");
+  const { data: allCustomers, error } = await supabase.from("vw_appointment_request_page").select("*, availability:customer_availability (*)");
 
   if (error) return console.log({ error });
+
+  // customers without availability aren't ready to receive offers
+  const customers  = allCustomers.filter(c => c.availability.length);
+
   console.log("fetchAdminRequestsData", { customers });
   return { customers };
 };

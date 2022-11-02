@@ -17,27 +17,24 @@ const svgUrl = "/assets/done.svg";
 
 export default function AppointmentRequests(props) {
   const queryClient = useQueryClient();
-  const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
-    refetchOnMount: true,
-  });
+  const requestsData = queryClient.getQueryData(["appointment_requests"]);
 
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
     console.log("new_appointment_created!!!");
     queryClient.refetchQueries(["customer_request_availability"]);
-    query.refetch();
   });
 
-  const idleCustomers = () => query.data?.customers.filter(c => !c.has_appointment) ?? [];
+  const idleCustomers = () => requestsData.customers.filter(c => !c.has_appointment) ?? [];
 
   createEffect(() => {
-    console.log(query.data?.customers);
+    console.log(requestsData);
   });
 
   return (
     <div data-component="AppointmentRequests">
-      {query.isLoading && <Loading large />}
+      {requestsData.isLoading && <Loading large />}
 
-      <Show when={!query.isLoading && idleCustomers().length === 0}>
+      <Show when={!requestsData.isLoading && idleCustomers().length === 0}>
         <div class="flex flex-col items-center justify-center">
           <h1 class="font-semibold text-2xl">Tudo certo!</h1>
           <p class="my-4">Nenhum cliente novo até o momento...</p>

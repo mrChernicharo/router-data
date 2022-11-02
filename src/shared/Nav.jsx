@@ -6,8 +6,8 @@ import { addToast } from "./Toast";
 import { userStore } from "../lib/userStore";
 import Badge from "./Badge";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
-import { fetchAdminData } from "../lib/fetchFuncs";
 import { useLocation, useParams } from "solid-app-router";
+import { fetchAdminData, fetchAdminRequestsData } from "../lib/fetchFuncs";
 
 const user = {
   name: "Tom Cook",
@@ -45,9 +45,10 @@ const navLinks = () => {
 };
 
 export default function Nav() {
-  // const queryClient = useQueryClient();
-  const query = createQuery(() => ["admin"], fetchAdminData);
   const location = useLocation();
+  const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
+    refetchOnMount: true,
+  });
 
   const userNavigation = [
     { name: "profile", title: "Perfil", href: "#", icon: <FiUser /> },
@@ -59,9 +60,10 @@ export default function Nav() {
   const [userMenuOpen, setUserMenuOpen] = createSignal(false);
 
   const active = () => parseActiveLink(location.pathname);
+  const isActive = item => active() === item.title;
 
   const showBadge = () => {
-    return query?.data?.unattended_count > 0;
+    return query?.data?.customers.some(c => c.is_unattended && c.availability?.length);
   };
 
   async function handleUserMenuClick(e, item) {
@@ -81,7 +83,7 @@ export default function Nav() {
   }
 
   createEffect(() => {
-    console.log({ active: active() });
+    console.log({ d: query.data });
   });
 
   return (
@@ -99,12 +101,12 @@ export default function Nav() {
                       <a
                         href={item.href}
                         class={classss(
-                          item.title === active()
+                          isActive(item)
                             ? "bg-gray-900 text-white"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "px-3 py-2 rounded-md text-sm font-medium"
                         )}
-                        aria-current={item.title === active() ? "page" : undefined}
+                        aria-current={isActive(item) ? "page" : undefined}
                         onClick={e => {}}
                       >
                         {item.name === "Requests" &&
@@ -187,12 +189,10 @@ export default function Nav() {
                   <a
                     href={item.href}
                     class={classss(
-                      item.title === active()
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      isActive(item) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
                       "block px-3 py-2 rounded-md text-base font-medium"
                     )}
-                    aria-current={item.title === active() ? "page" : undefined}
+                    aria-current={isActive(item) ? "page" : undefined}
                     onClick={e => {
                       setMenuOpen(false);
                     }}
