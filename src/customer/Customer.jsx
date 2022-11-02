@@ -91,17 +91,12 @@ export default function Customer() {
   );
 
   channel.on("broadcast", { event: `${userStore.user.id}::appointment_offers_updated` }, () => {
-    // console.log({ event: `${userId()}::appointment_offers_updated` });
-    // queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
   channel.on("broadcast", { event: "person_availability_updated" }, payload => {
-    // console.log("[AppointmentRequests]", "PERSON_availability_updated", { queryClient });
-    // queryClient.invalidateQueries(["customer"]);
     query.refetch();
   });
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
-    // console.log("new_appointment_created!!!");
     query.refetch();
   });
 

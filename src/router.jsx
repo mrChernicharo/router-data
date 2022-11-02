@@ -62,6 +62,7 @@ export default function Router() {
 
         <Route path="/professional" component={Protected}>
           <Route path="/:id" component={Professional} />
+          <Route path="/:id/form" component={RegisterForm} />
         </Route>
 
         <Route path="/**" component={NotFound} />

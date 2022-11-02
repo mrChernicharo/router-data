@@ -102,12 +102,7 @@ export const organizeAvailabilities = availabilities => {
 };
 
 export const parseActiveLink = path => {
-  console.log({ path });
-  switch (path) {
-    case "/admin":
-    case "/customer":
-    case "/professional":
-      return "Home";
+  switch (true) {
     case "/admin/professionals":
       return "Profissionais";
     case "/admin/customers":
@@ -116,5 +111,10 @@ export const parseActiveLink = path => {
       return "Membros";
     case "/admin/requests":
       return "Requisições";
+    case "/admin":
+    case /\/customer\/.+/.test(path):
+    case /\/professional\/.+/.test(path):
+    default:
+      return "Home";
   }
 };

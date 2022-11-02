@@ -13,17 +13,89 @@ import { fetchProfessionalData } from "../lib/fetchFuncs";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { imageUrl } from "../lib/constants";
 import ListItem from "../shared/ListItem";
+import { userStore } from "../lib/userStore";
+import { createEffect } from "solid-js";
+
+function NewProfessional(props) {
+  return (
+    <div data-component="NewProfessional" class="border m-2 p-2">
+      <h3 class="font-bold text-4xl">Boas vindas! 🎉</h3>
+
+      <p class="my-2">É muito simples marcar uma consulta na aqui na laços!</p>
+
+      <p class="my-2">
+        Basta nos dizer algumas informações pra gente te conhecer melhor que rapidinho a gente acha o profissional ideal
+        para você!
+      </p>
+
+      <p class="my-2">Vamos começar?</p>
+
+      <Link href={`/professional/${props.professionalId}/form`}>
+        <button class="btn btn-accent" type="button">
+          Aperte o botão para começar
+        </button>
+      </Link>
+    </div>
+  );
+}
+
+function RegisteringProfessional(props) {
+  return (
+    <div data-component="RegisteringProfessional" class="border m-2 p-2">
+      <h1>Quase lá!</h1>
+
+      <p class="my-2">Faltam apenas alguns clicks para começar o seu tratamento</p>
+
+      <Link href={`/professional/${props.professionalId}/form`}>
+        <button class="btn btn-accent" type="button">
+          Finalizar Cadastro
+        </button>
+      </Link>
+    </div>
+  );
+}
+
+function RegisteredProfessional(props) {
+  return (
+    <div data-component="RegisteredProfessional" class="border m-2 p-2">
+      <h1 class="font-bold text-2xl">Cadastro Realizado! 🎉</h1>
+
+      <p class="my-2">Entraremos em contato com você logo logo!</p>
+
+      <p class="my-2">
+        Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.
+      </p>
+
+      <p class="my-2">Obrigado por confiar na Laços!</p>
+
+      <Link href={`/professional/${props.professionalId}/form`}>
+        <button class="btn btn-accent" type="button">
+          Alterar dados
+        </button>
+      </Link>
+    </div>
+  );
+}
 
 export default function Professional() {
   const location = useLocation();
   const params = useParams();
   const query = createQuery(
     () => ["professional", params.id],
-    () => fetchProfessionalData(params.id)
+    () => fetchProfessionalData(params.id),
+    { refetchOnMount: true }
   );
 
-  const isAdmin = () => location.pathname.split("/").filter(Boolean)[0] === "admin";
-  const userId = () => location.pathname.split("/")[2];
+  const isNewProfessional = () => !query.data.professional.first_name;
+  const hasStartedRegister = () => query.data.professional.first_name && !query.data.professional.availability.length;
+  const isRegistered = () => query.data.professional.first_name && query.data.professional.availability.length;
+  // const hasOffers = () => query.data?.professional.offers.length;
+  const hasAppointment = () => query.data?.professional.appointments.length;
+
+  channel.on("broadcast", { event: `${userStore.user.id}::appointments` }, () => {
+    console.log({ event: `${userStore.user.id}::appointments` });
+    query.refetch();
+  });
 
   const getHistoryAppointments = appointments =>
     appointments.filter(app => isPast(addMinutes(new Date(app.datetime), 30)));
@@ -37,35 +109,51 @@ export default function Professional() {
       }
     );
 
-  channel.on("broadcast", { event: `${userId()}::appointments` }, () => {
-    console.log({ event: `${userId()}::appointments` });
-    query.refetch();
+  createEffect(() => {
+    console.log(query.data);
   });
 
   return (
     <div data-component="Professional">
-      <Show when={query.data?.professional} fallback={<Loading />}>
+      <Show when={query.data} fallback={<Loading />}>
         <h1 class="font-bold text-5xl">{query.data.professional.first_name}</h1>
         <div class="mb-5">{query.data.professional.email}</div>
 
-        <AvailabilityTable
+        <div class="main-panel">
+          {/* A */}
+          <Show when={isNewProfessional()}>
+            <NewProfessional professionalId={query.data.professional.id} />
+          </Show>
+
+          {/* B */}
+          <Show when={hasStartedRegister()}>
+            <RegisteringProfessional professionalId={query.data.professional.id} />
+          </Show>
+
+          {/* C */}
+          <Show when={isRegistered() && !hasAppointment()}>
+            <RegisteredProfessional professionalId={query.data.professional.id} />
+          </Show>
+        </div>
+
+        {/* <AvailabilityTable
           role="professional"
           canEdit={!isAdmin()}
           collapsable
           onChange={val => {}}
           person={query.data.professional}
           availability={query.data.professional.availability}
-        />
+        /> */}
 
-        <AppointmentsCalendar
+        {/* <AppointmentsCalendar
           role="professional"
           canEdit={!isAdmin()}
           person={query.data.professional}
           availability={query.data.professional.availability}
           appointments={query.data.professional.appointments}
-        />
+        /> */}
 
-        <ListItem classes="p-4">
+        {/* <ListItem classes="p-4">
           <h4 class="font-bold text-xl">Pacientes</h4>
           <div>{getPatients(query.data.professional.appointments).length} patients</div>
           <CollapseBox>
@@ -85,9 +173,9 @@ export default function Professional() {
               </For>
             </ul>
           </CollapseBox>
-        </ListItem>
+        </ListItem> */}
 
-        <ListItem classes="p-4">
+        {/* <ListItem classes="p-4">
           <h4 class="font-bold text-xl">Appointment History</h4>
           <div>total: {getHistoryAppointments(query.data.professional.appointments).length} appointments</div>
           <CollapseBox>
@@ -98,7 +186,7 @@ export default function Professional() {
               />
             </ul>
           </CollapseBox>
-        </ListItem>
+        </ListItem> */}
 
         {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
       </Show>

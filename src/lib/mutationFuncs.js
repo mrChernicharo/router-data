@@ -65,20 +65,21 @@ const createUser = async credentials => {
   }
 };
 
-const insertProfessional = async ({  email, auth_id }) => {
-  // console.log(auth_id ? "Professional Signup" : "Admin Created Professional");
+const insertProfessional = async ({ email, auth_id }) => {
+  const isAdminCreated = !auth_id;
+  console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
 
-  // if (!auth_id) {
-  //   const { data: authData } = await supabase.auth.signUp({ email, password: 'chernicharo:admin' });
-  //   auth_id = authData.user.id;
-  // }
+  if (isAdminCreated) {
+    const { data: authData } = await supabase.auth.signUp({ ...person, password: "12345678" });
+    person.auth_id = authData.user.id;
+  }
 
   const { data, error } = await supabase.from("professionals").insert([{ email, auth_id }]).select();
   if (error) return console.log(error);
 
-  const professionalAvailability = DEFAULT_PROFESSIONAL_AVAILABILITY.map(o => ({
+  const professionalAvailability = (isAdminCreated ? FULL_WEEK_AVAILABILITY : []).map(o => ({
     ...o,
-    professional_id: data[0].id,
+    customer_id: customer.id,
     status: "1",
   }));
 
@@ -298,6 +299,21 @@ const updateCustomer = async (id, values) => {
   return data;
 };
 
+const updateProfessional = async (id, values) => {
+  console.log("updateProfessional", { id, values });
+  const { data, error } = await supabase
+    .from("professionals")
+    .update({
+      ...values,
+      ...(values.date_of_birth && { date_of_birth: dateStrToDBDate(values.date_of_birth) }),
+    })
+    .eq("id", id);
+  if (error) return error;
+
+  console.log("updateProfessional", { data, error });
+  return data;
+};
+
 const createAppointmentOffers = async (customerId, offers) => {
   // if (!offers.length) {
   //   return console.log("createAppointmentOffers with no offers! Abort it", { offers, customerId });
@@ -424,5 +440,6 @@ export {
   updatePersonAvailability,
   createUser,
   updateCustomer,
+  updateProfessional,
   confirmOffer,
 };

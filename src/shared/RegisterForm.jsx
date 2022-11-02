@@ -3,7 +3,7 @@ import { createStore } from "solid-js/store";
 import { setUserStore, userStore } from "../lib/userStore";
 import { FiChevronLeft, FiChevronRight, FiCheck } from "solid-icons/fi";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { updateCustomer, updatePersonAvailability } from "../lib/mutationFuncs";
+import { updateCustomer, updateProfessional, updatePersonAvailability } from "../lib/mutationFuncs";
 
 import AvailabilityTable from "./AvailabilityTable";
 import { Navigate, useParams, useRouteData, useRoutes, useNavigate } from "solid-app-router";
@@ -26,14 +26,26 @@ export default function RegisterForm(props) {
   const navigate = useNavigate();
   const params = useParams();
   const { customer } = queryClient.getQueryData(["customer", params.id]) ?? {};
-  const updateMutation = createMutation(["customer", params.id], values => updateCustomer(params.id, values));
-  const availabilityMutation = createMutation(["customer_availability", params.id], newAvailability =>
-    updatePersonAvailability(customer, "customer", newAvailability)
-  );
+  const { professional } = queryClient.getQueryData(["professional", params.id]) ?? {};
+  const person = customer || professional;
+  const category = userStore.user.category;
+
+  console.log({ customer, professional, person });
+
+  const updateMutation = customer
+    ? createMutation(["customer", params.id], values => updateCustomer(params.id, values))
+    : createMutation(["professional", params.id], values => updateProfessional(params.id, values));
+
+  const availabilityMutation = customer
+    ? createMutation(["customer_availability", params.id], newAvailability =>
+        updatePersonAvailability(customer, "customer", newAvailability)
+      )
+    : createMutation(["professional_availability", params.id], newAvailability =>
+        updatePersonAvailability(professional, "professional", newAvailability)
+      );
 
   const [currStep, setCurrStep] = createSignal(1);
   const [formStore, setFormStore] = createStore({});
-  const isCustomer = () => userStore.user.category === "customer";
 
   const next = () => currStep() < FormComponents.length && setCurrStep(prev => prev + 1);
   const back = () => currStep() > 1 && setCurrStep(prev => prev - 1);
@@ -59,11 +71,11 @@ export default function RegisterForm(props) {
   onMount(() => {
     console.log("onMount", { customer });
     setFormStore({
-      first_name: customer?.first_name ?? "",
-      last_name: customer?.last_name ?? "",
-      date_of_birth: customer?.date_of_birth ?? "",
-      phone: customer?.phone ?? "",
-      availability: customer?.availability || [],
+      first_name: person?.first_name ?? "",
+      last_name: person?.last_name ?? "",
+      date_of_birth: person?.date_of_birth ?? "",
+      phone: person?.phone ?? "",
+      availability: person?.availability || [],
     });
   });
 
@@ -74,20 +86,25 @@ export default function RegisterForm(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("handleSubmit", { formStore, customer });
+    console.log("handleSubmit", { formStore, person });
 
     availabilityMutation.mutate(formStore.availability, {
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(["customer", params.id]);
+        queryClient.invalidateQueries([userStore.user.category, params.id]);
 
         addToast({
           message: "Dados Cadastrados com sucesso!",
           status: "success",
         });
 
-        const back = isCustomer() ? `/customer/${params.id}` : `/admin/customers/${params.id}`;
+        const back = {
+          customer: `/customer/${params.id}`,
+          professional: `/professional/${params.id}`,
+          manager: `admin/customers/${params.id}`, // THIS NEEDS IMPROVEMENT!
+          admin: `admin/customers/${params.id}`,
+        };
 
-        navigate(back);
+        navigate(back[category]);
       },
       onError: err => {
         addToast({
@@ -122,8 +139,8 @@ export default function RegisterForm(props) {
               disabled={isNextStepDisabled()}
               onClick={e => {
                 const isSame = {
-                  1: formStore.first_name === customer.first_name && formStore.last_name === customer.last_name,
-                  2: formStore.date_of_birth === customer.date_of_birth && formStore.phone === customer.phone,
+                  1: formStore.first_name === person.first_name && formStore.last_name === person.last_name,
+                  2: formStore.date_of_birth === person.date_of_birth && formStore.phone === person.phone,
                 };
 
                 const updateData = {
@@ -138,9 +155,7 @@ export default function RegisterForm(props) {
                 if (noNeedToUpdate) return next();
 
                 updateMutation.mutate(updateData[currStep()], {
-                  onSuccess: (data, variables, context) => {
-                    next();
-                  },
+                  onSuccess: (data, variables, context) => next(),
                 });
               }}
             >
@@ -261,9 +276,9 @@ export default function RegisterForm(props) {
         canEdit
         embedded
         open
-        role="customer"
-        person={customer}
-        availability={customer?.availability ?? []}
+        role={userStore.user.category}
+        person={customer || professional}
+        availability={customer?.availability || professional?.availability || []}
         onChange={values => setFormStore("availability", values)}
       />
     </>,
