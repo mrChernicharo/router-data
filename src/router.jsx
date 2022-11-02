@@ -8,6 +8,9 @@ import Layout from "./shared/Layout";
 import { userStore } from "./lib/userStore";
 import Loading from "./shared/Loading";
 import AppointmentsHistory from "./shared/AppointmentsHIstory";
+import Patients from "./professional/Patients";
+
+import ProfessionalCalendar from "./professional/ProfessionalCalendar";
 
 const Login = lazy(() => import("./Login"));
 const Signup = lazy(() => import("./Signup"));
@@ -60,6 +63,8 @@ export default function Router() {
           <Route path="/:id" component={Professional} />
           <Route path="/:id/form" component={RegisterForm} />
           <Route path="/:id/history" component={AppointmentsHistory} />
+          <Route path="/:id/patients" component={Patients} />
+          <Route path="/:id/calendar" component={ProfessionalCalendar} />
         </Route>
 
         <Route path="/**" component={NotFound} />

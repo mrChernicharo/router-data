@@ -8,7 +8,6 @@ import Badge from "./Badge";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { fetchAdminData } from "../lib/fetchFuncs";
 import { useLocation, useParams } from "solid-app-router";
-// import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
   name: "Tom Cook",
@@ -36,10 +35,9 @@ const navLinks = () => {
     ],
     professional: [
       { name: "Home", title: "Home", href: `/professional/${id}` },
-      { name: "Appointments", title: "Consultas", href: "#" },
-      { name: "Patients", title: "Pacientes", href: "#" },
+      { name: "Patients", title: "Pacientes", href: `/professional/${id}/patients` },
       { name: "History", title: "Histórico", href: `/professional/${id}/history` },
-      { name: "Calendar", title: "Calendário", href: "#" },
+      { name: "Calendar", title: "Calendário", href: `/professional/${id}/calendar` },
     ],
   };
 

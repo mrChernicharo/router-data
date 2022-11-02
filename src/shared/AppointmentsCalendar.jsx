@@ -16,34 +16,32 @@ export default function AppointmentsCalendar(props) {
       <ListItem classes="p-4">
         <h4 class="font-bold text-xl">Consultas</h4>
 
-        <CollapseBox>
-          <div class="sm:grid grid-cols-2">
-            {/* Calendar */}
-            <div class="">
-              <Calendar onDateSelected={setSelectedDate} appointments={props.person.appointments} />
-            </div>
-
-            <div class="">
-              <Show when={selectedDate()}>
-                <h3 class="pt-6 pb-2 font-semibold text-lg">{`Consultas do dia ${format(selectedDate(), "d")}`}</h3>
-
-                <div>
-                  {!appointmentsInDay().length && <div class="text-info">Sem consultas nesse dia</div>}
-                  <For each={appointmentsInDay()}>
-                    {appointment => (
-                      <ListItem>
-                        <div class="p-2">
-                          <div>{appointment[person()].first_name}</div>
-                          <div>{appointment.time}</div>
-                        </div>
-                      </ListItem>
-                    )}
-                  </For>
-                </div>
-              </Show>
-            </div>
+        <div class="sm:grid grid-cols-2">
+          {/* Calendar */}
+          <div class="">
+            <Calendar onDateSelected={setSelectedDate} appointments={props.person.appointments} />
           </div>
-        </CollapseBox>
+
+          <div class="">
+            <Show when={selectedDate()}>
+              <h3 class="pt-6 pb-2 font-semibold text-lg">{`Consultas do dia ${format(selectedDate(), "d")}`}</h3>
+
+              <div>
+                {!appointmentsInDay().length && <div class="text-info">Sem consultas nesse dia</div>}
+                <For each={appointmentsInDay()}>
+                  {appointment => (
+                    <ListItem>
+                      <div class="p-2">
+                        <div>{appointment[person()].first_name}</div>
+                        <div>{appointment.time}</div>
+                      </div>
+                    </ListItem>
+                  )}
+                </For>
+              </div>
+            </Show>
+          </div>
+        </div>
       </ListItem>
       {/* <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre> */}
     </div>

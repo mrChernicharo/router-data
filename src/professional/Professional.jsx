@@ -11,7 +11,6 @@ import AvailabilityTable from "../shared/AvailabilityTable";
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
-import { imageUrl } from "../lib/constants";
 import ListItem from "../shared/ListItem";
 import { userStore } from "../lib/userStore";
 import { createEffect } from "solid-js";
@@ -78,7 +77,6 @@ function RegisteredProfessional(props) {
 }
 
 export default function Professional() {
-  const location = useLocation();
   const params = useParams();
   const query = createQuery(
     () => ["professional", params.id],
@@ -95,15 +93,6 @@ export default function Professional() {
     console.log({ event: `${userStore.user.id}::appointments` });
     query.refetch();
   });
-
-  const getPatients = appointments =>
-    [...new Set(appointments.map(app => `${app.customer.id}::${app.customer.first_name}::${app.customer.email}`))].map(
-      p => {
-        const info = p.split("::");
-        const [id, first_name, email] = [info[0], info[1], info[2]];
-        return { id, first_name, email };
-      }
-    );
 
   createEffect(() => {
     console.log(query.data);
@@ -148,28 +137,6 @@ export default function Professional() {
           availability={query.data.professional.availability}
           appointments={query.data.professional.appointments}
         /> */}
-
-        {/* <ListItem classes="p-4">
-          <h4 class="font-bold text-xl">Pacientes</h4>
-          <div>{getPatients(query.data.professional.appointments).length} patients</div>
-          <CollapseBox>
-            <ul>
-              <For each={getPatients(query.data.professional.appointments)}>
-                {patient => (
-                  <ListItem classes="w-[80%]">
-                    <div class="flex items-center p-4">
-                      <img src={imageUrl} alt="" class="h-10 w-10 flex-none rounded-full" />
-                      <div class="ml-4 flex-auto">
-                        <div class="font-medium">{patient.first_name}</div>
-                        <div class="mt-1 text-slate-700">{patient.email}</div>
-                      </div>
-                    </div>
-                  </ListItem>
-                )}
-              </For>
-            </ul>
-          </CollapseBox>
-        </ListItem> */}
 
         {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
       </Show>
