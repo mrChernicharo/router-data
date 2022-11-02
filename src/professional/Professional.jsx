@@ -52,6 +52,7 @@ export default function Professional() {
           role="professional"
           canEdit={!isAdmin()}
           collapsable
+          onChange={val => {}}
           person={query.data.professional}
           availability={query.data.professional.availability}
         />

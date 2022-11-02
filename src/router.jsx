@@ -24,7 +24,7 @@ const Customers = lazy(() => import("./admin/Customers"));
 const AppointmentRequests = lazy(() => import("./admin/Requests"));
 
 const Customer = lazy(() => import("./customer/Customer"));
-const CustomerRegisterForm = lazy(() => import("./customer/CustomerRegisterForm"));
+const RegisterForm = lazy(() => import("./shared/RegisterForm"));
 
 const Professional = lazy(() => import("./professional/Professional"));
 
@@ -57,7 +57,7 @@ export default function Router() {
 
         <Route path="/customer" component={Protected}>
           <Route path="/:id" component={Customer} />
-          <Route path="/:id/form" component={CustomerRegisterForm} />
+          <Route path="/:id/form" component={RegisterForm} />
         </Route>
 
         <Route path="/professional" component={Protected}>

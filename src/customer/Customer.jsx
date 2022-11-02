@@ -174,6 +174,7 @@ export default function Customer() {
         <AvailabilityTable
           role="customer"
           canEdit
+          onChange={val => {}}
           collapsable
           person={query.data.customer}
           availability={query.data.customer.availability}

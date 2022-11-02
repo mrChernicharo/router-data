@@ -82,8 +82,6 @@ export const classss = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
 
-
-
 export const getStorageData = key => JSON.parse(localStorage.getItem(key));
 
 export const setStorageData = (key, value) => localStorage.setItem(key, JSON.stringify(value));
@@ -101,4 +99,22 @@ export const organizeAvailabilities = availabilities => {
   // console.log("organizeAvailabilities", [...availabilities], avObj);
 
   return avObj;
+};
+
+export const parseActiveLink = path => {
+  console.log({ path });
+  switch (path) {
+    case "/admin":
+    case "/customer":
+    case "/professional":
+      return "Home";
+    case "/admin/professionals":
+      return "Profissionais";
+    case "/admin/customers":
+      return "Clientes";
+    case "/admin/staff":
+      return "Membros";
+    case "/admin/requests":
+      return "Requisições";
+  }
 };

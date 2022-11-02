@@ -17,15 +17,6 @@ export default function Header(props) {
 
   createEffect(() => {
     console.log("ROUTER LOG", location.pathname);
-
-    // if (
-    //   userStore?.user?.id &&
-    //   location.pathname !== "/" &&
-    //   location.pathname !== "/login" &&
-    //   location.pathname !== "/signup" &&
-    //   !/form/g.test(location.pathname)
-    // )
-    //   setStorageData("last-visited", location.pathname);
   });
 
   createEffect(() => {

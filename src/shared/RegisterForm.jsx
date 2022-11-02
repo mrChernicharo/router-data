@@ -5,7 +5,7 @@ import { FiChevronLeft, FiChevronRight, FiCheck } from "solid-icons/fi";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { updateCustomer, updatePersonAvailability } from "../lib/mutationFuncs";
 
-import AvailabilityTable from "../shared/AvailabilityTable";
+import AvailabilityTable from "./AvailabilityTable";
 import { Navigate, useParams, useRouteData, useRoutes, useNavigate } from "solid-app-router";
 import { t } from "../lib/translations";
 import {
@@ -18,10 +18,10 @@ import {
 } from "../lib/helpers";
 import { handleDateInput, normalizeDateStr } from "../lib/dateInputHelpers";
 import { isDate } from "date-fns";
-import Loading from "../shared/Loading";
-import { addToast } from "../shared/Toast";
+import Loading from "./Loading";
+import { addToast } from "./Toast";
 
-export default function CustomerRegisterForm(props) {
+export default function RegisterForm(props) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();

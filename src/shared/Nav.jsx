@@ -1,13 +1,13 @@
 import { createEffect, createMemo, createSignal } from "solid-js";
 import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser, FiX } from "solid-icons/fi";
-import { classss } from "../lib/helpers";
-import { FaSolidChevronDown } from "solid-icons/fa";
+import { classss, parseActiveLink } from "../lib/helpers";
 import { supabase } from "../lib/supabaseClient";
 import { addToast } from "./Toast";
 import { userStore } from "../lib/userStore";
 import Badge from "./Badge";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
 import { fetchAdminData } from "../lib/fetchFuncs";
+import { useLocation, useParams } from "solid-app-router";
 // import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const user = {
@@ -49,6 +49,7 @@ const navLinks = () => {
 export default function Nav() {
   // const queryClient = useQueryClient();
   const query = createQuery(() => ["admin"], fetchAdminData);
+  const location = useLocation();
 
   const userNavigation = [
     { name: "profile", title: "Perfil", href: "#", icon: <FiUser /> },
@@ -58,7 +59,8 @@ export default function Nav() {
 
   const [menuOpen, setMenuOpen] = createSignal(false);
   const [userMenuOpen, setUserMenuOpen] = createSignal(false);
-  const [active, setActive] = createSignal("Home");
+
+  const active = () => parseActiveLink(location.pathname);
 
   const showBadge = () => {
     return query?.data?.unattended_count > 0;
@@ -80,9 +82,9 @@ export default function Nav() {
     setUserMenuOpen(false);
   }
 
-  // createEffect(async () => {
-  //   console.log({ query });
-  // });
+  createEffect(() => {
+    console.log({ active: active() });
+  });
 
   return (
     <Show when={userStore.user}>
@@ -105,9 +107,7 @@ export default function Nav() {
                           "px-3 py-2 rounded-md text-sm font-medium"
                         )}
                         aria-current={item.title === active() ? "page" : undefined}
-                        onClick={e => {
-                          setActive(item.title);
-                        }}
+                        onClick={e => {}}
                       >
                         {item.name === "Requests" &&
                           /** userStore.user.category === "admin" && */
@@ -196,7 +196,6 @@ export default function Nav() {
                     )}
                     aria-current={item.title === active() ? "page" : undefined}
                     onClick={e => {
-                      setActive(item.title);
                       setMenuOpen(false);
                     }}
                   >

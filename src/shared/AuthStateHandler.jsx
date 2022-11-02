@@ -13,9 +13,8 @@ export default function AuthStateHandler() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
   const updateAuthState = async session => {
-    /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
-
     console.log("updateAuthState", { session });
 
     if (!session) {
@@ -47,17 +46,13 @@ export default function AuthStateHandler() {
 
     queryClient.cancelQueries({ queryKey: ["admin"] });
 
-    console.log({ personData, personD, user, session });
-    // const lastVisited = getStorageData("last-visited");
-    // console.log({ lastVisited });
-
     const redirects = {
       admin: "/admin",
       customer: `/customer/${user.id}`,
       professional: `/professional/${user.id}`,
     };
 
-    // navigate(lastVisited ?? redirects[user.category]);
+    console.log({ personData, personD, user, session, redirectTo: redirects[user.category] });
     navigate(redirects[user.category]);
   };
 
