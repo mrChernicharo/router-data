@@ -44,3 +44,25 @@ CUSTOMER REGISTER TODOs
 signup - customer created (how are we handling default availability?)
 start it blank if real customer X default filled if admin
     * edge case: user took too long to click the link...what should we do?
+
+
+
+================
+
+https://jestjs.io/docs/getting-started
+
+
+=============
+## EVENTS
+
+staff_created
+staff_removed
+professional_added
+professional_removed
+customer_added
+customer_removed
+${customerId}::appointment_offers_updated
+${offer.professional_id}::appointments
+new_appointment_created
+${person.id}::${role}_availability_updated
+person_availability_updated

@@ -30,11 +30,6 @@ export default function AppointmentOffers(props) {
         props.onAccepted(res);
 
         addToast({ message: "Consulta confirmada!", status: "success", duration: 3000 });
-
-        channel.send({
-          type: "broadcast",
-          event: "new_appointment_created",
-        });
       },
       onError: err => {
         addToast({ message: "erro ao criar nova consulta", status: "danger", duration: 4000 });
@@ -50,8 +45,8 @@ export default function AppointmentOffers(props) {
         <h2 class="font-bold text-3xl">Ofertas de Atendimento</h2>
         <h4 class="text-lg my-2">Temos o prazer de oferecer essas opções de consultas para você! 🎉</h4>
         <p class="mb-4 text-center md:max-w-[50%] ">
-          Agora é só escolher e o melhor horário e apertar o botão para confirmar seu primeiro atendimento e
-          iniciar seu tratamento na Clínica Laços!
+          Agora é só escolher e o melhor horário e apertar o botão para confirmar seu primeiro atendimento e iniciar seu
+          tratamento na Clínica Laços!
         </p>
       </div>
 

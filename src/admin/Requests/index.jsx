@@ -15,19 +15,25 @@ import ListItem from "../../shared/ListItem";
 
 const svgUrl = "/assets/done.svg";
 
-export default function AppointmentRequests(props) {
+export default function Requests(props) {
   const queryClient = useQueryClient();
   const requestsData = queryClient.getQueryData(["appointment_requests"]);
 
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
-    console.log("new_appointment_created!!!");
-    queryClient.refetchQueries(["customer_request_availability", "appointment_requests"]);
+    console.log("ZZZZZZZZ channel on new_appointment_created 222!!!");
+
+    // queryClient.fetchQuery({ queryKey: ["appointment_requests"] });
+
+    queryClient.invalidateQueries({ queryKey: ["customer_request_availability"] });
+    queryClient.invalidateQueries({ queryKey: ["appointment_requests"] });
+    //   queryClient.refetchQueries(["customer_request_availability"]);
+    //   queryClient.refetchQueries(["appointment_requests"]);
   });
 
   const idleCustomers = () => requestsData.customers.filter(c => !c.has_appointment) ?? [];
 
   createEffect(() => {
-    console.log(requestsData);
+    console.log("HHHHHSSSSS", { requestsData, idleCustomers: idleCustomers() });
   });
 
   return (

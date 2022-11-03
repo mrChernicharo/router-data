@@ -361,10 +361,15 @@ const confirmOffer = async offer => {
     event: `${offer.professional_id}::appointments`,
   });
 
-  channel.send({
-    type: "broadcast",
-    event: `new_appointment_created`,
-  });
+  setTimeout(() => {
+
+    console.log('ZZZZZZ send new_appointment_created!')
+    channel.send({
+      type: "broadcast",
+      event: `new_appointment_created`,
+    });
+
+  }, 500)
 
   return { appointment };
 };
@@ -426,12 +431,12 @@ const updatePersonAvailability = async (person, role, newAvailability) => {
     });
   }, 500);
 
-  console.log(
-    { prunedAvailability, newAvailability, finalAvailability },
-    `${role}s_availability_updated`,
-    `${person.id}::person_availability_updated`,
-    `${person.id}::${role}_availability_updated`
-  );
+  // console.log(
+  //   { prunedAvailability, newAvailability, finalAvailability },
+  //   `${role}s_availability_updated`,
+  //   `${person.id}::person_availability_updated`,
+  //   `${person.id}::${role}_availability_updated`
+  // );
 
   return { finalAvailability };
 };

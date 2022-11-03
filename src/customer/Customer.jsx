@@ -11,6 +11,105 @@ import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 import { setUserStore, userStore } from "../lib/userStore";
 
+export default function Customer() {
+  const queryClient = useQueryClient();
+  const location = useLocation();
+  const params = useParams();
+  const query = createQuery(
+    () => ["customer", params.id],
+    () => fetchCustomerData(params.id),
+    { refetchOnMount: true }
+  );
+
+  channel.on("broadcast", { event: `${userStore.user.id}::appointment_offers_updated` }, () => {
+    query.refetch();
+  });
+  channel.on("broadcast", { event: "person_availability_updated" }, payload => {
+    console.log("ZZZZZ person_availability_updated");
+    query.refetch();
+  });
+  channel.on("broadcast", { event: "new_appointment_created" }, payload => {
+    query.refetch();
+  });
+
+  const isNewCustomer = () => !query.data.customer.first_name;
+  const hasStartedRegister = () => query.data.customer.first_name && !query.data.customer.availability.length;
+  const isRegistered = () => query.data.customer.first_name && query.data.customer.availability.length;
+  const hasOffers = () => query.data?.customer.offers.length;
+  const hasAppointment = () => query.data?.customer.appointments.length;
+
+  createEffect(() => {
+    console.log(query.data);
+    // setUserStore()
+  });
+
+  return (
+    <div data-component="Customer">
+      <Show when={query.data} fallback={<Loading />}>
+        <h1 class="font-bold text-5xl">{query.data.customer.first_name}</h1>
+        <div class="mb-5 text-info">{query.data.customer.email}</div>
+
+        <div class="main-panel">
+          {/* A */}
+          <Show when={isNewCustomer()}>
+            <NewCustomer customerId={query.data.customer.id} />
+          </Show>
+
+          {/* B */}
+          <Show when={hasStartedRegister()}>
+            <RegisteringCustomer customerId={query.data.customer.id} />
+          </Show>
+
+          {/* C */}
+          <Show when={isRegistered() && !hasOffers() && !hasAppointment()}>
+            <RegisteredCustomer customerId={query.data.customer.id} />
+          </Show>
+
+          {/* D */}
+          <Show when={hasOffers()}>
+            <CustomerOffers
+              customer={query.data.customer}
+              onAccepted={val => {
+                console.log("appointment created!", { val });
+                // queryClient.invalidateQueries(["customer", params.id]);
+
+                query.refetch();
+              }}
+            />
+          </Show>
+
+          {/* E */}
+          <Show when={hasAppointment()}>
+            <h4 class="text-lg">Próxima consulta</h4>
+            <div class="mb-5">
+              <AppointmentList role="customer" appointments={[query.data.customer.appointments[0]]} />
+            </div>
+          </Show>
+        </div>
+
+        {/* <AppointmentsCalendar
+          role="customer"
+          canEdit
+          person={query.data.customer}
+          availability={query.data.customer.availability}
+          appointments={query.data.customer.appointments}
+        />
+
+        <AvailabilityTable
+          role="customer"
+          canEdit
+          onChange={val => {}}
+          collapsable
+          person={query.data.customer}
+          availability={query.data.customer.availability}
+        /> */}
+
+        {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
+      </Show>
+    </div>
+  );
+}
+
 function NewCustomer(props) {
   return (
     <div data-component="NewCustomer" class="border m-2 p-2">
@@ -76,107 +175,6 @@ function CustomerOffers(props) {
   return (
     <div data-component="CustomerOffers" class="border m-2">
       <AppointmentOffers customer={props.customer} offers={props.customer.offers} onAccepted={props.onAccepted} />
-    </div>
-  );
-}
-
-export default function Customer() {
-  const queryClient = useQueryClient();
-  const location = useLocation();
-  const params = useParams();
-  const query = createQuery(
-    () => ["customer", params.id],
-    () => fetchCustomerData(params.id),
-    { refetchOnMount: true }
-  );
-
-  channel.on("broadcast", { event: `${userStore.user.id}::appointment_offers_updated` }, () => {
-    query.refetch();
-  });
-  channel.on("broadcast", { event: "person_availability_updated" }, payload => {
-    query.refetch();
-  });
-  channel.on("broadcast", { event: "new_appointment_created" }, payload => {
-    query.refetch();
-  });
-
-  const isNewCustomer = () => !query.data.customer.first_name;
-  const hasStartedRegister = () => query.data.customer.first_name && !query.data.customer.availability.length;
-  const isRegistered = () => query.data.customer.first_name && query.data.customer.availability.length;
-  const hasOffers = () => query.data?.customer.offers.length;
-  const hasAppointment = () => query.data?.customer.appointments.length;
-
-  createEffect(() => {
-    console.log(query.data);
-    // setUserStore()
-  });
-
-  return (
-    <div data-component="Customer">
-      <Show when={query.data} fallback={<Loading />}>
-        <h1 class="font-bold text-5xl">{query.data.customer.first_name}</h1>
-        <div class="mb-5 text-info">{query.data.customer.email}</div>
-
-        <div class="main-panel">
-          {/* A */}
-          <Show when={isNewCustomer()}>
-            <NewCustomer customerId={query.data.customer.id} />
-          </Show>
-
-          {/* B */}
-          <Show when={hasStartedRegister()}>
-            <RegisteringCustomer customerId={query.data.customer.id} />
-          </Show>
-
-          {/* C */}
-          <Show when={isRegistered() && !hasOffers() && !hasAppointment()}>
-            <RegisteredCustomer customerId={query.data.customer.id} />
-          </Show>
-
-          {/* D */}
-          <Show when={hasOffers()}>
-            <CustomerOffers
-              customer={query.data.customer}
-              onAccepted={val => {
-                console.log("appointment created!", { val });
-                // queryClient.invalidateQueries(["customer", params.id]);
-                channel.send({
-                  type: "broadcast",
-                  event: "new_appointment_created",
-                });
-                query.refetch();
-              }}
-            />
-          </Show>
-
-          {/* E */}
-          <Show when={hasAppointment()}>
-            <h4 class="text-lg">Próxima consulta</h4>
-            <div class="mb-5">
-              <AppointmentList role="customer" appointments={[query.data.customer.appointments[0]]} />
-            </div>
-          </Show>
-        </div>
-
-        {/* <AppointmentsCalendar
-          role="customer"
-          canEdit
-          person={query.data.customer}
-          availability={query.data.customer.availability}
-          appointments={query.data.customer.appointments}
-        />
-
-        <AvailabilityTable
-          role="customer"
-          canEdit
-          onChange={val => {}}
-          collapsable
-          person={query.data.customer}
-          availability={query.data.customer.availability}
-        /> */}
-
-        {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
-      </Show>
     </div>
   );
 }

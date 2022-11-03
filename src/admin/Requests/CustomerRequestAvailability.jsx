@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Suspense } from "solid-js";
+import { createEffect, createMemo, createSignal, For, Suspense } from "solid-js";
 import { createMutation, createQuery, useQueryClient } from "@tanstack/solid-query";
 
 import { fetchCustomerRequestAvailability } from "../../lib/fetchFuncs";
@@ -11,6 +11,7 @@ import Loading from "../../shared/Loading";
 import { channel } from "../../lib/supabaseClient";
 import { addToast } from "../../shared/Toast";
 import { FiSend, FiFilter } from "solid-icons/fi";
+import Badge from "../../shared/Badge";
 
 export default function CustomerRequestAvailability(props) {
   const queryClient = useQueryClient();
@@ -23,6 +24,7 @@ export default function CustomerRequestAvailability(props) {
   );
 
   const [filter, setFilter] = createSignal("day"); /* day | professional */
+  const customerOffersData = () => queryClient.getQueryData({ queryKey: ["appointment_requests"] }).customers;
 
   const matchesObj = createMemo(() => {
     if (!query.data?.matches) return [];
@@ -33,8 +35,7 @@ export default function CustomerRequestAvailability(props) {
       mObj[match[filter()]].push(match);
     });
 
-    console.log({ q: query.data?.matches, mObj });
-
+    // console.log({ q: query.data?.matches, mObj });
     return mObj;
   });
 
@@ -50,9 +51,17 @@ export default function CustomerRequestAvailability(props) {
     sendOffers.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
         // UPDATE BADGE AT THE PARENT
-        queryClient.invalidateQueries(["appointment_requests"]);
+        console.log("ZZZZZ want to update this shit!!");
+
         queryClient.invalidateQueries(["admin"]);
-        query.refetch();
+        // queryClient.refetchQueries(["admin"]);
+
+        queryClient.invalidateQueries(["appointment_requests"]);
+        // queryClient.refetchQueries(["appointment_requests"]);
+
+        queryClient.invalidateQueries(["customer_request_availability", props.customerId]);
+        // queryClient.refetchQueries(["customer_request_availability"]);
+        // query.refetch();
 
         addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });
       },
@@ -65,14 +74,27 @@ export default function CustomerRequestAvailability(props) {
   });
   channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
     // UPDATE BADGE AT THE PARENT
+    queryClient.refetchQueries(["customer_request_availability"]);
     queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
+  });
+
+  channel.on("broadcast", { event: "new_appointment_created" }, payload => {
+    console.log("ZZZZZZZZ channel on new_appointment_created!!!");
+    queryClient.refetchQueries(["customer_request_availability"]);
+    queryClient.refetchQueries(["appointment_requests"]);
+    query.refetch();
+  });
+
+  createEffect(() => {
+    // console.log("ZZZUUUUUU", { queryData: query.data, customerOffersData: customerOffersData() });
   });
 
   return (
     <div data-component="CustomerRequestAvailability">
       <form onSubmit={handleSubmitOffers}>
         <Show when={query.data} fallback={<Loading />}>
+          {/* <Badge danger={!query.data.offers.length} warn={query.data.offers.length} /> */}
           <div class="">
             <div class="flex items-center gap-1 mt-6 mb-4">
               <span class="mr-1">Agrupar por</span>
@@ -94,14 +116,10 @@ export default function CustomerRequestAvailability(props) {
             <For each={Object.keys(matchesObj())}>
               {k => (
                 <div>
-                  <div class="font-bold capitalize">
-                    {STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}
-                  </div>
+                  <div class="font-bold capitalize">{STR_NUM_WEEKDAYS.includes(k) ? dateToWeekday(k) : k}</div>
                   <ul class="flex gap-3 py-2 pl-2 flex-wrap ">
                     <For each={matchesObj()[k]}>
-                      {match => (
-                        <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />
-                      )}
+                      {match => <AvailabilityMatch match={match} offers={query.data.offers} filter={filter()} />}
                     </For>
                   </ul>
                 </div>

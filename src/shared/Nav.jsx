@@ -48,6 +48,7 @@ export default function Nav() {
   const location = useLocation();
   const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const userNavigation = [
