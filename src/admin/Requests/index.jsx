@@ -17,30 +17,28 @@ const svgUrl = "/assets/done.svg";
 
 export default function Requests(props) {
   const queryClient = useQueryClient();
-  const requestsData = queryClient.getQueryData(["appointment_requests"]);
+  const query = createQuery(
+    () => ["appointment_requests"],
+    () => fetchAdminRequestsData()
+  );
 
-  channel.on("broadcast", { event: "new_appointment_created" }, payload => {
-    console.log("ZZZZZZZZ channel on new_appointment_created 222!!!");
+  async function handleOffersUpdated(args) {
+    console.log("handleOffersUpdated, UPDATE BADGE!");
+    // UPDATE BADGE!
+    query.refetch();
+  }
 
-    // queryClient.fetchQuery({ queryKey: ["appointment_requests"] });
-
-    queryClient.invalidateQueries({ queryKey: ["customer_request_availability"] });
-    queryClient.invalidateQueries({ queryKey: ["appointment_requests"] });
-    //   queryClient.refetchQueries(["customer_request_availability"]);
-    //   queryClient.refetchQueries(["appointment_requests"]);
-  });
-
-  const idleCustomers = () => requestsData.customers.filter(c => !c.has_appointment) ?? [];
+  const idleCustomers = () => query.data.customers.filter(c => !c.has_appointment) ?? [];
 
   createEffect(() => {
-    console.log("HHHHHSSSSS", { requestsData, idleCustomers: idleCustomers() });
+    console.log("HHHHHSSSSS", { idleCustomers: idleCustomers() });
   });
 
   return (
     <div data-component="AppointmentRequests">
-      {requestsData.isLoading && <Loading large />}
+      {query.isLoading && <Loading large />}
 
-      <Show when={!requestsData.isLoading && idleCustomers().length === 0}>
+      <Show when={!query.isLoading && idleCustomers().length === 0}>
         <div class="flex flex-col items-center justify-center">
           <h1 class="font-semibold text-2xl">Tudo certo!</h1>
           <p class="my-4">Nenhum cliente novo até o momento...</p>
@@ -49,30 +47,18 @@ export default function Requests(props) {
         </div>
       </Show>
       <ul class="list-group">
-        <For each={idleCustomers()}>
-          {customer => (
+        <Index each={idleCustomers()}>
+          {(customer, idx) => (
             <ListItem>
               <div class="p-4">
-                <Badge danger={customer.is_unattended} warn={customer.has_offer} />
-                <CustomerRequest customer={customer} />
+                <Badge danger={customer().is_unattended} warn={customer().has_offer} />
+                <CustomerRequest customer={customer()} onOffersSent={handleOffersUpdated} />
               </div>
             </ListItem>
           )}
-        </For>
+        </Index>
       </ul>
       {/* <pre>{JSON.stringify(query, null, 2)}</pre> */}
     </div>
   );
-}
-
-{
-  // channel.on("broadcast", { event: `person_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "person_availability_updated, pião");
-  // });
-  // channel.on("broadcast", { event: `customers_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "customers_availability_updated");
-  // });
-  // channel.on("broadcast", { event: `professionals_availability_updated` }, payload => {
-  //   console.log("[AppointmentRequests]", "professionals_availability_updated");
-  // });
 }

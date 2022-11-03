@@ -22,13 +22,16 @@ export default function Customer() {
   );
 
   channel.on("broadcast", { event: `${userStore.user.id}::appointment_offers_updated` }, () => {
+    console.log(`just heard ${userStore.user.id}::appointment_offers_updated`);
     query.refetch();
   });
   channel.on("broadcast", { event: "person_availability_updated" }, payload => {
-    console.log("ZZZZZ person_availability_updated");
+    console.log("just heard person_availability_updated");
     query.refetch();
   });
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
+    console.log("just heard new_appointment_created");
+
     query.refetch();
   });
 

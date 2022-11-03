@@ -24,7 +24,6 @@ export default function CustomerRequestAvailability(props) {
   );
 
   const [filter, setFilter] = createSignal("day"); /* day | professional */
-  const customerOffersData = () => queryClient.getQueryData({ queryKey: ["appointment_requests"] }).customers;
 
   const matchesObj = createMemo(() => {
     if (!query.data?.matches) return [];
@@ -53,15 +52,7 @@ export default function CustomerRequestAvailability(props) {
         // UPDATE BADGE AT THE PARENT
         console.log("ZZZZZ want to update this shit!!");
 
-        queryClient.invalidateQueries(["admin"]);
-        // queryClient.refetchQueries(["admin"]);
-
-        queryClient.invalidateQueries(["appointment_requests"]);
-        // queryClient.refetchQueries(["appointment_requests"]);
-
-        queryClient.invalidateQueries(["customer_request_availability", props.customerId]);
-        // queryClient.refetchQueries(["customer_request_availability"]);
-        // query.refetch();
+        props.onOffersSent({ data, variables, selectedTimeBlocks });
 
         addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });
       },
@@ -69,25 +60,19 @@ export default function CustomerRequestAvailability(props) {
   }
 
   channel.on("broadcast", { event: "person_availability_updated" }, payload => {
-    queryClient.invalidateQueries(["appointment_requests"]);
+    console.log("just heard person_availability_updated");
     query.refetch();
   });
   channel.on("broadcast", { event: `${props.customerId}::customer_availability_updated` }, payload => {
+    console.log(`just heard ${props.customerId}::customer_availability_updated`);
     // UPDATE BADGE AT THE PARENT
-    queryClient.refetchQueries(["customer_request_availability"]);
-    queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
   });
 
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
-    console.log("ZZZZZZZZ channel on new_appointment_created!!!");
-    queryClient.refetchQueries(["customer_request_availability"]);
-    queryClient.refetchQueries(["appointment_requests"]);
-    query.refetch();
-  });
+    console.log("just heard new_appointment_created");
 
-  createEffect(() => {
-    // console.log("ZZZUUUUUU", { queryData: query.data, customerOffersData: customerOffersData() });
+    query.refetch();
   });
 
   return (
@@ -139,9 +124,6 @@ export default function CustomerRequestAvailability(props) {
             </div>
           </div>
         </Show>
-
-        {/* <pre>{JSON.stringify(query, null, 1)}</pre> */}
-        {/* <pre>{JSON.stringify(matchesObj(), null, 1)}</pre> */}
       </form>
     </div>
   );

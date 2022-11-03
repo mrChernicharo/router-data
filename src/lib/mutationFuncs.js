@@ -332,10 +332,19 @@ const createAppointmentOffers = async (customerId, offers) => {
 
   if (deleteError || insertError) return console.log({ deleteError, insertError });
 
+
+  channel.send({
+    type: "broadcast",
+    event: `appointment_offers_updated`,
+  });
+
+setTimeout(() => {
   channel.send({
     type: "broadcast",
     event: `${customerId}::appointment_offers_updated`,
   });
+}, 500)
+
 
   console.log("appointment offer created", { data, deletedData });
 };

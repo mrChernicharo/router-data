@@ -15,7 +15,7 @@ export default function CustomerRequest(props) {
         <CollapseBox>
           {/* <pre>{JSON.stringify(props.customer.has_appointment, null, 3)}</pre> */}
 
-          <CustomerRequestAvailability customerId={props.customer.id} />
+          <CustomerRequestAvailability customerId={props.customer.id} onOffersSent={props.onOffersSent} />
         </CollapseBox>
       </Show>
     </div>
