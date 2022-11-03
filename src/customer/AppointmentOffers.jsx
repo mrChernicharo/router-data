@@ -87,7 +87,7 @@ export default function AppointmentOffers(props) {
             class="btn btn-accent w-full max-w-xl"
             onClick={e => handleConfirmAppointment(e)}
           >
-            <h3 style={{ margin: 0 }}>Confirmar Minha Primeira Consulta!</h3>
+            <h3 class="m-0">Confirmar Minha Primeira Consulta!</h3>
           </button>
         </div>
       </div>

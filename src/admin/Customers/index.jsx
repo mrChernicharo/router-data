@@ -10,6 +10,7 @@ import { insertCustomer, removeCustomer } from "../../lib/mutationFuncs";
 import { channel } from "../../lib/supabaseClient";
 import { FiMail, FiSearch, FiTrash } from "solid-icons/fi";
 import { addToast } from "../../shared/Toast";
+import CollapseBox from "../../shared/CollapseBox";
 
 export default function Customers() {
   let inputRef;
@@ -18,10 +19,12 @@ export default function Customers() {
   const removeMutation = createMutation(["customers"], customer => removeCustomer(customer));
 
   const [filter, setFilter] = createSignal("");
+  const [newCustomerEmail, setNewCustomerEmail] = createSignal("");
+  const [deletingCustomerId, setDeletingCustomerId] = createSignal("");
 
   function handleInsert(e) {
     e.preventDefault();
-    if (!inputRef.validity.valid) return console.log("invalid email!");
+    if (!inputRef.value || !inputRef.validity.valid) return console.log("invalid email!");
 
     const customer = {
       first_name: inputRef.value.split("@")[0],
@@ -48,14 +51,18 @@ export default function Customers() {
   function handleRemove(customer) {
     console.log("handleRemove", customer);
     if (!confirm(`certeza que você quer deletar ${customer.first_name}?`)) return;
+    setDeletingCustomerId(customer.id);
 
     removeMutation.mutate(customer, {
       onSuccess: (data, variables, context) => {
         addToast({
-          message: `${customer.first_name} deletado com sucesso`,
+          message: `${customer.first_name} foi deletado(a) com sucesso`,
           status: "success",
         });
         query.refetch();
+      },
+      onSettled: () => {
+        setTimeout(() => setDeletingCustomerId(""), 1000);
       },
     });
   }
@@ -77,12 +84,11 @@ export default function Customers() {
 
   return (
     <div data-component="Customers">
-      <div class="grid md:grid-cols-2">
+      <div class="grid md:grid-cols-2 mb-3">
         {/* FILTER CUSTOMERS */}
         <fieldset>
           <div>
-            <h3 class="text-xl font-bold">Filtrar Clientes</h3>
-            <div class="d-grid input-group mb-3">
+            <div class="">
               <label class="label-text font-bold">
                 <div class="flex items-center gap-1">
                   Procurar
@@ -102,28 +108,40 @@ export default function Customers() {
 
         {/* REGISTER NEW CUSTOMER */}
         <form onSubmit={handleInsert}>
-          <div class="d-grid input-group mb-3">
-            <div>
-              <h3 class="text-xl font-bold">Registrar Cliente</h3>
+          <div class="mt-3">
+            <ListItem>
+              <div class="p-4 min-w-[300px]">
+                <h3 class="text-xl font-bold">Registrar Cliente</h3>
+                <CollapseBox>
+                  <label class="label-text font-bold">
+                    <div class="flex items-center gap-1">
+                      Email
+                      <FiMail />
+                    </div>
+                    <input
+                      ref={inputRef}
+                      value={newCustomerEmail()}
+                      type="email"
+                      class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
+                      placeholder="Email do cliente"
+                      onInput={e => setNewCustomerEmail(e.currentTarget.value)}
+                    />
+                  </label>
 
-              <label class="label-text font-bold">
-                <div class="flex items-center gap-1">
-                  Email
-                  <FiMail />
-                </div>
-                <input
-                  ref={inputRef}
-                  type="email"
-                  class="input input-primary input-bordered input-md w-full max-w-xs bg-white"
-                  placeholder="Email do cliente"
-                />
-              </label>
-            </div>
-          </div>
-          <div class="d-grid mb-5">
-            <button class="btn btn-accent">
-              <h3>Registrar</h3>
-            </button>
+                  <div class="mt-4">
+                    <button class="btn btn-accent" disabled={!newCustomerEmail()}>
+                      <div class="w-8 h-5"></div>
+                      <h3>Registrar</h3>
+                      {insertMutation.isLoading ? (
+                        <Loading classes="ml-2" color="#fff" />
+                      ) : (
+                        <div class="w-10 h-8"></div>
+                      )}
+                    </button>
+                  </div>
+                </CollapseBox>
+              </div>
+            </ListItem>
           </div>
         </form>
       </div>
@@ -145,7 +163,7 @@ export default function Customers() {
                 </Link>
                 <div class="flex items-center pr-2">
                   <button class="btn btn-ghost text-error" onClick={e => handleRemove(customer)}>
-                    <FiTrash size={22} />
+                    {deletingCustomerId() === customer.id ? <Loading /> : <FiTrash size={22} />}
                   </button>
                 </div>
               </div>

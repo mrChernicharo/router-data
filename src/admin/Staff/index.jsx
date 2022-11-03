@@ -111,7 +111,7 @@ export default function Staff() {
 
         <CollapseBox>
           <form onSubmit={handleInsert}>
-            <div class="">
+            <div class="my-2">
               <label class="block w-full label-text ">Categoria</label>
               <select ref={selectRef} class="select select-bordered">
                 <option value=""></option>
@@ -150,7 +150,7 @@ export default function Staff() {
             <div>
               <ListItem>
                 <div class="flex hover:bg-base-100">
-                  <div style={{ ...s.listHighlight, background: person?.isRegistered ? "#18e697" : "#bbb" }}></div>
+                  <div class="w-2" style={{ background: person?.isRegistered ? "#18e697" : "#bbb" }}></div>
 
                   <div class="w-[100%] p-2">
                     <div>{person.email}</div>
@@ -161,7 +161,7 @@ export default function Staff() {
                   </div>
                   {/* </Link> */}
 
-                  <Show when={person.category !== "admin"}>
+                  <Show when={person.category === "professional"} fallback={<div class="w-16"></div>}>
                     <div class="flex items-center">
                       <button
                         class="btn btn-ghost text-error mr-2"

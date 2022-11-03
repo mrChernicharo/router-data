@@ -9,6 +9,7 @@ import { AiOutlineArrowLeft, AiFillLock } from "solid-icons/ai";
 import { addToast, ToastContainer } from "./shared/Toast";
 
 import Header from "./shared/Header";
+import Loading from "./shared/Loading";
 import { userStore } from "./lib/userStore";
 import { FiLock } from "solid-icons/fi";
 
@@ -20,19 +21,25 @@ export default function Login() {
 
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
+  const [isLoading, setIsLoading] = createSignal("");
 
   const isDisabled = createMemo(() => !email() || !password() || !emailInputRef.validity.valid);
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     if (!emailInputRef.validity.valid || !passwordInputRef.value) return;
+
+    setIsLoading(true);
 
     const { data, error } = await supabase.auth.signInWithPassword({ email: email(), password: password() });
     if (error) {
-      return addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
+      addToast({ message: translateError(error.message), status: "danger", duration: 3000 });
+      return setIsLoading(false);
     }
 
     addToast({ message: "boas vindas!", status: "success", duration: 2000 });
+    return setIsLoading(false);
   }
 
   return (
@@ -88,11 +95,12 @@ export default function Login() {
               </div>
             </div>
             <div class="pt-6">
-              <button disabled={isDisabled()} class="btn btn-primary relative w-full">
-                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+              <button disabled={isDisabled()} class="btn btn-primary relative w-full flex justify-between">
+                <span class="">
                   <AiFillLock class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
                 Entrar
+                {isLoading() ? <Loading /> : <div class="h-5 w-8"></div>}
               </button>
             </div>
           </form>

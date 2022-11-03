@@ -100,8 +100,8 @@ export default function RegisterForm(props) {
         const back = {
           customer: `/customer/${params.id}`,
           professional: `/professional/${params.id}`,
-          manager: `admin/customers/${params.id}`, // THIS NEEDS IMPROVEMENT!
-          admin: `admin/customers/${params.id}`,
+          manager: `/admin/customers/${params.id}`, // THIS NEEDS IMPROVEMENT!
+          admin: `/admin/customers/${params.id}`,
         };
 
         navigate(back[category]);
