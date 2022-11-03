@@ -44,7 +44,7 @@ export default function Customers() {
       onSuccess: (data, variables, context) => {
         addToast({
           message: `${customer.first_name} deletado com sucesso`,
-          status: "danger",
+          status: "success",
         });
         query.refetch();
       },

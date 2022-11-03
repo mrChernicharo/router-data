@@ -249,19 +249,21 @@ const removeCustomer = async customer => {
     updatedProfessionalAvails = avaliData;
   }
 
+
+  // 4. delete the damn customer! [THIS NEED TO COME BEFORE LAMBDA CALL]
+  const { data: deletedCustomer, error } = await supabase.from("customers").delete().eq("id", customer.id).select();
+  if (error) return console.log({ error });
+  
+
   // 5. delete user from auth.users
   const res = await fetch(`${LAMBDA_URL}/delete-customer`, {
     method: "POST",
     body: JSON.stringify({ customer }),
   });
 
-  // 4. delete the damn customer!
-  const { data: deletedCustomer, error } = await supabase.from("customers").delete().eq("id", customer.id).select();
 
   const data = await res.json();
   console.log({ res, data, deletedCustomer });
-
-  if (error) return console.log({ error });
 
   // console.log("removeCustomer", {
   //   deletedCustomer,
@@ -357,6 +359,11 @@ const confirmOffer = async offer => {
   channel.send({
     type: "broadcast",
     event: `${offer.professional_id}::appointments`,
+  });
+
+  channel.send({
+    type: "broadcast",
+    event: `new_appointment_created`,
   });
 
   return { appointment };

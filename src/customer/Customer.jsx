@@ -153,7 +153,7 @@ export default function Customer() {
           <Show when={hasAppointment()}>
             <h4 class="text-lg">Próxima consulta</h4>
             <div class="mb-5">
-              <AppointmentList role="customer" appointments={query.data.customer.appointments} />
+              <AppointmentList role="customer" appointments={[query.data.customer.appointments[0]]} />
             </div>
           </Show>
         </div>

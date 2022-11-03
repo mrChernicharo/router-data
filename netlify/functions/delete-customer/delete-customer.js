@@ -9,8 +9,10 @@ const handler = async function (event, context) {
     const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SERVICE_ROLE);
     const { customer } = JSON.parse(event.body);
 
-    console.log({ customer, a: customer.auth_id });
+    // console.log({ customer, a: customer.auth_id });
     const res = await supabaseAdmin.auth.admin.deleteUser(customer.auth_id);
+
+    console.log(res.data)
 
     return {
       statusCode: 200,

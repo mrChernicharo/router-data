@@ -21,7 +21,7 @@ export default function AppointmentRequests(props) {
 
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
     console.log("new_appointment_created!!!");
-    queryClient.refetchQueries(["customer_request_availability"]);
+    queryClient.refetchQueries(["customer_request_availability", "appointment_requests"]);
   });
 
   const idleCustomers = () => requestsData.customers.filter(c => !c.has_appointment) ?? [];

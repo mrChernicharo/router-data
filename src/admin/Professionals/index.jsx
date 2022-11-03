@@ -11,6 +11,7 @@ import PersonList from "../../shared/PersonList";
 import ListItem from "../../shared/ListItem";
 
 import { FiTrash } from "solid-icons/fi";
+import Loading from "../../shared/Loading";
 
 export default function Professionals() {
   const query = createQuery(() => ["professionals"], fetchProfessionalsData);
@@ -37,7 +38,7 @@ export default function Professionals() {
 
   return (
     <div data-component="Professionals">
-      {query.isLoading && <div>Loading...</div>}
+      {query.isLoading && <Loading />}
 
       <ul>
         {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}

@@ -1,19 +1,10 @@
-how availability updates affect appointments?
-if appointment not in new availability
-force an availability slot for the appointment's time/day?  
- or
-fuck it...we don't care about availability when the appointment exists
-
-        we only care about availability when
-            creating offers
-            rescheduling appointments??? maybe not...
-                rescheduling should be a professional <-> customer agreement
-                    all we need to consider is the professional availability regarding the existing appointments (availability status)
-
 APPOINTMENTS RULES
 FUTURE APPOINTMENTS
 automatic creation for 4 weeks in the future ? ... NOPE!
 we can show appointments in advance at the calendar and that should be all
+
+SO WHEN TO CREATE NEXT WEEK'S APPOINTMENT?
+ as soon as current appointment has passed
 
     RESCHEDULING
         reschedules should only be allowed if (appointment datetime  - now) > 48
