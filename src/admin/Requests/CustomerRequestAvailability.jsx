@@ -70,8 +70,9 @@ export default function CustomerRequestAvailability(props) {
   });
 
   channel.on("broadcast", { event: "new_appointment_created" }, payload => {
-    console.log("just heard new_appointment_created");
-
+    console.log("just heard new_appointment_created!!! Update that shit and make this client disappear");
+    // queryClient.invalidateQueries(["customer_request_availability", props.customerId]);
+    queryClient.invalidateQueries(["appointment_requests"]);
     query.refetch();
   });
 

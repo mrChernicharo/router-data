@@ -30,10 +30,6 @@ export default function Requests(props) {
 
   const idleCustomers = () => query.data.customers.filter(c => !c.has_appointment) ?? [];
 
-  createEffect(() => {
-    console.log("HHHHHSSSSS", { idleCustomers: idleCustomers() });
-  });
-
   return (
     <div data-component="AppointmentRequests">
       {query.isLoading && <Loading large />}

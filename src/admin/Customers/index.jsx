@@ -1,4 +1,4 @@
-import { For, createSignal, createMemo } from "solid-js";
+import { For, createSignal, createMemo, createEffect } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery, createMutation } from "@tanstack/solid-query";
 
@@ -51,15 +51,23 @@ export default function Customers() {
     });
   }
 
-  const filteredCustomers = createMemo(() =>
-    query.data?.customers.filter(d => (filter() ? d.first_name.toLowerCase().includes(filter().toLowerCase()) : d))
-  );
+  const filteredCustomers = () =>
+    query.data?.customers
+      .filter(c => c.first_name && c.last_name && c.date_of_birth && c.phone)
+      .filter(d => (filter() ? d.first_name.toLowerCase().includes(filter().toLowerCase()) : d));
 
   channel.on("broadcast", { event: "customer_added" }, () => {
     query.refetch();
   });
   channel.on("broadcast", { event: "customer_removed" }, () => {
     query.refetch();
+  });
+  channel.on("broadcast", { event: "new_appointment_created" }, () => {
+    query.refetch();
+  });
+
+  createEffect(() => {
+    console.log(query.data?.customers);
   });
 
   return (

@@ -36,7 +36,7 @@ const fetchLoginFakeData = async () => {
 
   if (cError || pError) return console.log({ cError, pError });
 
-  console.log('fetchLoginFakeData',{ customers, professionals });
+  console.log("fetchLoginFakeData", { customers, professionals });
 
   return { customers, professionals };
 };
@@ -73,7 +73,7 @@ const fetchStaffData = async () => {
       email: staff_email,
       category,
       isRegistered: registeredEmails.includes(staff_email),
-      professional
+      professional,
     });
   }
 
@@ -82,12 +82,14 @@ const fetchStaffData = async () => {
 };
 
 const fetchAdminRequestsData = async () => {
-  const { data: allCustomers, error } = await supabase.from("vw_appointment_request_page").select("*, availability:customer_availability (*)");
+  const { data: allCustomers, error } = await supabase
+    .from("vw_appointment_request_page")
+    .select("*, availability:customer_availability (*)");
 
   if (error) return console.log({ error });
 
   // customers without availability aren't ready to receive offers
-  const customers  = allCustomers.filter(c => c.availability.length);
+  const customers = allCustomers.filter(c => c.availability.length);
 
   console.log("fetchAdminRequestsData", { customers });
   return { customers };
@@ -120,15 +122,16 @@ const fetchCustomerRequestAvailability = async id => {
       s => s.time === time && s.day === day && s.status !== "0"
     );
 
-    if (professional_availability_slot) {
+    if (professional_availability_slot?.id && customer_availability_slot?.id) {
       // this feels wonky: our DB function should not return slots that have no matching prof_av...but this check here does the trick
       delete item.prof_slots;
       delete item.customer_slots;
-      matches.push({
-        ...item,
-        customer_availability_slot_id: customer_availability_slot.id,
-        professional_availability_slot_id: professional_availability_slot.id,
-      });
+
+        matches.push({
+          ...item,
+          customer_availability_slot_id: customer_availability_slot.id,
+          professional_availability_slot_id: professional_availability_slot.id,
+        });
     }
   }
 
@@ -162,7 +165,7 @@ const fetchCustomerData = async id => {
   const customer = data[0];
   if (!customer) throw new Error("Customer missing");
 
-  customer.date_of_birth = customer.date_of_birth ? DBDateToDateStr(customer.date_of_birth) : '';
+  customer.date_of_birth = customer.date_of_birth ? DBDateToDateStr(customer.date_of_birth) : "";
 
   if (customer.appointments) {
     const professionalsIds = customer.appointments.map(a => a.professional_id);
@@ -214,8 +217,7 @@ const fetchProfessionalData = async id => {
   if (error) return console.log({ error });
 
   const professional = data[0];
-  professional.date_of_birth = professional.date_of_birth ? DBDateToDateStr(professional.date_of_birth) : '';
-
+  professional.date_of_birth = professional.date_of_birth ? DBDateToDateStr(professional.date_of_birth) : "";
 
   if (!professional?.appointments?.length) return { professional };
 
