@@ -30,7 +30,17 @@ export default function Customers() {
 
     insertMutation.mutate(customer, {
       onSuccess: (data, variables, context) => {
+        addToast({
+          message: `${customer.first_name} cadastrado com sucesso!`,
+          status: "success",
+        });
         query.refetch();
+      },
+      onError: err => {
+        addToast({
+          message: err.message,
+          status: "danger",
+        });
       },
     });
   }
@@ -52,7 +62,7 @@ export default function Customers() {
 
   const filteredCustomers = () =>
     query.data?.customers
-      .filter(c => c.first_name && c.last_name && c.date_of_birth && c.phone)
+      .filter(c => c.first_name)
       .filter(d => (filter() ? d.first_name.toLowerCase().includes(filter().toLowerCase()) : d));
 
   channel.on("broadcast", { event: "customer_added" }, () => {

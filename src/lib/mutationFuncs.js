@@ -173,6 +173,14 @@ const insertCustomer = async person => {
   const isAdminCreated = !person.auth_id;
   // console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
 
+  // const { registeredEmails } = await fetch(`${LAMBDA_URL}/get-registered-users`).then(async res => await res.json());
+  const { data: customerEmails, error: cErr } = await supabase.from("customers").select("email");
+  if (cErr) return cErr;
+
+  if (customerEmails.map(d => d.email).includes(person.email)) {
+    throw new Error(`Já existe um cliente cadastrado com o email ${person.email}`);
+  }
+
   if (isAdminCreated) {
     const { data: authData } = await supabase.auth.signUp({ ...person, password: "12345678" });
     person.auth_id = authData.user.id;
@@ -250,18 +258,15 @@ const removeCustomer = async customer => {
     updatedProfessionalAvails = avaliData;
   }
 
-
   // 4. delete the damn customer! [THIS NEED TO COME BEFORE LAMBDA CALL]
   const { data: deletedCustomer, error } = await supabase.from("customers").delete().eq("id", customer.id).select();
   if (error) return console.log({ error });
-  
 
   // 5. delete user from auth.users
   const res = await fetch(`${LAMBDA_URL}/delete-customer`, {
     method: "POST",
     body: JSON.stringify({ customer }),
   });
-
 
   const data = await res.json();
   // console.log({ res, data, deletedCustomer });
@@ -333,19 +338,17 @@ const createAppointmentOffers = async (customerId, offers) => {
 
   if (deleteError || insertError) return console.log({ deleteError, insertError });
 
-
   channel.send({
     type: "broadcast",
     event: `appointment_offers_updated`,
   });
 
-setTimeout(() => {
-  channel.send({
-    type: "broadcast",
-    event: `${customerId}::appointment_offers_updated`,
-  });
-}, 500)
-
+  setTimeout(() => {
+    channel.send({
+      type: "broadcast",
+      event: `${customerId}::appointment_offers_updated`,
+    });
+  }, 500);
 
   // console.log("appointment offer created", { data, deletedData });
 };
@@ -376,7 +379,7 @@ const confirmOffer = async offer => {
       type: "broadcast",
       event: `new_appointment_created`,
     });
-  }, 500)
+  }, 500);
 
   return { appointment };
 };
