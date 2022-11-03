@@ -20,14 +20,14 @@ export default function Admin() {
   });
 
   const infoCards = data => [
-    { title: "Customers", value: data?.customers_count, description: "total customers" },
-    { title: "Professionals", value: data?.professionals_count, description: "total professionals" },
-    { title: "Staff", value: data?.staff_count, description: "total staff" },
-    { title: "Total Users", value: data?.total_users_count, description: "total users" },
+    { title: "Clientes", value: data?.customers_count, description: "clientes ativos" },
+    { title: "Profissionais", value: data?.professionals_count, description: "profissionais ativos" },
+    { title: "Membros", value: data?.staff_count, description: "total de membros" },
+    { title: "Usuários", value: data?.total_users_count, description: "total de usuários" },
     {
-      title: "Unattended Customers",
+      title: "Novos Clientes",
       value: data?.unattended_count,
-      description: "customers waiting",
+      description: "total de novos clientes",
     },
   ];
 

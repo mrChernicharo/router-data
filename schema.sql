@@ -1,24 +1,28 @@
 /************** ALTERS ***************/
+DROP POLICY "Enable read access for all users or to felipe" on auth.users;
 
-/* disable foreign_key_checks */
--- SET session_replication_role = 'replica';
-/*  enable foreign_key_checks  */
--- SET session_replication_role = 'origin';
+CREATE POLICY "Enable read access for all users or to felipe" ON "auth"."users"
+AS PERMISSIVE FOR SELECT
+TO public
+USING (auth.email() = 'felipe.chernicharo@gmail.com');
 
--- LINK AUTH.USERS WITH CUSTOMERS/PROFESSIONALS
+
 
 alter table professionals add column auth_id uuid;
-alter table professionals add constraint fk_professional_auth_id foreign key (auth_id) references auth.users(id);
+alter table professionals add constraint fk_professional_auth_id foreign key (auth_id) references auth.users(id) on delete cascade;
 select * from professionals;
 select * from auth.users where id = 'f57577ec-1a72-4796-a48f-659cba57d9e2';
 
 
 alter table customers add column auth_id uuid;
 alter table customers modify column auth_id uuid to auth_id uuid not null;
-alter table customers add constraint fk_customer_auth_id foreign key (auth_id) references auth.users(id);
-select * from customers;
-select * from auth.users where id = '7b4a1836-63ce-47ab-943a-07faa4795f65';
+alter table customers add constraint fk_customer_auth_id foreign key (auth_id) references auth.users(id) on delete cascade;
 
+
+alter table customers add column first_name varchar, add column last_name varchar, add column phone varchar(16), add column date_of_birth date;
+update customers set name = null where true;
+alter table customers drop column name;
+select * from customers;
 
 /************ DDL *************/
 
@@ -47,9 +51,12 @@ create table staff (
 
 create table professionals (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name varchar(60),
   email varchar(100) unique,
   auth_id uuid not null,
+  first_name varchar, 
+  last_name varchar, 
+  date_of_birth date,
+  phone varchar(16), 
 
   constraint fk_professional_auth_id foreign key (auth_id) references auth.users(id) --ON delete cascade,
 );
@@ -57,13 +64,15 @@ create table professionals (
 
 create table customers (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name varchar(60),
   email varchar(100) unique,
   auth_id uuid not null,
+  first_name varchar, 
+  last_name varchar, 
+  date_of_birth date,
+  phone varchar(16), 
 
   constraint fk_customer_auth_id foreign key (auth_id) references auth.users(id)
 );
-
 
 
 create table customer_availability (
@@ -118,7 +127,6 @@ create table realtime_appointments (
 
 
 
-
 /* ******* HELPER VIEWS ******* */
 
 ---- find unattended customers
@@ -158,7 +166,7 @@ select
 
 /* 2 ADMIN/STAFF PAGE */
 create or replace view vw_staff_page as
-select s.id as staff_id, s.category, s.email as staff_email, p.id as professional_id, p.name as professional_name, p.email as professional_email
+select s.id as staff_id, s.category, s.email as staff_email, p.id as professional_id, p.first_name as professional_name, p.email as professional_email
 from staff as s
 full join professionals as p
 on s.email = p.email;
@@ -166,7 +174,7 @@ on s.email = p.email;
 
 /* 3 APPOINTMENT REQUEST */
 create or replace view vw_appointment_request_page as
-select c.*, u.name as is_unattended, o.name as has_offer, a.name as has_appointment from customers as c
+select distinct c.*, u.first_name as is_unattended, o.first_name as has_offer, a.first_name as has_appointment from customers as c
 left join vw_retrieve_unattended_customers as u
 on c.id = u.id
 left join vw_retrieve_customers_with_appointments as a
@@ -179,8 +187,8 @@ select * from vw_appointment_request_page;
 
 /* 4 ADMIN/CUSTOMER REQUEST AVAILABILITY */
 create or replace view vw_customer_appointment_possibilities as 
-  select distinct  c.id as customer_id, ca.day, c.name as customer,  
-    pa.time, p.name as professional, p.id as professional_id
+  select distinct  c.id as customer_id, ca.day, c.first_name as customer,  
+    pa.time, p.first_name as professional, p.id as professional_id
   from customer_availability as ca
   right join customers as c
   on c.id = ca.customer_id
@@ -188,9 +196,17 @@ create or replace view vw_customer_appointment_possibilities as
   on pa.time = ca.time
   right join professionals as p
   on p.id = pa.professional_id
-  where pa.status != '0' and c.name is not null
+  where pa.status != '0' and c.first_name is not null
   order by ca.day, pa.time;
 
+
+
+
+/* 5. */
+
+
+-- select * from professionals where id = '49ae2ea8-e40b-4538-8739-c098d592803e';
+select * from customers;
 
 /************ FUNCTIONS ***************/
 
@@ -201,36 +217,50 @@ returns setof vw_customer_appointment_possibilities as $$
   where customer_id = id;
 $$ language sql;
 
-
+select now() + '1 day'::INTERVAL;
+SELECT CURRENT_DATE + '7 day'::INTERVAL;
 
 -- 2. CREATE APPOINTMENT
-  create or replace function fn_create_first_appointment 
-  (customer_id uuid, professional_id uuid, day WEEK_DAY, hour TIME_SLOT, datetime TIMESTAMP) 
-  returns setof realtime_appointments as $$
-    begin
-      if exists (select * from realtime_appointments as a where a.professional_id = $2 and a.day = $3 and a.time = $4)
-      then 
-        raise exception sqlstate '90001' using message = concat('appointement exists for professional id ', $2, ' canceling transaction');
-      end if;
+create or replace function fn_create_first_appointment 
+(customer_id uuid, professional_id uuid, day WEEK_DAY, hour TIME_SLOT, datetime TIMESTAMP) 
+returns setof realtime_appointments as $$
+  begin
+    if exists (select * from realtime_appointments as a where a.professional_id = $2 and a.day = $3 and a.time = $4)
+    then 
+      raise exception sqlstate '90001' using message = concat('appointement exists for professional id ', $2, ' canceling transaction');
+    end if;
 
-      delete from appointment_offers as a where a.customer_id = $1;
-      delete from appointment_offers as a where a.professional_id = $2 and a.day = $3 and a.time = $4;
-      update customer_availability as c set status = '0' where c.customer_id = $1 and c.day = $3 and c.time = $4;
-      update professional_availability as p set status = '0' where p.professional_id = $2 and p.day = $3 and p.time = $4;
-      
-      insert into realtime_appointments (customer_id, professional_id, day, time, datetime) values ($1, $2, $3, $4, $5);
+    delete from appointment_offers as a where a.customer_id = $1;
+    delete from appointment_offers as a where a.professional_id = $2 and a.day = $3 and a.time = $4;
+    update customer_availability as c set status = '0' where c.customer_id = $1 and c.day = $3 and c.time = $4;
+    update professional_availability as p set status = '0' where p.professional_id = $2 and p.day = $3 and p.time = $4;
+    
+    insert into realtime_appointments (customer_id, professional_id, day, time, datetime) 
+      values ($1, $2, $3, $4, $5), ($1, $2, $3, $4, $5 + '7 day'::INTERVAL), ($1, $2, $3, $4, $5 + '14 day'::INTERVAL), ($1, $2, $3, $4, $5 + '21 day'::INTERVAL);
 
-      return query select * from realtime_appointments as a 
-      where a.customer_id = $1 and a.professional_id = $2 and a.day = $3 and a.time = $4;
-    end;
-  $$ language 'plpgsql';
+    return query select * from realtime_appointments as a 
+    where a.customer_id = $1 and a.professional_id = $2 and a.day = $3 and a.time = $4;
+  end;
+$$ language 'plpgsql';
 
 
+-- 3. DELETE CUSTOMER/AUTH_USER
 
+-- create or replace function fn_remove_customer
+-- (customer_id uuid, email varchar)
+-- returns void as $$
+--   begin
+--     delete from customers as c where c.id = $1;
+--     -- delete from auth.users as a where a.email = $2;
+--   end;
+-- $$ language 'plpgsql';
+delete from customers;
+insert into staff (email, category) values ('felipe.chernicharo@gmail.com', 'admin');
+/***********************************/
 /************ RESETS ***************/
+/***********************************/
 
-
-alter table profesisonals drop constraint fk_professional_auth_id;
+alter table professionals drop constraint fk_professional_auth_id;
 alter table customers drop constraint fk_customer_auth_id;
 alter table customer_availability drop constraint fk_availability_customer_id;
 alter table professional_availability drop constraint fk_availability_professional_id;
@@ -241,13 +271,11 @@ alter table appointment_offers drop constraint fk_customer_availability_slot_id;
 alter table realtime_appointments drop constraint fk_appointments_customer_id;
 alter table realtime_appointments drop constraint fk_appointments_professional_id;
 alter table realtime_appointments drop constraint realtime_appointments_pkey;
-
-
-select * from pg_catalog.pg_proc where proname = 'fn_create_first_appointment';
-delete from pg_catalog.pg_proc where proname = 'fn_create_first_appointment';
-
+-- alter table realtime_appointments drop constraint fk_appointments_professional_id;
 
 drop function fn_get_appointment_possibilities;
+drop function fn_remove_customer;
+drop function fn_create_first_appointment;
 
 drop view vw_retrieve_unattended_customers;
 drop view vw_retrieve_customers_with_appointments;
@@ -256,8 +284,6 @@ drop view vw_admin_page;
 drop view vw_staff_page;
 drop view vw_appointment_request_page;
 drop view vw_customer_appointment_possibilities;
-
-
 
 delete from staff;
 delete from customers;
@@ -276,6 +302,40 @@ drop table customer_availability;
 drop table professional_availability;
 drop table realtime_appointments;
 
+SELECT *
+  FROM pg_locks l
+  JOIN pg_class t ON l.relation = t.oid AND t.relkind = 'r';
+ WHERE t.relname = 'Bill';
+
+
+--  ****** ---
+-- OUR LITTLE CHALLENGE OF DELETING AUTH.USERS
+create trigger tr_remove_auth_user
+after delete on customers
+for each row
+execute function fn_remove_auth_user();
+
+create or replace function fn_remove_auth_user() returns trigger as $$
+  begin
+
+    delete from auth.users where id = old.auth_id;
+
+    return old;
+
+  end;
+$$ language plpgsql;
+
+
+-- DELETING FROM CUSTOMERS SUCCESSFULLY CALLS THE TRIGGER THAT DELETES FROM AUTH.USERS
+-- the problem is to be able to call this from the client...it says permission denied for table users
+delete from customers where id = 'f3bef4a0-df34-4836-b812-e8e4ee794029';
+select * from customers; 
+select count(*) from customers
+union
+select count (*) from auth.users;
+
+drop trigger tr_remove_auth_user on customers;
+drop function fn_remove_auth_user;
 
 
 
@@ -289,14 +349,13 @@ drop table realtime_appointments;
 
 
 
--- select count(*) from customer_availability;
--- select count(*) from professional_availability;
 
--- select * from staff;
--- select * from customers;
--- select * from professionals;
--- select * from customer_availability;
--- select * from professional_availability;
--- select * from realtime_appointments;
--- select * from appointment_offers;
+select * from auth.users;
+select * from staff;
+select * from customers;
+select * from professionals;
+select * from customer_availability;
+select * from professional_availability;
+select * from realtime_appointments;
+select * from appointment_offers;
 

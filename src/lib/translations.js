@@ -10,6 +10,11 @@ const TERMS = {
   friday: "Sexta-feira",
   saturday: "Sábado",
   sunday: "Domingo",
+  customers: "Clientes",
+  professionals: "Profissionais",
+  staff: "Membros",
+  "total users": "Usuários",
+  "unattended customers": "Novos Clientes",
 };
 
 export const t = term => {
