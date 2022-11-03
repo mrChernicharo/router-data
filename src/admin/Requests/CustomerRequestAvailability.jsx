@@ -34,7 +34,6 @@ export default function CustomerRequestAvailability(props) {
       mObj[match[filter()]].push(match);
     });
 
-    // console.log({ q: query.data?.matches, mObj });
     return mObj;
   });
 
@@ -50,10 +49,7 @@ export default function CustomerRequestAvailability(props) {
     sendOffers.mutate(selectedTimeBlocks, {
       onSuccess: (data, variables, context) => {
         // UPDATE BADGE AT THE PARENT
-        console.log("ZZZZZ want to update this shit!!");
-
         props.onOffersSent({ data, variables, selectedTimeBlocks });
-
         addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });
       },
     });

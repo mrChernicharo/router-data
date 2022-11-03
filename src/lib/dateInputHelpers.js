@@ -60,8 +60,6 @@ function normalizeDate(str, format, delimiter) {
     const date = new Date(y, m - 1, d, 12, 0, 0).setFullYear(y);
     res = isNaN(new Date(date).getTime()) ? null : new Date(date);
   }
-  // res && console.log("valid date!!!", res);
-
   return res;
 }
 

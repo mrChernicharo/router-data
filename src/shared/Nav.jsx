@@ -68,7 +68,7 @@ export default function Nav() {
   };
 
   async function handleUserMenuClick(e, item) {
-    console.log(e, item);
+    // console.log(e, item);
     if (item.name == "sign out") {
       await supabase.auth.signOut();
       setMenuOpen(false);
@@ -83,9 +83,9 @@ export default function Nav() {
     setUserMenuOpen(false);
   }
 
-  createEffect(() => {
-    console.log({ d: query.data });
-  });
+  // createEffect(() => {
+  //   console.log({ navData: query.data });
+  // });
 
   return (
     <Show when={userStore.user}>

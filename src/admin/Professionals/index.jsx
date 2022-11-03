@@ -19,7 +19,6 @@ export default function Professionals() {
   const removeMutation = createMutation(["professionals"], id => removeProfessional(id));
 
   function handleRemove(person) {
-    console.log("handleRemove", person);
     if (!confirm(`certeza que você quer deletar ${person.first_name}?`)) return;
 
     removeMutation.mutate(person.id, {

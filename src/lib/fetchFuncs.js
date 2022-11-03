@@ -4,15 +4,6 @@ import { supabase } from "./supabaseClient";
 
 // ************ HELPERS ************
 
-// const fetchCustomersId = async ids => {
-//   const { data: customers, error } = await supabase
-//     .from("customers")
-//     .select("*")
-//     .filter("id", "in", `(${ids})`);
-//   if (error) return console.log({ error });
-//   return { customers };
-// };
-
 const fetchProfessionalsId = async ids => {
   const { data: professionals, error } = await supabase
     .from("professionals")
@@ -29,23 +20,11 @@ const fetchAuthState = async () => {
 
 // ************ PAGE FETCHERS ************
 
-const fetchLoginFakeData = async () => {
-  const { data: customers, error: cError } = await supabase.from("customers").select("id, first_name");
-
-  const { data: professionals, error: pError } = await supabase.from("professionals").select("id, first_name");
-
-  if (cError || pError) return console.log({ cError, pError });
-
-  console.log("fetchLoginFakeData", { customers, professionals });
-
-  return { customers, professionals };
-};
-
 const fetchAdminData = async () => {
   const { data: adminData, error } = await supabase.from("vw_admin_page").select("*");
   if (error) return console.log({ error });
   const data = adminData[0];
-  console.log("fetchAdminData", { data });
+  // console.log("fetchAdminData", { data });
 
   return data;
 };
@@ -77,7 +56,7 @@ const fetchStaffData = async () => {
     });
   }
 
-  console.log("fetchStaffData", { staff, registeredEmails });
+  // console.log("fetchStaffData", { staff, registeredEmails });
   return { staff };
 };
 
@@ -91,7 +70,7 @@ const fetchAdminRequestsData = async () => {
   // customers without availability aren't ready to receive offers
   const customers = allCustomers.filter(c => c.availability.length);
 
-  console.log("fetchAdminRequestsData", { customers });
+  // console.log("fetchAdminRequestsData", { customers });
   return { customers };
 };
 
@@ -135,7 +114,7 @@ const fetchCustomerRequestAvailability = async id => {
     }
   }
 
-  console.log("fetchCustomerRequestAvailability", { slots, matches, offers });
+  // console.log("fetchCustomerRequestAvailability", { slots, matches, offers });
 
   return { matches, offers };
 };
@@ -192,7 +171,7 @@ const fetchCustomerData = async id => {
     customer.offers = offers;
   }
 
-  console.log("fetchCustomerData", { customer });
+  // console.log("fetchCustomerData", { customer });
 
   return { customer };
 };
@@ -200,7 +179,7 @@ const fetchCustomerData = async id => {
 const fetchProfessionalsData = async () => {
   const { data: professionals, error: pError } = await supabase.from("professionals").select("*");
   if (pError) return console.log({ pError });
-  console.log({ professionals });
+  // console.log({ professionals });
   return { professionals };
 };
 
@@ -235,14 +214,13 @@ const fetchProfessionalData = async id => {
     professional.appointments[i].customer = customer;
   }
 
-  console.log("fetchProfessionalData", { professional });
+  // console.log("fetchProfessionalData", { professional });
 
   return { professional };
 };
 
 export {
   fetchAuthState,
-  fetchLoginFakeData,
   fetchAdminData,
   fetchAdminRequestsData,
   fetchCustomerRequestAvailability,

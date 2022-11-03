@@ -16,10 +16,6 @@ export default function Header(props) {
   const [backLink, setBackLink] = createSignal("/login");
 
   createEffect(() => {
-    console.log("ROUTER LOG", location.pathname);
-  });
-
-  createEffect(() => {
     switch (true) {
       case /\/login/.test(location.pathname):
         setPageTitle("Login");
@@ -75,6 +71,10 @@ export default function Header(props) {
         break;
     }
   });
+
+  // createEffect(() => {
+  //   console.log("ROUTER LOG", location.pathname);
+  // });
 
   const pagesWithNoBackLink = createMemo(() => {
     return [

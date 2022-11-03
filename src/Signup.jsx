@@ -1,7 +1,6 @@
 import { createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { useRouteData, Link } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
-import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
 import { translateError } from "./lib/translations";
 
@@ -45,7 +44,6 @@ export default function Signup() {
     setIsLoading(false);
 
     if (!res || res?.code) {
-      console.log({ res });
       return addToast({
         message: res?.code ? translateError(res?.message) : "Erro ao criar sua conta",
         status: "danger",

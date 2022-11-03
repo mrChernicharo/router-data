@@ -50,7 +50,7 @@ const createUser = async credentials => {
 
   const staff = staffData[0] ?? null;
 
-  console.log("createUser", { credentials, staff });
+  // console.log("createUser", { credentials, staff });
 
   if (staff) {
     if (staff.category === "professional") {
@@ -67,7 +67,7 @@ const createUser = async credentials => {
 
 const insertProfessional = async ({ email, auth_id }) => {
   const isAdminCreated = !auth_id;
-  console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
+  // console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
 
   if (isAdminCreated) {
     const { data: authData } = await supabase.auth.signUp({ ...person, password: "12345678" });
@@ -91,7 +91,7 @@ const insertProfessional = async ({ email, auth_id }) => {
 
   const entry = { ...data[0], availability, appointments: [] };
 
-  console.log("insertProfessional", { entry });
+  // console.log("insertProfessional", { entry });
 
   channel.send({
     type: "broadcast",
@@ -102,7 +102,8 @@ const insertProfessional = async ({ email, auth_id }) => {
 };
 
 const removeProfessional = async id => {
-  console.log("removeProfessional", { id });
+  // console.log("removeProfessional", { id });
+
   // // 1. remove professional availability slots
   const { data: removedProfessionalAvailability, error: err } = await supabase
     .from("professional_availability")
@@ -149,16 +150,16 @@ const removeProfessional = async id => {
   const { data: deletedProfessional, error } = await supabase.from("professionals").delete().match({ id }).select();
   if (error) return console.log(error);
 
-  console.log({
-    deletedProfessional,
-    removedAppointments,
-    removedProfessionalAvailability,
-    updatedCustomerAvails,
-    availsToPatch,
-    customerIds,
-    days,
-    times,
-  });
+  // console.log({
+  //   deletedProfessional,
+  //   removedAppointments,
+  //   removedProfessionalAvailability,
+  //   updatedCustomerAvails,
+  //   availsToPatch,
+  //   customerIds,
+  //   days,
+  //   times,
+  // });
 
   channel.send({
     type: "broadcast",
@@ -170,7 +171,7 @@ const removeProfessional = async id => {
 
 const insertCustomer = async person => {
   const isAdminCreated = !person.auth_id;
-  console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
+  // console.log(!isAdminCreated ? "Customer Signup" : "Admin Created Customer");
 
   if (isAdminCreated) {
     const { data: authData } = await supabase.auth.signUp({ ...person, password: "12345678" });
@@ -194,7 +195,7 @@ const insertCustomer = async person => {
     .select();
   if (err2) return err2;
 
-  console.log("addCustomer", { customer, availability });
+  // console.log("addCustomer", { customer, availability });
 
   channel.send({
     type: "broadcast",
@@ -205,7 +206,7 @@ const insertCustomer = async person => {
 };
 
 const removeCustomer = async customer => {
-  console.log("removeCustomer", customer);
+  // console.log("removeCustomer", customer);
 
   // 1. remove customer availability
   const { data: removedAvailability, err } = await supabase
@@ -263,7 +264,7 @@ const removeCustomer = async customer => {
 
 
   const data = await res.json();
-  console.log({ res, data, deletedCustomer });
+  // console.log({ res, data, deletedCustomer });
 
   // console.log("removeCustomer", {
   //   deletedCustomer,
@@ -287,7 +288,7 @@ const removeCustomer = async customer => {
 };
 
 const updateCustomer = async (id, values) => {
-  console.log("updateCustomer", { id, values });
+  // console.log("updateCustomer", { id, values });
   const { data, error } = await supabase
     .from("customers")
     .update({
@@ -297,7 +298,7 @@ const updateCustomer = async (id, values) => {
     .eq("id", id);
   if (error) return error;
 
-  console.log("updateCustomer", { data, error });
+  // console.log("updateCustomer", { data, error });
   return data;
 };
 
@@ -312,7 +313,7 @@ const updateProfessional = async (id, values) => {
     .eq("id", id);
   if (error) return error;
 
-  console.log("updateProfessional", { data, error });
+  // console.log("updateProfessional", { data, error });
   return data;
 };
 
@@ -346,11 +347,11 @@ setTimeout(() => {
 }, 500)
 
 
-  console.log("appointment offer created", { data, deletedData });
+  // console.log("appointment offer created", { data, deletedData });
 };
 
 const confirmOffer = async offer => {
-  console.log("confirmOffer", { offer });
+  // console.log("confirmOffer", { offer });
 
   const { data: appointment, error } = await supabase.rpc("fn_create_first_appointment", {
     customer_id: offer.customer_id,
@@ -371,13 +372,10 @@ const confirmOffer = async offer => {
   });
 
   setTimeout(() => {
-
-    console.log('ZZZZZZ send new_appointment_created!')
     channel.send({
       type: "broadcast",
       event: `new_appointment_created`,
     });
-
   }, 500)
 
   return { appointment };

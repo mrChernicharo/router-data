@@ -23,7 +23,6 @@ export default function Requests(props) {
   );
 
   async function handleOffersUpdated(args) {
-    console.log("handleOffersUpdated, UPDATE BADGE!");
     // UPDATE BADGE!
     query.refetch();
   }

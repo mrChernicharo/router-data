@@ -15,7 +15,7 @@ export default function AuthStateHandler() {
 
   /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
   const updateAuthState = async session => {
-    console.log("updateAuthState", { session });
+    // console.log("updateAuthState", { session });
 
     if (!session) {
       setUserStore("session", null);
@@ -52,7 +52,7 @@ export default function AuthStateHandler() {
       professional: `/professional/${user.id}`,
     };
 
-    console.log({ personData, personD, user, session, redirectTo: redirects[user.category] });
+    // console.log({ personData, personD, user, session, redirectTo: redirects[user.category] });
     navigate(redirects[user.category]);
   };
 

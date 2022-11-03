@@ -1,7 +1,6 @@
 import { createEffect, createSignal, onMount, createMemo } from "solid-js";
 import { useRouteData, Link, useNavigate } from "solid-app-router";
 import { createQuery } from "@tanstack/solid-query";
-import { fetchLoginFakeData } from "./lib/fetchFuncs";
 import { supabase } from "./lib/supabaseClient";
 import { translateError } from "./lib/translations";
 

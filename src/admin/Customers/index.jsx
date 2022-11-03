@@ -30,7 +30,6 @@ export default function Customers() {
 
     insertMutation.mutate(customer, {
       onSuccess: (data, variables, context) => {
-        console.log("inserted customer!", { data, variables, context });
         query.refetch();
       },
     });
@@ -64,10 +63,6 @@ export default function Customers() {
   });
   channel.on("broadcast", { event: "new_appointment_created" }, () => {
     query.refetch();
-  });
-
-  createEffect(() => {
-    console.log(query.data?.customers);
   });
 
   return (

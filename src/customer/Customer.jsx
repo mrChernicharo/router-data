@@ -41,11 +41,6 @@ export default function Customer() {
   const hasOffers = () => query.data?.customer.offers.length;
   const hasAppointment = () => query.data?.customer.appointments.length;
 
-  createEffect(() => {
-    console.log(query.data);
-    // setUserStore()
-  });
-
   return (
     <div data-component="Customer">
       <Show when={query.data} fallback={<Loading />}>
@@ -73,9 +68,6 @@ export default function Customer() {
             <CustomerOffers
               customer={query.data.customer}
               onAccepted={val => {
-                console.log("appointment created!", { val });
-                // queryClient.invalidateQueries(["customer", params.id]);
-
                 query.refetch();
               }}
             />
