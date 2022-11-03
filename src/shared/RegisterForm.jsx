@@ -131,6 +131,7 @@ export default function RegisterForm(props) {
             fallback={
               <button class="btn btn-accent" onClick={handleSubmit}>
                 <FiCheck class="mr-2 text-lg" /> Confirmar!
+                {availabilityMutation.isLoading ? <Loading color="#fff" classes="ml-2" /> : <></>}
               </button>
             }
           >

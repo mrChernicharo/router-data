@@ -12,13 +12,17 @@ import { channel } from "../lib/supabaseClient";
 import { addToast } from "../shared/Toast";
 import ListItem from "../shared/ListItem";
 import { FiCheck } from "solid-icons/fi";
+import Loading from "../shared/Loading";
 
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
+  const [isLoading, setIsLoading] = createSignal(false);
 
   const insertMutation = createMutation(["appointment_created"], offer => confirmOffer(offer));
 
   function handleConfirmAppointment(e) {
+    setIsLoading(true);
+
     const offer = props.offers.find(o => o.id === offerId());
     const datetime = getClosestDate(offer.day);
 
@@ -33,6 +37,9 @@ export default function AppointmentOffers(props) {
       },
       onError: err => {
         addToast({ message: "erro ao criar nova consulta", status: "danger", duration: 4000 });
+      },
+      onSettled: () => {
+        setIsLoading(false);
       },
     });
   }
@@ -87,7 +94,10 @@ export default function AppointmentOffers(props) {
             class="btn btn-accent w-full max-w-xl"
             onClick={e => handleConfirmAppointment(e)}
           >
-            <h3 class="m-0">Confirmar Minha Primeira Consulta!</h3>
+            <h3 class="m-0">
+              Confirmar Minha Primeira Consulta!
+              {isLoading() ? <Loading color="#fff" /> : <></>}
+            </h3>
           </button>
         </div>
       </div>

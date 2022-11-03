@@ -24,6 +24,7 @@ export default function CustomerRequestAvailability(props) {
   );
 
   const [filter, setFilter] = createSignal("day"); /* day | professional */
+  const [isLoading, setIsLoading] = createSignal(false);
 
   const matchesObj = createMemo(() => {
     if (!query.data?.matches) return [];
@@ -39,6 +40,7 @@ export default function CustomerRequestAvailability(props) {
 
   function handleSubmitOffers(e) {
     e.preventDefault();
+    setIsLoading(true);
 
     const selectedCheckboxes = [...e.currentTarget].filter(d => d.checked);
     const selectedTimeBlocks = selectedCheckboxes.map(d => ({
@@ -52,6 +54,7 @@ export default function CustomerRequestAvailability(props) {
         props.onOffersSent({ data, variables, selectedTimeBlocks });
         addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });
       },
+      onSettled: () => setIsLoading(false),
     });
   }
 
@@ -111,7 +114,7 @@ export default function CustomerRequestAvailability(props) {
             <div class="mt-3">
               <button class="btn btn-accent">
                 <div class="flex items-center">
-                  {sendOffers.isLoading ? <Loading small /> : <FiSend size={20} />}
+                  {isLoading() ? <Loading small /> : <FiSend size={20} />}
                   {/* <Show when={sendOffers.isLoading} fallback={<FiSend size={20} />}>
                    
                   </Show> */}

@@ -213,8 +213,10 @@ export default function Nav() {
                   <img class="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
                 </div>
                 <div class="ml-3">
-                  <div class="text-base font-medium leading-none text-white">{user.name}</div>
-                  <div class="text-sm font-medium leading-none text-gray-400">{user.email}</div>
+                  <div class="capitalize text-base font-medium leading-none text-white mb-1.5 -mt-1">
+                    {userStore.user.first_name || userStore.user.email.split(/\W/)[0]}
+                  </div>
+                  <div class="text-sm font-medium leading-none text-gray-400">{userStore.user.email}</div>
                 </div>
                 <button
                   type="button"
