@@ -21,7 +21,9 @@ export default function Patients(props) {
   return (
     <ListItem classes="p-4">
       <h4 class="font-bold text-xl">Pacientes</h4>
-      <div>{getPatients(appointments()).length} patients</div>
+      <div>
+        {getPatients(appointments()).length} {getPatients(appointments()).length === 1 ? "paciente" : "pacientes"}
+      </div>
       <CollapseBox>
         <ul>
           <For each={getPatients(appointments())}>

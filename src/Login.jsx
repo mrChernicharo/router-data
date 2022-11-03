@@ -100,7 +100,7 @@ export default function Login() {
                   <AiFillLock class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
                 Entrar
-                {isLoading() ? <Loading /> : <div class="h-5 w-8"></div>}
+                {isLoading() ? <Loading color="#fff" /> : <div class="h-5 w-8"></div>}
               </button>
             </div>
           </form>

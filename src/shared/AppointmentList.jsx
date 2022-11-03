@@ -1,6 +1,7 @@
 import { dateToWeekday } from "../lib/helpers";
 import CollapseBox from "./CollapseBox";
 import { imageUrl } from "../lib/constants";
+import { parse, parseISO } from "date-fns";
 
 export default function AppointmentList(props) {
   return (
@@ -21,10 +22,11 @@ export default function AppointmentList(props) {
                     </div>
                   </div>
                   <div class="pointer-events-auto ml-4 flex-none rounded-md py-[0.3125rem] px-2 font-medium text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50">
-                    {new Date(appointment.datetime).toLocaleDateString("pt-BR", {
-                      weekday: "short",
+                    {new Date(appointment.datetime).toLocaleString("pt-BR", {
+                      day: "2-digit",
+                      month: "short",
                     })}{" "}
-                    {appointment.time}h
+                    {appointment.time}
                   </div>
                 </div>
               </div>
@@ -32,7 +34,7 @@ export default function AppointmentList(props) {
           )}
         </For>
       </ul>
-      {/* <pre>{JSON.stringify(props.appointments, null, 2)}</pre> */}
+      <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre>
     </div>
   );
 }

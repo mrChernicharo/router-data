@@ -1,11 +1,8 @@
-import { createSignal, Match, Show, Switch } from "solid-js";
+import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { createMutation } from "@tanstack/solid-query";
 
 import { confirmOffer } from "../lib/mutationFuncs";
-import { dateToWeekday, getClosestDate, ISODateStrFromDateAndTime } from "../lib/helpers";
-
-import PersonList from "../shared/PersonList";
-import CollapseBox from "../shared/CollapseBox";
+import { dateToWeekday, getClosestDate } from "../lib/helpers";
 
 import Badge from "../shared/Badge";
 import { channel } from "../lib/supabaseClient";
@@ -24,11 +21,15 @@ export default function AppointmentOffers(props) {
     setIsLoading(true);
 
     const offer = props.offers.find(o => o.id === offerId());
-    const datetime = getClosestDate(offer.day);
 
-    offer.ISODate = ISODateStrFromDateAndTime(datetime, offer.time);
+    const timestamp = getClosestDate(offer.day, offer.time);
+
+    const datetime = new Date(timestamp);
+
+    offer.ISODate = datetime.toISOString();
     offer.professional_id = offer.professional.id;
 
+    console.log("created datetime!!!", { timestamp, datetime, iso: datetime.toISOString(), offer });
     insertMutation.mutate(offer, {
       onSuccess: res => {
         props.onAccepted(res);
@@ -43,6 +44,10 @@ export default function AppointmentOffers(props) {
       },
     });
   }
+
+  createEffect(() => {
+    console.log(props.offers);
+  });
 
   const isSelected = id => id === offerId();
   const bg = id => (offerId() === id ? " font-bold bg-primary text-base-200 " : " hover:bg-base-200 ");
@@ -69,11 +74,12 @@ export default function AppointmentOffers(props) {
                 <div>{offer.professional.email}</div>
                 <div>{dateToWeekday(offer.day)}</div>
                 <div>
-                  {new Date(getClosestDate(offer.day)).toLocaleDateString("pt-BR", {
+                  {new Date(getClosestDate(offer.day, offer.time)).toLocaleDateString("pt-BR", {
                     day: "numeric",
                     month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}{" "}
-                  às {offer.time}
                 </div>
 
                 <Show when={offerId() === offer.id}>

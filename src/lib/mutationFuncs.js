@@ -353,16 +353,19 @@ const createAppointmentOffers = async (customerId, offers) => {
   // console.log("appointment offer created", { data, deletedData });
 };
 
+// CREATE APPOINTMENT
 const confirmOffer = async offer => {
   // console.log("confirmOffer", { offer });
 
-  const { data: appointment, error } = await supabase.rpc("fn_create_first_appointment", {
+  const { data: appointments, error } = await supabase.rpc("fn_create_first_appointment", {
     customer_id: offer.customer_id,
     professional_id: offer.professional_id,
     day: offer.day,
     hour: offer.time,
     datetime: offer.ISODate,
   });
+
+  console.log();
 
   if (error) {
     console.log({ error });
@@ -381,7 +384,7 @@ const confirmOffer = async offer => {
     });
   }, 500);
 
-  return { appointment };
+  return { appointments };
 };
 
 const updatePersonAvailability = async (person, role, newAvailability) => {

@@ -10,6 +10,7 @@ import AppointmentList from "../shared/AppointmentList";
 import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 import { setUserStore, userStore } from "../lib/userStore";
+import { differenceInMinutes } from "date-fns";
 
 export default function Customer() {
   const queryClient = useQueryClient();
@@ -40,6 +41,41 @@ export default function Customer() {
   const isRegistered = () => query.data.customer.first_name && query.data.customer.availability.length;
   const hasOffers = () => query.data?.customer.offers.length;
   const hasAppointment = () => query.data?.customer.appointments.length;
+
+  const nextAppointment = () => {
+    let smallestDiff = Infinity;
+    let nextAppointment = null;
+    query.data.customer.appointments.forEach(app => {
+      // smallest positive difference
+      const serverDate = new Date(app.datetime);
+      const appDate = new Date(
+        serverDate.getFullYear(),
+        serverDate.getMonth(),
+        serverDate.getDate(),
+        +app.time.slice(0, 2),
+        +app.time.slice(3, 5),
+        0
+      );
+      const diff = differenceInMinutes(appDate, new Date());
+
+      if (diff < smallestDiff) {
+        smallestDiff = diff;
+        nextAppointment = app;
+      }
+    });
+
+    // console.log(smallestDiff, nextAppointment);
+    return nextAppointment;
+  };
+
+  // createEffect(() => {
+  //   if (query.data?.customer) {
+  //     // setTimeout(() => {
+  //       // console.log(nextAppointment())
+  //     // })
+
+  //   }
+  // });
 
   return (
     <div data-component="Customer">
@@ -77,7 +113,7 @@ export default function Customer() {
           <Show when={hasAppointment()}>
             <h4 class="text-lg">Próxima consulta</h4>
             <div class="mb-5">
-              <AppointmentList role="customer" appointments={[query.data.customer.appointments[0]]} />
+              <AppointmentList role="customer" appointments={[nextAppointment()]} />
             </div>
           </Show>
         </div>

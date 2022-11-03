@@ -1,3 +1,4 @@
+import { addDays } from "date-fns";
 import { ALL_TIMES, STR_NUM_WEEKDAYS, SATURDAY_MAX_HOUR } from "./constants";
 import { t } from "./translations";
 
@@ -39,7 +40,15 @@ export const FULL_WEEK_AVAILABILITY = STR_NUM_WEEKDAYS.map(weekday => (weekday =
   )
   .flat(2);
 
-export const getClosestDate = day => {
+/**
+ * @function getClosestDate
+ *
+ * @param {string} date
+ * @param {string} time
+ *
+ * @returns {number}
+ */
+export const getClosestDate = (day, time) => {
   const getDiffFromNextSameWeekday = weekday => {
     const futureWeekday = Number(weekday);
     const todayWeekday = new Date().getDay();
@@ -52,20 +61,24 @@ export const getClosestDate = day => {
   };
 
   const diff = getDiffFromNextSameWeekday(day);
-  const daysFromFirstAppointment = diff < 2 ? diff + 7 : diff;
-  const today = new Date().setHours(0, 0, 0);
-  const closestPossibleDateTimestamp = today + daysFromFirstAppointment * 24 * 60 * 60 * 1000;
-  // const closestPossibleDates = Array(4)
-  //   .fill("")
-  //   // 1005 gambiarra javascript enquanto não escolhemos uma lib para datas
-  //   .map((_, i) => new Date(closestPossibleDateTimestamp + (i + 1) * 7 * 24 * 60 * 60 * 1005));
-  return closestPossibleDateTimestamp;
-};
+  const daysToFirstAppointment = diff < 2 ? diff + 7 : diff;
 
-export const ISODateStrFromDateAndTime = (dateStr, time) => {
-  return new Date(
-    new Date(dateStr).getTime() + timeStrToMinutes(time) * 60 * 1000 - new Date(dateStr).getTimezoneOffset() * 60 * 1000
-  ).toISOString();
+  const closestTimestamp = addDays(new Date(), daysToFirstAppointment).setHours(
+    +time.slice(0, 2),
+    +time.slice(3, 5),
+    0
+  );
+
+  // console.log({
+  //   // day,
+  //   // diff,
+  //   daysToFirstAppointment,
+  //   closestTimestamp,
+  //   closestDate: new Date(closestTimestamp),
+  //   closestDateISO: new Date(closestTimestamp).toISOString(),
+  // });
+
+  return closestTimestamp;
 };
 
 export const dateStrToDBDate = dateStr => {
