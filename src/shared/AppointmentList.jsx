@@ -22,11 +22,14 @@ export default function AppointmentList(props) {
                     </div>
                   </div>
                   <div class="pointer-events-auto ml-4 flex-none rounded-md py-[0.3125rem] px-2 font-medium text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50">
-                    {new Date(appointment.datetime).toLocaleString("pt-BR", {
-                      day: "2-digit",
-                      month: "short",
-                    })}{" "}
-                    {appointment.time}
+                    {new Date(appointment.datetime)
+                      .toLocaleString("pt-BR", {
+                        day: "2-digit",
+                        month: "short",
+                        weekday: "short",
+                      })
+                      .replace(/[.,]/g, "")}
+                    . {appointment.time}
                   </div>
                 </div>
               </div>

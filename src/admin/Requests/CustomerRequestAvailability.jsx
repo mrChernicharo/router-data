@@ -52,6 +52,7 @@ export default function CustomerRequestAvailability(props) {
       onSuccess: (data, variables, context) => {
         // UPDATE BADGE AT THE PARENT
         props.onOffersSent({ data, variables, selectedTimeBlocks });
+        console.log({ data, variables, selectedTimeBlocks });
         addToast({ title: "Tudo certo!", message: "ofertas de atendimento enviadas!", status: "success" });
       },
       onSettled: () => setIsLoading(false),

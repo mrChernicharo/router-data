@@ -186,7 +186,12 @@ export default function Nav() {
                 {menuOpen() ? (
                   <FiX class="block h-6 w-6" aria-hidden="true" />
                 ) : (
-                  <FiMenu class="block h-6 w-6" aria-hidden="true" />
+                  <>
+                    <div class="capitalize text-xs mr-3">
+                      {userStore?.user?.first_name || userStore.user.email.split(/\W/)[0]}
+                    </div>
+                    <FiMenu class="block h-6 w-6" aria-hidden="true" />
+                  </>
                 )}
               </button>
             </div>

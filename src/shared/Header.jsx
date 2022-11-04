@@ -94,11 +94,6 @@ export default function Header(props) {
       <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{pageTitle()}</h1>
 
-        <Show when={userStore.user}>
-          <div>{userStore.user.category === "admin" ? userStore.user.email : userStore.user.first_name}</div>
-          <div>{userStore.user.category}</div>
-        </Show>
-
         <Show when={showBackLink()}>
           <Link href={backLink()}>
             <button>

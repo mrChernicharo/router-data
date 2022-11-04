@@ -1,4 +1,4 @@
-import { addDays, differenceInMinutes } from "date-fns";
+import { addDays, differenceInMinutes, isSameDay } from "date-fns";
 import { ALL_TIMES, STR_NUM_WEEKDAYS, SATURDAY_MAX_HOUR } from "./constants";
 import { t } from "./translations";
 
@@ -96,6 +96,7 @@ export const getNextAppointment = appointments => {
       0
     );
     const diff = differenceInMinutes(appDate, new Date());
+    // const diff = differenceInMinutes(serverDate, new Date());
 
     if (diff > 0 && diff < smallestDiff) {
       smallestDiff = diff;
@@ -103,7 +104,11 @@ export const getNextAppointment = appointments => {
     }
   });
 
-  // console.log(smallestDiff, nextAppointment);
+  console.log({
+    smallestDiff,
+    nextAppointment,
+    appointments: appointments.filter(app => isSameDay(new Date(app.datetime), new Date())),
+  });
   return nextAppointment;
 };
 

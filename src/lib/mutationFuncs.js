@@ -350,7 +350,7 @@ const createAppointmentOffers = async (customerId, offers) => {
     });
   }, 500);
 
-  // console.log("appointment offer created", { data, deletedData });
+  console.log("createAppointmentOffers", "appointment offer created", { deletedData, data });
 };
 
 // CREATE APPOINTMENT

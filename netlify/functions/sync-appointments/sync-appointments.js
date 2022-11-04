@@ -2,10 +2,13 @@ const { schedule } = require("@netlify/functions");
 const { createClient } = require("@supabase/supabase-js");
 const { parse, parseISO, addDays } = require("date-fns");
 
-const { VITE_PROJECT_URL, VITE_ANON_PUB, VITE_SERVICE_ROLE, VITE_SUPABASE_KEY } = process.env;
+const { VITE_PROJECT_URL, VITE_ANON_PUB } = process.env;
+
+// This is a scheduled function meant to run hourly
+// it creates future appointments, so we always have at least 3 or 4 future appointments for each treatment
+// so if a customer has an appointment on Nov 1st, we make sure that he'll have an appointment on the 8th, 15th and 22nd
 
 const handler = async function (event, context) {
-  const supabaseAdmin = createClient(VITE_PROJECT_URL, VITE_SERVICE_ROLE);
   const supabase = createClient(VITE_PROJECT_URL, VITE_ANON_PUB);
 
   const promises = [
