@@ -8,14 +8,7 @@ import { updateCustomer, updateProfessional, updatePersonAvailability } from "..
 import AvailabilityTable from "./AvailabilityTable";
 import { Navigate, useParams, useRouteData, useRoutes, useNavigate } from "solid-app-router";
 import { t } from "../lib/translations";
-import {
-  dateToWeekday,
-  organizeAvailabilities,
-  timeMinutesToStr,
-  timeStrToMinutes,
-  DBDateToDateStr,
-  ISODateStrFromDateAndTime,
-} from "../lib/helpers";
+import { dateToWeekday, organizeAvailabilities, timeMinutesToStr, timeStrToMinutes } from "../lib/helpers";
 import { handleDateInput, normalizeDateStr } from "../lib/dateInputHelpers";
 import { isDate } from "date-fns";
 import Loading from "./Loading";

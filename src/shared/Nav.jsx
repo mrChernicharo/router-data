@@ -6,7 +6,7 @@ import { addToast } from "./Toast";
 import { userStore } from "../lib/userStore";
 import Badge from "./Badge";
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
-import { useLocation, useParams } from "solid-app-router";
+import { useLocation, useNavigate, useParams } from "solid-app-router";
 import { fetchAdminData, fetchAdminRequestsData } from "../lib/fetchFuncs";
 
 const user = {
@@ -45,6 +45,7 @@ const navLinks = () => {
 };
 
 export default function Nav() {
+  const navigate = useNavigate();
   const location = useLocation();
   const query = createQuery(() => ["appointment_requests"], fetchAdminRequestsData, {
     refetchOnMount: true,
@@ -68,8 +69,19 @@ export default function Nav() {
   };
 
   async function handleUserMenuClick(e, item) {
-    // console.log(e, item);
-    if (item.name == "sign out") {
+    console.log(e, item);
+    if (item.name === "profile") {
+      const { id, category } = userStore.user;
+      console.log(category);
+
+      const profileUrl = {
+        professional: `/professional/${id}/form`,
+        customer: `/customer/${id}/form`,
+      };
+
+      profileUrl[category] && navigate(profileUrl[category]);
+    }
+    if (item.name === "sign out") {
       await supabase.auth.signOut();
       setMenuOpen(false);
       setUserMenuOpen(false);
