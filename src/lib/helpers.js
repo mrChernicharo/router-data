@@ -1,4 +1,4 @@
-import { addDays } from "date-fns";
+import { addDays, differenceInMinutes } from "date-fns";
 import { ALL_TIMES, STR_NUM_WEEKDAYS, SATURDAY_MAX_HOUR } from "./constants";
 import { t } from "./translations";
 
@@ -79,6 +79,32 @@ export const getClosestDate = (day, time) => {
   // });
 
   return closestTimestamp;
+};
+
+export const getNextAppointment = appointments => {
+  let smallestDiff = Infinity;
+  let nextAppointment = null;
+  appointments.forEach(app => {
+    // smallest positive difference
+    const serverDate = new Date(app.datetime);
+    const appDate = new Date(
+      serverDate.getFullYear(),
+      serverDate.getMonth(),
+      serverDate.getDate(),
+      +app.time.slice(0, 2),
+      +app.time.slice(3, 5),
+      0
+    );
+    const diff = differenceInMinutes(appDate, new Date());
+
+    if (diff > 0 && diff < smallestDiff) {
+      smallestDiff = diff;
+      nextAppointment = app;
+    }
+  });
+
+  // console.log(smallestDiff, nextAppointment);
+  return nextAppointment;
 };
 
 export const dateStrToDBDate = dateStr => {

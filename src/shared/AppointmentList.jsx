@@ -34,7 +34,7 @@ export default function AppointmentList(props) {
           )}
         </For>
       </ul>
-      <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre>
+      {/* <pre class="text-xs">{JSON.stringify(props.appointments, null, 2)}</pre> */}
     </div>
   );
 }

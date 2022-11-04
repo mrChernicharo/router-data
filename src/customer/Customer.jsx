@@ -11,6 +11,7 @@ import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 import { setUserStore, userStore } from "../lib/userStore";
 import { differenceInMinutes } from "date-fns";
+import { getNextAppointment } from "../lib/helpers";
 
 export default function Customer() {
   const queryClient = useQueryClient();
@@ -42,40 +43,7 @@ export default function Customer() {
   const hasOffers = () => query.data?.customer.offers.length;
   const hasAppointment = () => query.data?.customer.appointments.length;
 
-  const nextAppointment = () => {
-    let smallestDiff = Infinity;
-    let nextAppointment = null;
-    query.data.customer.appointments.forEach(app => {
-      // smallest positive difference
-      const serverDate = new Date(app.datetime);
-      const appDate = new Date(
-        serverDate.getFullYear(),
-        serverDate.getMonth(),
-        serverDate.getDate(),
-        +app.time.slice(0, 2),
-        +app.time.slice(3, 5),
-        0
-      );
-      const diff = differenceInMinutes(appDate, new Date());
-
-      if (diff < smallestDiff) {
-        smallestDiff = diff;
-        nextAppointment = app;
-      }
-    });
-
-    // console.log(smallestDiff, nextAppointment);
-    return nextAppointment;
-  };
-
-  // createEffect(() => {
-  //   if (query.data?.customer) {
-  //     // setTimeout(() => {
-  //       // console.log(nextAppointment())
-  //     // })
-
-  //   }
-  // });
+  const nextAppointment = () => getNextAppointment(query.data?.customer.appointments || []);
 
   return (
     <div data-component="Customer">

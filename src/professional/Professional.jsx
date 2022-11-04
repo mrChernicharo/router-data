@@ -14,6 +14,85 @@ import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import ListItem from "../shared/ListItem";
 import { userStore } from "../lib/userStore";
 import { createEffect } from "solid-js";
+import { getNextAppointment } from "../lib/helpers";
+
+export default function Professional() {
+  const params = useParams();
+  const query = createQuery(
+    () => ["professional", params.id],
+    () => fetchProfessionalData(params.id),
+    { refetchOnMount: true }
+  );
+
+  const isNewProfessional = () => !query.data.professional.first_name;
+  const hasStartedRegister = () => query.data.professional.first_name && !query.data.professional.availability.length;
+  const isRegistered = () => query.data.professional.first_name && query.data.professional.availability.length;
+  const hasAppointment = () => query.data?.professional.appointments.length;
+
+  const nextAppointment = () => getNextAppointment(query.data?.professional.appointments || []);
+
+  channel.on("broadcast", { event: `${userStore.user.id}::appointments` }, () => {
+    console.log({ event: `${userStore.user.id}::appointments` });
+    query.refetch();
+  });
+
+  createEffect(() => {
+    console.log(query.data);
+  });
+
+  return (
+    <div data-component="Professional">
+      <Show when={query.data} fallback={<Loading />}>
+        <h1 class="font-bold text-5xl">{query.data.professional.first_name}</h1>
+        <div class="mb-5">{query.data.professional.email}</div>
+
+        <div class="main-panel">
+          {/* A */}
+          <Show when={isNewProfessional()}>
+            <NewProfessional professionalId={query.data.professional.id} />
+          </Show>
+
+          {/* B */}
+          <Show when={hasStartedRegister()}>
+            <RegisteringProfessional professionalId={query.data.professional.id} />
+          </Show>
+
+          {/* C */}
+          <Show when={isRegistered() && !hasAppointment()}>
+            <RegisteredProfessional professionalId={query.data.professional.id} />
+          </Show>
+
+          {/* D */}
+          <Show when={hasAppointment()}>
+            <h4 class="text-lg">Próxima consulta</h4>
+            <div class="mb-5">
+              <AppointmentList role="professional" appointments={[nextAppointment()]} />
+            </div>
+          </Show>
+        </div>
+
+        {/* <AvailabilityTable
+          role="professional"
+          canEdit={!isAdmin()}
+          collapsable
+          onChange={val => {}}
+          person={query.data.professional}
+          availability={query.data.professional.availability}
+        /> */}
+
+        {/* <AppointmentsCalendar
+          role="professional"
+          canEdit={!isAdmin()}
+          person={query.data.professional}
+          availability={query.data.professional.availability}
+          appointments={query.data.professional.appointments}
+        /> */}
+
+        {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
+      </Show>
+    </div>
+  );
+}
 
 function NewProfessional(props) {
   return (
@@ -72,74 +151,6 @@ function RegisteredProfessional(props) {
           Alterar dados
         </button>
       </Link>
-    </div>
-  );
-}
-
-export default function Professional() {
-  const params = useParams();
-  const query = createQuery(
-    () => ["professional", params.id],
-    () => fetchProfessionalData(params.id),
-    { refetchOnMount: true }
-  );
-
-  const isNewProfessional = () => !query.data.professional.first_name;
-  const hasStartedRegister = () => query.data.professional.first_name && !query.data.professional.availability.length;
-  const isRegistered = () => query.data.professional.first_name && query.data.professional.availability.length;
-  const hasAppointment = () => query.data?.professional.appointments.length;
-
-  channel.on("broadcast", { event: `${userStore.user.id}::appointments` }, () => {
-    console.log({ event: `${userStore.user.id}::appointments` });
-    query.refetch();
-  });
-
-  createEffect(() => {
-    console.log(query.data);
-  });
-
-  return (
-    <div data-component="Professional">
-      <Show when={query.data} fallback={<Loading />}>
-        <h1 class="font-bold text-5xl">{query.data.professional.first_name}</h1>
-        <div class="mb-5">{query.data.professional.email}</div>
-
-        <div class="main-panel">
-          {/* A */}
-          <Show when={isNewProfessional()}>
-            <NewProfessional professionalId={query.data.professional.id} />
-          </Show>
-
-          {/* B */}
-          <Show when={hasStartedRegister()}>
-            <RegisteringProfessional professionalId={query.data.professional.id} />
-          </Show>
-
-          {/* C */}
-          <Show when={isRegistered() && !hasAppointment()}>
-            <RegisteredProfessional professionalId={query.data.professional.id} />
-          </Show>
-        </div>
-
-        {/* <AvailabilityTable
-          role="professional"
-          canEdit={!isAdmin()}
-          collapsable
-          onChange={val => {}}
-          person={query.data.professional}
-          availability={query.data.professional.availability}
-        /> */}
-
-        {/* <AppointmentsCalendar
-          role="professional"
-          canEdit={!isAdmin()}
-          person={query.data.professional}
-          availability={query.data.professional.availability}
-          appointments={query.data.professional.appointments}
-        /> */}
-
-        {/* <pre>{JSON.stringify(data(), null, 1)}</pre> */}
-      </Show>
     </div>
   );
 }

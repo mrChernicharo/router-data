@@ -52,6 +52,16 @@ start it blank if real customer X default filled if admin
 https://jestjs.io/docs/getting-started
 
 
+==================
+
+create future appointments
+    // if less than 4 future appointments
+    // add future appointments so we keep it at 4 appointments
+
+countdowwn to next appointment
+
+
+
 =============
 ## EVENTS
 
