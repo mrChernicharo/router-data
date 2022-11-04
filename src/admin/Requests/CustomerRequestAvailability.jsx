@@ -115,7 +115,7 @@ export default function CustomerRequestAvailability(props) {
             <div class="mt-3">
               <button class="btn btn-accent">
                 <div class="flex items-center">
-                  {isLoading() ? <Loading small /> : <FiSend size={20} />}
+                  {isLoading() ? <Loading small color="#fff" /> : <FiSend size={20} />}
                   {/* <Show when={sendOffers.isLoading} fallback={<FiSend size={20} />}>
                    
                   </Show> */}

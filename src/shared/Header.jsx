@@ -26,12 +26,17 @@ export default function Header(props) {
         setBackLink("/");
         break;
       case /\/customer\/.+\/form/.test(location.pathname):
-        setPageTitle("Iniciar Tratamento");
+        setPageTitle("Minhas Informações");
         userStore?.user?.id && setBackLink(`/customer/${userStore?.user?.id}`);
         break;
+
       case /\/customer\/.+/.test(location.pathname):
         setPageTitle("Cliente");
         setBackLink("/login");
+        break;
+      case /\/professional\/.+\/form/.test(location.pathname):
+        setPageTitle("Minhas Informações");
+        userStore?.user?.id && setBackLink(`/professional/${userStore?.user?.id}`);
         break;
       case /\/professional\/.+/.test(location.pathname):
         setPageTitle("Profissional");

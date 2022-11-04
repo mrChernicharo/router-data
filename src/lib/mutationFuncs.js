@@ -178,7 +178,7 @@ const insertCustomer = async person => {
   if (cErr) return cErr;
 
   if (customerEmails.map(d => d.email).includes(person.email)) {
-    throw new Error(`Já existe um cliente cadastrado com o email ${person.email}`);
+    return new Error(`Já existe um cliente cadastrado com o email ${person.email}`);
   }
 
   if (isAdminCreated) {

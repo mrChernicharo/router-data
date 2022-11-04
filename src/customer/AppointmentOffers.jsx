@@ -10,6 +10,7 @@ import { addToast } from "../shared/Toast";
 import ListItem from "../shared/ListItem";
 import { FiCheck } from "solid-icons/fi";
 import Loading from "../shared/Loading";
+import { subHours, subMinutes } from "date-fns";
 
 export default function AppointmentOffers(props) {
   const [offerId, setOfferId] = createSignal("");
@@ -23,13 +24,15 @@ export default function AppointmentOffers(props) {
     const offer = props.offers.find(o => o.id === offerId());
 
     const timestamp = getClosestDate(offer.day, offer.time);
+    const timestampDate = new Date(timestamp);
 
-    const datetime = new Date(timestamp);
+    const datetime = subMinutes(timestampDate, timestampDate.getTimezoneOffset());
 
     offer.ISODate = datetime.toISOString();
     offer.professional_id = offer.professional.id;
 
     console.log("created datetime!!!", { timestamp, datetime, iso: datetime.toISOString(), offer });
+
     insertMutation.mutate(offer, {
       onSuccess: res => {
         props.onAccepted(res);

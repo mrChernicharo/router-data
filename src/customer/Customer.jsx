@@ -1,5 +1,5 @@
 import { createQuery, useQueryClient } from "@tanstack/solid-query";
-import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
+import { useRouteData, Link, useParams, useLocation, Navigate } from "solid-app-router";
 import { fetchCustomerData } from "../lib/fetchFuncs";
 import AppointmentOffers from "./AppointmentOffers";
 
@@ -11,7 +11,8 @@ import AppointmentsCalendar from "../shared/AppointmentsCalendar";
 import { channel } from "../lib/supabaseClient";
 import { setUserStore, userStore } from "../lib/userStore";
 import { differenceInMinutes } from "date-fns";
-import { getNextAppointment } from "../lib/helpers";
+import { getNextAppointment, setStorageData } from "../lib/helpers";
+import { FiEdit, FiEdit2, FiEdit3 } from "solid-icons/fi";
 
 export default function Customer() {
   const queryClient = useQueryClient();
@@ -44,6 +45,16 @@ export default function Customer() {
   const hasAppointment = () => query.data?.customer.appointments.length;
 
   const nextAppointment = () => getNextAppointment(query.data?.customer.appointments || []);
+
+  createEffect(() => {
+    console.log("auth error", { error: query.error });
+
+    if (query.error) {
+      // prevent people from getting stuck in a blank customer/professional home page
+      setStorageData(`sb-${import.meta.env.VITE_PROJECT_REF}-auth-token`, null);
+      Navigate("/");
+    }
+  });
 
   return (
     <div data-component="Customer">
@@ -150,20 +161,23 @@ function RegisteringCustomer(props) {
 
 function RegisteredCustomer(props) {
   return (
-    <div data-component="RegisteredCustomer" class="border m-2 p-2">
+    <div data-component="RegisteredCustomer" class="m-2 p-2 flex flex-col justify-center items-center">
       <h1 class="font-bold text-2xl">Cadastro Realizado! 🎉</h1>
 
-      <p class="my-2">Entraremos em contato com você logo logo!</p>
-
-      <p class="my-2">
-        Vamos te enviar opções de profissionais que combinam com você em até 24h! Fique de olho no app.
+      <p class="my-2 text-center max-w-[320px]">
+        Entraremos em contato com você logo logo com opções de horários para você realizar sua primeira consulta.
+      </p>
+      <p class="my-2 text-center max-w-[320px]">
+        Fique de olho no app que a gente costuma responder em menos de 48 horas!
       </p>
 
-      <p class="my-2">Obrigado por confiar na Laços!</p>
+      <img class="my-8" src="/assets/appreciation.svg" />
+
+      <p class="mb-8">Obrigado por confiar na Clínica Laços!</p>
 
       <Link href={`/customer/${props.customerId}/form`}>
-        <button class="btn btn-accent" type="button">
-          Alterar dados
+        <button class="btn btn-secondary btn-ghost flex items-center" type="button">
+          Alterar dados <FiEdit3 class="ml-2" size={18} />
         </button>
       </Link>
     </div>

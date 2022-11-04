@@ -43,7 +43,9 @@ export default function Signup() {
 
     setIsLoading(false);
 
-    if (!res || res?.code) {
+    console.log({ res });
+
+    if (res?.code) {
       return addToast({
         message: res?.code ? translateError(res?.message) : "Erro ao criar sua conta",
         status: "danger",

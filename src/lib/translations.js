@@ -22,21 +22,24 @@ export const t = term => {
   return TERMS[term];
 };
 
-
-
 export const translateError = message => {
-  console.log(message)
+  console.log(message);
 
   const translations = {
     "Rate limit exceeded": "Limite de tentativas excedido. Espere alguns minutos e tente novamente.",
-    "Invalid login credentials": "Credenciais inválidas. Verifique se Email e Senha estão corretos",
+    "Invalid login credentials": "Conta não encontrada. Verifique se Email e Senha estão corretos",
     'duplicate key value violates unique constraint "customers_email_key"':
       "Já existe um usuário cadastrado com esse email",
-    "For security purposes, you can only request this after 32 seconds.": "Por questões de segurança...",
     "Email not confirmed": "Você precisa ir no seu email e clicar no link para ativar a sua conta",
     "Cannot read properties of null (reading 'id')": "Deu Ruin aqui pai!",
-    "Failed to fetch": "Falha de conexão"
+    "Failed to fetch": "Falha de conexão",
   };
+
+  if (/For security purposes, you can only request this after/.test(message))
+    translations[message] = `Por questões de segurança você precisa esperar ${message.replace(
+      /\D/g,
+      ""
+    )} segundos antes de tentar novamente`;
 
   return translations[message] ? translations[message] : message;
 };

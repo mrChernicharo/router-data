@@ -19,8 +19,7 @@ export default function Requests(props) {
   const queryClient = useQueryClient();
   const query = createQuery(
     () => ["appointment_requests"],
-    () => fetchAdminRequestsData(),
-    { refetchOnMount: true }
+    () => fetchAdminRequestsData()
   );
 
   async function handleOffersUpdated(args) {

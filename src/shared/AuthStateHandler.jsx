@@ -11,6 +11,7 @@ import { addToast } from "./Toast";
 
 export default function AuthStateHandler() {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   /// THIS IS THE ONLY PLACE WE'LL EVER TOUCH session.user.
@@ -18,9 +19,11 @@ export default function AuthStateHandler() {
     // console.log("updateAuthState", { session });
 
     if (!session) {
+      const publicPaths = ["/", "/login", "/signup"];
       setUserStore("session", null);
       setUserStore("user", null);
-      navigate("/login");
+
+      if (!publicPaths.includes(location.pathname)) navigate("/login");
       return;
     }
 

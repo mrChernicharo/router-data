@@ -137,18 +137,23 @@ function RegisteringProfessional(props) {
 
 function RegisteredProfessional(props) {
   return (
-    <div data-component="RegisteredProfessional" class="border m-2 p-2">
+    <div data-component="RegisteredProfessional" class="m-2 p-2 flex flex-col justify-center items-center">
       <h1 class="font-bold text-2xl">Cadastro Finalizado! 🎉</h1>
 
-      <p class="my-2">Agora você é oficialmente parte da Clínica Laços! Parabéns!</p>
+      <p class="my-6 text-center max-w-[320px]">
+        Suas informações foram devidamente cadastradas no nosso sistema.Agora você é oficialmente parte da Clínica
+        Laços!
+      </p>
 
-      <p class="my-2">Suas informações estão devidamente cadastradas no nosso sistema.</p>
+      <h2 class="font-bold text-2xl">Parabéns!</h2>
 
-      <p class="my-2">Agora é só ficar de olho no app que os seus novos pacientes vão aparecer!</p>
+      <img class="my-8" src="/assets/appreciation.svg" />
+
+      <p class="mb-8">Agora é só ficar de olho no app que os seus novos pacientes vão aparecer!</p>
 
       <Link href={`/professional/${props.professionalId}/form`}>
-        <button class="btn btn-accent" type="button">
-          Alterar dados
+        <button class="btn btn-secondary btn-ghost flex items-center" type="button">
+          Alterar dados <FiEdit3 class="ml-2" size={18} />
         </button>
       </Link>
     </div>
