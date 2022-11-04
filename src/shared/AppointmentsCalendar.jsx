@@ -3,12 +3,14 @@ import CollapseBox from "./CollapseBox";
 import ListItem from "./ListItem";
 import Calendar from "./Calendar";
 import { isSameDay, format } from "date-fns";
-import { dateToWeekday } from "../lib/helpers";
+import { dateToWeekday, timeStrToMinutes } from "../lib/helpers";
 
 export default function AppointmentsCalendar(props) {
   const [selectedDate, setSelectedDate] = createSignal(null);
   const appointmentsInDay = createMemo(() =>
-    props.person.appointments.filter(app => isSameDay(new Date(app.datetime), selectedDate()))
+    props.person.appointments
+      .filter(app => isSameDay(new Date(app.datetime), selectedDate()))
+      .sort((a, b) => timeStrToMinutes(a.time) - timeStrToMinutes(b.time))
   );
   const person = createMemo(() => (props.role === "customer" ? "professional" : "customer"));
 
