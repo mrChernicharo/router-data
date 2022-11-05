@@ -13,6 +13,8 @@ import { handleDateInput, normalizeDateStr } from "../lib/dateInputHelpers";
 import { isDate } from "date-fns";
 import Loading from "./Loading";
 import { addToast } from "./Toast";
+import ListItem from "./ListItem";
+import ProgressIndicator from "../shared/ProgressIndicator";
 
 export default function RegisterForm(props) {
   const queryClient = useQueryClient();
@@ -221,37 +223,36 @@ export default function RegisterForm(props) {
   const Confirmation = props => {
     return (
       <div class="p-4">
-        <h2 class="text-2xl font-bold">Confirmação</h2>
-
-        <p>Confirme se seus dados estão corretos</p>
+        <h2 class="text-2xl font-bold text-center mb-2">Confirme se seus dados estão corretos</h2>
 
         <For each={Object.entries(formStore).filter(([k, v]) => k !== "availability")}>
           {([key, value]) => (
             <div>
-              <div>
-                {t(key)}:{value}
-              </div>
+              <div class="pr-2">{t(key)}:</div>
+              <div class="capitalize font-semibold text-lg pl-4">{value}</div>
             </div>
           )}
         </For>
 
         <div class="divider"></div>
 
-        <div class="text-lg font-bold">Disponibilidade</div>
+        <div class="text-lg font-bold text-center">Minha disponibilidade</div>
 
         <div class="">
           <Show when={formStore?.availability?.length}>
             <For each={Object.keys(organizeAvailabilities(formStore.availability))}>
               {day => (
-                <div>
+                <div class="mb-2">
                   <div class="font-bold">{dateToWeekday(day)}</div>
-                  <For each={organizeAvailabilities(formStore.availability)[day]}>
-                    {av => (
-                      <div class="pl-5">
-                        {av.time} - {timeMinutesToStr(timeStrToMinutes(av.time) + 30)}
-                      </div>
-                    )}
-                  </For>
+                  <div class="flex flex-wrap gap-2">
+                    <For each={organizeAvailabilities(formStore.availability)[day]}>
+                      {av => (
+                        <ListItem classes="p-2">
+                          {av.time} - {timeMinutesToStr(timeStrToMinutes(av.time) + 30)}
+                        </ListItem>
+                      )}
+                    </For>
+                  </div>
                 </div>
               )}
             </For>
@@ -281,8 +282,10 @@ export default function RegisterForm(props) {
 
   return (
     <div>
-      <div>
-        {`0${currStep()}`}/{`0${FormComponents.length}`}
+      <div class="flex justify-ends">
+        <div class="w-full">
+          <ProgressIndicator steps={FormComponents.length} currStep={currStep()} />
+        </div>
       </div>
 
       <WizardShell>{FormComponents[currComponentIdx()]}</WizardShell>
