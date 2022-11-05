@@ -1,20 +1,15 @@
 import { createQuery } from "@tanstack/solid-query";
-import { useRouteData, Link, useParams, useLocation } from "solid-app-router";
+import { Link, useParams } from "solid-app-router";
 
 import { channel } from "../lib/supabaseClient";
-import { addMinutes, isPast, subDays } from "date-fns";
 import AppointmentList from "../shared/AppointmentList";
-import CollapseBox from "../shared/CollapseBox";
-// import ProfessionalAvailability from "./ProfessionalAvailability";
-import AvailabilityTable from "../shared/AvailabilityTable";
 
 import Loading from "../shared/Loading";
 import { fetchProfessionalData } from "../lib/fetchFuncs";
-import AppointmentsCalendar from "../shared/AppointmentsCalendar";
-import ListItem from "../shared/ListItem";
 import { userStore } from "../lib/userStore";
 import { createEffect } from "solid-js";
 import { getNextAppointment } from "../lib/helpers";
+import { FiEdit3 } from "solid-icons/fi";
 
 export default function Professional() {
   const params = useParams();
@@ -93,7 +88,6 @@ export default function Professional() {
     </div>
   );
 }
-
 function NewProfessional(props) {
   return (
     <div data-component="NewProfessional" class="border m-2 p-2">
