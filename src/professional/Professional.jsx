@@ -15,6 +15,7 @@ import ListItem from "../shared/ListItem";
 import { userStore } from "../lib/userStore";
 import { createEffect } from "solid-js";
 import { getNextAppointment } from "../lib/helpers";
+import { FiEdit3 } from "solid-icons/fi";
 
 export default function Professional() {
   const params = useParams();

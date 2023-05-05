@@ -15,7 +15,7 @@ export const channel = supabase.channel("my_db");
 
 channel.subscribe(status => {
   console.log({ status });
-});
+})
 
 export const getSupabaseAdmin = () => {
   try {

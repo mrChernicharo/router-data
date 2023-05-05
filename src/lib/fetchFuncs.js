@@ -33,6 +33,11 @@ const fetchStaffData = async () => {
   const { data, error: sError } = await supabase.from("vw_staff_page").select("*");
   if (sError) return console.log({ sError });
 
+
+  // const registeredPeople = await fetch("https://lacos-app.netlify.app/.netlify/functions/get-registered-users").then(
+  //   resp => resp.json()
+  // );
+  // console.log({ registeredPeople });
   const { registeredEmails } = await fetch(`${LAMBDA_URL}/get-registered-users`).then(async res => await res.json());
 
   const staff = [];
